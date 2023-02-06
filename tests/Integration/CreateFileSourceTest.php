@@ -8,7 +8,7 @@ use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\InvalidRequestError;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 
-class CreateFileSourceTest extends AbstractIntegrationTest
+class CreateFileSourceTest extends AbstractIntegrationTestCase
 {
     /**
      * @dataProvider createFileSourceInvalidRequestDataProvider
