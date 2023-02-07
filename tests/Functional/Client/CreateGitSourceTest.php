@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Functional\Client;
 
 use GuzzleHttp\Psr7\Response;
-use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\InvalidRequestError;
 

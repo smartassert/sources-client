@@ -15,7 +15,6 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\Response\JsonResponse;
-use SmartAssert\ServiceClient\Response\Response;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\InvalidRequestError;
@@ -70,9 +69,10 @@ class Client
     }
 
     /**
-     * @param non-empty-string $token
-     * @param non-empty-string $hostUrl
-     * @param non-empty-string $path
+     * @param non-empty-string  $label
+     * @param non-empty-string  $token
+     * @param non-empty-string  $hostUrl
+     * @param non-empty-string  $path
      * @param ?non-empty-string $credentials
      *
      * @throws ClientExceptionInterface
@@ -141,8 +141,6 @@ class Client
      * @throws InvalidModelDataException
      * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
-     *
-     * @return InvalidRequestError
      */
     private function createInvalidRequestError(JsonResponse $response): InvalidRequestError
     {
