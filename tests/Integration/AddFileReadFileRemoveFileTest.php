@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Tests\Integration;
 
+use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\FileSource;
 
-class AddFileReadFileTest extends AbstractIntegrationTestCase
+class AddFileReadFileRemoveFileTest extends AbstractIntegrationTestCase
 {
     public function testAddFileReadFile(): void
     {
@@ -23,5 +24,11 @@ class AddFileReadFileTest extends AbstractIntegrationTestCase
 
         $readFileResponse = self::$client->readFile(self::$user1ApiToken->token, $fileSource->id, $filename);
         self::assertSame($content, $readFileResponse);
+
+        self::$client->removeFile(self::$user1ApiToken->token, $fileSource->id, $filename);
+
+        self::expectException(NonSuccessResponseException::class);
+        self::expectExceptionCode(404);
+        self::$client->readFile(self::$user1ApiToken->token, $fileSource->id, $filename);
     }
 }
