@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ErrorFactory;
+use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\UsersClient\Client as UsersClient;
 use SmartAssert\UsersClient\Model\ApiKey;
 use SmartAssert\UsersClient\Model\Token;
@@ -31,6 +32,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
             'http://localhost:9081',
             self::createServiceClient(),
             new ErrorFactory(),
+            new SourceFactory(),
         );
         self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
     }
