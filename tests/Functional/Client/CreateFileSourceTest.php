@@ -10,6 +10,8 @@ use SmartAssert\SourcesClient\Model\InvalidRequestError;
 
 class CreateFileSourceTest extends AbstractClientModelCreationTestCase
 {
+    use NetworkErrorExceptionAndInvalidJsonResponseExceptionDataProviderTrait;
+
     public function testCreateFileSourceRequestProperties(): void
     {
         $label = 'job label';
