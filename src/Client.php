@@ -12,19 +12,20 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\Response\JsonResponse;
+use SmartAssert\SourcesClient\Model\ErrorInterface;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\GitSource;
-use SmartAssert\SourcesClient\Model\InvalidRequestError;
 
 class Client
 {
     public function __construct(
         private readonly string $baseUrl,
         private readonly ServiceClient $serviceClient,
-        private readonly InvalidRequestErrorFactory $invalidRequestErrorFactory,
+        private readonly ErrorFactory $errorFactory,
     ) {
     }
 
@@ -38,7 +39,7 @@ class Client
      * @throws NonSuccessResponseException
      * @throws InvalidModelDataException
      */
-    public function createFileSource(string $token, string $label): FileSource|InvalidRequestError
+    public function createFileSource(string $token, string $label): FileSource|ErrorInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
             (new Request('POST', $this->createUrl('/file')))
@@ -49,7 +50,7 @@ class Client
         );
 
         if (400 === $response->getStatusCode()) {
-            return $this->createInvalidRequestError($response);
+            return $this->createErrorModel($response);
         }
 
         if (!$response->isSuccessful()) {
@@ -87,7 +88,7 @@ class Client
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): GitSource|InvalidRequestError {
+    ): GitSource|ErrorInterface {
         $payload = [
             'label' => $label,
             'host-url' => $hostUrl,
@@ -105,7 +106,7 @@ class Client
         );
 
         if (400 === $response->getStatusCode()) {
-            return $this->createInvalidRequestError($response);
+            return $this->createErrorModel($response);
         }
 
         if (!$response->isSuccessful()) {
@@ -128,6 +129,54 @@ class Client
     }
 
     /**
+     * @param non-empty-string $token
+     * @param non-empty-string $fileSourceId
+     * @param non-empty-string $filename
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     */
+    public function addFile(string $token, string $fileSourceId, string $filename, string $content): ?ErrorInterface
+    {
+        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+            (new Request('POST', $this->createUrl('/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
+                ->withAuthentication(new BearerAuthentication($token))
+                ->withPayload(new Payload('text/x-yaml', $content))
+        );
+
+        if (400 === $response->getStatusCode()) {
+            return $this->createErrorModel($response);
+        }
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws NonSuccessResponseException
+     */
+    public function readFile(string $token, string $fileSourceId, string $filename): string
+    {
+        $response = $this->serviceClient->sendRequest(
+            (new Request('GET', $this->createUrl('/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
+                ->withAuthentication(new BearerAuthentication($token))
+        );
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        return $response->getHttpResponse()->getBody()->getContents();
+    }
+
+    /**
      * @param non-empty-string $path
      *
      * @return non-empty-string
@@ -142,17 +191,17 @@ class Client
      * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
      */
-    private function createInvalidRequestError(JsonResponse $response): InvalidRequestError
+    private function createErrorModel(JsonResponse $response): ErrorInterface
     {
-        $invalidRequestError = $this->invalidRequestErrorFactory->create(
+        $error = $this->errorFactory->create(
             $response->getHttpResponse(),
             new ArrayInspector($response->getData())
         );
 
-        if (null === $invalidRequestError) {
-            throw InvalidModelDataException::fromJsonResponse(InvalidRequestError::class, $response);
+        if (null === $error) {
+            throw InvalidModelDataException::fromJsonResponse(ErrorInterface::class, $response);
         }
 
-        return $invalidRequestError;
+        return $error;
     }
 }

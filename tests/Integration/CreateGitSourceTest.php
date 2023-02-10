@@ -33,7 +33,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
         );
 
         self::assertInstanceOf(InvalidRequestError::class, $invalidRequestError);
-        self::assertEquals($expectedInvalidRequestFields, $invalidRequestError->invalidRequestFields);
+        self::assertEquals($expectedInvalidRequestFields, $invalidRequestError->getInvalidRequestFields());
     }
 
     /**
