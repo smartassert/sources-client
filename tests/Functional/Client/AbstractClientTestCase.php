@@ -60,8 +60,7 @@ abstract class AbstractClientTestCase extends TestCase
     }
 
     /**
-     * @dataProvider networkErrorExceptionDataProvider
-     * @dataProvider invalidJsonResponseExceptionDataProvider
+     * @dataProvider clientActionThrowsExceptionDataProvider
      *
      * @param class-string<\Throwable> $expectedExceptionClass
      */
@@ -75,6 +74,11 @@ abstract class AbstractClientTestCase extends TestCase
 
         ($this->createClientActionCallable())();
     }
+
+    /**
+     * @return array<mixed>
+     */
+    abstract public function clientActionThrowsExceptionDataProvider(): array;
 
     /**
      * @dataProvider commonNonSuccessResponseDataProvider

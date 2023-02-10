@@ -10,6 +10,8 @@ use SmartAssert\SourcesClient\Model\InvalidRequestError;
 
 class CreateGitSourceTest extends AbstractClientModelCreationTestCase
 {
+    use NetworkErrorExceptionAndInvalidJsonResponseExceptionDataProviderTrait;
+
     public function testCreateGitSourceRequestProperties(): void
     {
         $label = 'git source label';
