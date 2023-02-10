@@ -9,8 +9,7 @@ use GuzzleHttp\Psr7\HttpFactory;
 use PHPUnit\Framework\TestCase;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\SourcesClient\Client;
-use SmartAssert\SourcesClient\InvalidRequestErrorFactory;
-use SmartAssert\SourcesClient\InvalidRequestFieldFactory;
+use SmartAssert\SourcesClient\ErrorFactory;
 use SmartAssert\UsersClient\Client as UsersClient;
 use SmartAssert\UsersClient\Model\ApiKey;
 use SmartAssert\UsersClient\Model\Token;
@@ -31,9 +30,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
         self::$client = new Client(
             'http://localhost:9081',
             self::createServiceClient(),
-            new InvalidRequestErrorFactory(
-                new InvalidRequestFieldFactory(),
-            ),
+            new ErrorFactory(),
         );
         self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
     }

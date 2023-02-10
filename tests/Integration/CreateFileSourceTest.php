@@ -21,7 +21,7 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
         $invalidRequestError = self::$client->createFileSource(self::$user1ApiToken->token, $label);
 
         self::assertInstanceOf(InvalidRequestError::class, $invalidRequestError);
-        self::assertEquals($expectedInvalidRequestFields, $invalidRequestError->invalidRequestFields);
+        self::assertEquals($expectedInvalidRequestFields, $invalidRequestError->getInvalidRequestFields());
     }
 
     /**
