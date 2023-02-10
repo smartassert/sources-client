@@ -26,6 +26,7 @@ class Client
         private readonly string $baseUrl,
         private readonly ServiceClient $serviceClient,
         private readonly ErrorFactory $errorFactory,
+        private readonly SourceFactory $sourceFactory,
     ) {
     }
 
@@ -57,16 +58,12 @@ class Client
             throw new NonSuccessResponseException($response->getHttpResponse());
         }
 
-        $responseDataInspector = new ArrayInspector($response->getData());
-
-        $label = $responseDataInspector->getNonEmptyString('label');
-        $id = $responseDataInspector->getNonEmptyString('id');
-
-        if (null === $label || null === $id) {
+        $source = $this->sourceFactory->createFileSource($response->getData());
+        if (null === $source) {
             throw InvalidModelDataException::fromJsonResponse(FileSource::class, $response);
         }
 
-        return new FileSource($label, $id);
+        return $source;
     }
 
     /**
@@ -113,19 +110,12 @@ class Client
             throw new NonSuccessResponseException($response->getHttpResponse());
         }
 
-        $responseDataInspector = new ArrayInspector($response->getData());
-
-        $label = $responseDataInspector->getNonEmptyString('label');
-        $hostUrl = $responseDataInspector->getNonEmptyString('host_url');
-        $path = $responseDataInspector->getNonEmptyString('path');
-        $id = $responseDataInspector->getNonEmptyString('id');
-        $hasCredentials = $responseDataInspector->getBoolean('has_credentials');
-
-        if (null === $label || null === $hostUrl || null === $path || null === $id || null === $hasCredentials) {
+        $source = $this->sourceFactory->createGitSource($response->getData());
+        if (null === $source) {
             throw InvalidModelDataException::fromJsonResponse(GitSource::class, $response);
         }
 
-        return new GitSource($label, $hostUrl, $path, $hasCredentials, $id);
+        return $source;
     }
 
     /**
@@ -174,6 +164,40 @@ class Client
         }
 
         return $response->getHttpResponse()->getBody()->getContents();
+    }
+
+    /**
+     * @return array<FileSource|GitSource>
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     */
+    public function listSources(string $token): array
+    {
+        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+            (new Request('GET', $this->createUrl('/list')))
+                ->withAuthentication(new BearerAuthentication($token))
+        );
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        $sources = [];
+
+        foreach ($response->getData() as $sourceData) {
+            if (is_array($sourceData)) {
+                $source = $this->sourceFactory->create($sourceData);
+
+                if (null !== $source) {
+                    $sources[] = $source;
+                }
+            }
+        }
+
+        return $sources;
     }
 
     /**

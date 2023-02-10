@@ -17,6 +17,7 @@ use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ErrorFactory;
+use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResponseDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
@@ -53,6 +54,7 @@ abstract class AbstractClientTestCase extends TestCase
                 new HttpClient(['handler' => $handlerStack]),
             ),
             new ErrorFactory(),
+            new SourceFactory(),
         );
     }
 
