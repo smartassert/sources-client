@@ -177,6 +177,22 @@ class Client
     }
 
     /**
+     * @throws ClientExceptionInterface
+     * @throws NonSuccessResponseException
+     */
+    public function removeFile(string $token, string $fileSourceId, string $filename): void
+    {
+        $response = $this->serviceClient->sendRequest(
+            (new Request('DELETE', $this->createUrl('/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
+                ->withAuthentication(new BearerAuthentication($token))
+        );
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+    }
+
+    /**
      * @param non-empty-string $path
      *
      * @return non-empty-string
