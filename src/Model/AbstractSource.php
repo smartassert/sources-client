@@ -8,10 +8,12 @@ abstract class AbstractSource implements SourceInterface
 {
     /**
      * @param non-empty-string $id
+     * @param non-empty-string $userId
      * @param non-empty-string $type
      */
     public function __construct(
         private readonly string $id,
+        private readonly string $userId,
         private readonly string $type,
     ) {
     }
@@ -19,6 +21,11 @@ abstract class AbstractSource implements SourceInterface
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getUserId(): string
+    {
+        return $this->userId;
     }
 
     public function getType(): string
