@@ -11,7 +11,7 @@ abstract class AbstractSource implements SourceInterface
      * @param non-empty-string $type
      */
     public function __construct(
-        public readonly string $id,
+        private readonly string $id,
         private readonly string $type,
     ) {
     }

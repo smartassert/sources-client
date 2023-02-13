@@ -147,7 +147,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
         self::assertSame($hostUrl, $gitSource->getHostUrl());
         self::assertSame($path, $gitSource->getPath());
         self::assertSame(is_string($credentials), $gitSource->hasCredentials());
-        self::assertNotEmpty($gitSource->id);
+        self::assertNotEmpty($gitSource->getId());
     }
 
     /**
