@@ -7,19 +7,21 @@ namespace SmartAssert\SourcesClient\Model;
 class GitSource extends AbstractOriginSource
 {
     /**
+     * @param non-empty-string $id
+     * @param non-empty-string $userId
      * @param non-empty-string $label
      * @param non-empty-string $hostUrl
      * @param non-empty-string $path
-     * @param non-empty-string $id
      */
     public function __construct(
         string $id,
+        string $userId,
         string $label,
         private readonly string $hostUrl,
         private readonly string $path,
         private readonly bool $hasCredentials,
     ) {
-        parent::__construct($id, 'git', $label);
+        parent::__construct($id, $userId, 'git', $label);
     }
 
     /**

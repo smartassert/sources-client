@@ -37,13 +37,14 @@ class SourceFactory
         $dataInspector = new ArrayInspector($data);
 
         $id = $dataInspector->getNonEmptyString('id');
+        $userId = $dataInspector->getNonEmptyString('user_id');
         $label = $dataInspector->getNonEmptyString('label');
 
-        if (null === $id || null === $label) {
+        if (null === $id || null === $userId || null === $label) {
             return null;
         }
 
-        return new FileSource($id, $label);
+        return new FileSource($id, $userId, $label);
     }
 
     /**
@@ -54,15 +55,19 @@ class SourceFactory
         $dataInspector = new ArrayInspector($data);
 
         $id = $dataInspector->getNonEmptyString('id');
+        $userId = $dataInspector->getNonEmptyString('user_id');
         $label = $dataInspector->getNonEmptyString('label');
         $hostUrl = $dataInspector->getNonEmptyString('host_url');
         $path = $dataInspector->getNonEmptyString('path');
         $hasCredentials = $dataInspector->getBoolean('has_credentials');
 
-        if (null === $id || null === $label || null === $hostUrl || null === $path || null === $hasCredentials) {
+        if (
+            null === $id || null === $userId || null === $label
+            || null === $hostUrl || null === $path || null === $hasCredentials
+        ) {
             return null;
         }
 
-        return new GitSource($id, $label, $hostUrl, $path, $hasCredentials);
+        return new GitSource($id, $userId, $label, $hostUrl, $path, $hasCredentials);
     }
 }

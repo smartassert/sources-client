@@ -14,5 +14,10 @@ interface SourceInterface
     /**
      * @return non-empty-string
      */
+    public function getUserId(): string;
+
+    /**
+     * @return non-empty-string
+     */
     public function getType(): string;
 }
