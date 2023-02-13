@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Tests\Integration;
 
-use SmartAssert\SourcesClient\Tests\Services\DataRepository;
-
 class ListSourcesTest extends AbstractIntegrationTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
 
-        (new DataRepository(
-            'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
-        ))->removeAllData();
+        self::$dataRepository->removeAllData();
     }
 
     /**

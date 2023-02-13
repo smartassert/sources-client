@@ -20,6 +20,7 @@ use SmartAssert\SourcesClient\Model\ErrorInterface;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\OriginSourceInterface;
+use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class Client
 {
@@ -215,6 +216,32 @@ class Client
         if (!$response->isSuccessful()) {
             throw new NonSuccessResponseException($response->getHttpResponse());
         }
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     */
+    public function getSource(string $token, string $sourceId): SourceInterface
+    {
+        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+            (new Request('GET', $this->createUrl('/' . urlencode($sourceId))))
+                ->withAuthentication(new BearerAuthentication($token))
+        );
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        $source = $this->sourceFactory->create($response->getData());
+        if (null === $source) {
+            throw InvalidModelDataException::fromJsonResponse(SourceInterface::class, $response);
+        }
+
+        return $source;
     }
 
     /**

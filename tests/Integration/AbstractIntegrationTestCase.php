@@ -11,6 +11,8 @@ use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ErrorFactory;
 use SmartAssert\SourcesClient\SourceFactory;
+use SmartAssert\SourcesClient\Tests\Services\DataRepository;
+use SmartAssert\SourcesClient\Tests\Services\SourceFactory as SourceEntityFactory;
 use SmartAssert\UsersClient\Client as UsersClient;
 use SmartAssert\UsersClient\Model\ApiKey;
 use SmartAssert\UsersClient\Model\Token;
@@ -25,6 +27,8 @@ abstract class AbstractIntegrationTestCase extends TestCase
 
     protected static Client $client;
     protected static Token $user1ApiToken;
+    protected static DataRepository $dataRepository;
+    protected static SourceEntityFactory $sourceEntityFactory;
 
     public static function setUpBeforeClass(): void
     {
@@ -35,6 +39,10 @@ abstract class AbstractIntegrationTestCase extends TestCase
             new SourceFactory(),
         );
         self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
+        self::$dataRepository = new DataRepository(
+            'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
+        );
+        self::$sourceEntityFactory = new SourceEntityFactory(self::$dataRepository);
     }
 
     protected static function createUserApiToken(string $email, string $password): Token

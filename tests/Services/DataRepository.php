@@ -27,7 +27,7 @@ class DataRepository
         }
     }
 
-    private function getConnection(): \PDO
+    public function getConnection(): \PDO
     {
         if (null === self::$connection) {
             self::$connection = new \PDO($this->databaseDsn);
