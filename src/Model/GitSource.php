@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Model;
 
-class GitSource extends AbstractSource
+class GitSource extends AbstractOriginSource
 {
     /**
      * @param non-empty-string $label
@@ -13,12 +13,33 @@ class GitSource extends AbstractSource
      * @param non-empty-string $id
      */
     public function __construct(
-        public readonly string $label,
-        public readonly string $hostUrl,
-        public readonly string $path,
-        public readonly bool $hasCredentials,
-        string $id
+        string $id,
+        string $label,
+        private readonly string $hostUrl,
+        private readonly string $path,
+        private readonly bool $hasCredentials,
     ) {
-        parent::__construct($id);
+        parent::__construct($id, 'git', $label);
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function getHostUrl(): string
+    {
+        return $this->hostUrl;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    public function hasCredentials(): bool
+    {
+        return $this->hasCredentials;
     }
 }

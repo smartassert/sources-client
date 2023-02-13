@@ -143,10 +143,10 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
         );
 
         self::assertInstanceOf(GitSource::class, $gitSource);
-        self::assertSame($label, $gitSource->label);
-        self::assertSame($hostUrl, $gitSource->hostUrl);
-        self::assertSame($path, $gitSource->path);
-        self::assertSame(is_string($credentials), $gitSource->hasCredentials);
+        self::assertSame($label, $gitSource->getLabel());
+        self::assertSame($hostUrl, $gitSource->getHostUrl());
+        self::assertSame($path, $gitSource->getPath());
+        self::assertSame(is_string($credentials), $gitSource->hasCredentials());
         self::assertNotEmpty($gitSource->id);
     }
 
