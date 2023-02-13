@@ -7,13 +7,14 @@ namespace SmartAssert\SourcesClient;
 use SmartAssert\ArrayInspector\ArrayInspector;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\GitSource;
+use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class SourceFactory
 {
     /**
      * @param array<mixed> $data
      */
-    public function create(array $data): FileSource|GitSource|null
+    public function create(array $data): ?SourceInterface
     {
         $type = $data['type'] ?? null;
 
@@ -33,16 +34,16 @@ class SourceFactory
      */
     public function createFileSource(array $data): ?FileSource
     {
-        $responseDataInspector = new ArrayInspector($data);
+        $dataInspector = new ArrayInspector($data);
 
-        $label = $responseDataInspector->getNonEmptyString('label');
-        $id = $responseDataInspector->getNonEmptyString('id');
+        $id = $dataInspector->getNonEmptyString('id');
+        $label = $dataInspector->getNonEmptyString('label');
 
-        if (null === $label || null === $id) {
+        if (null === $id || null === $label) {
             return null;
         }
 
-        return new FileSource($label, $id);
+        return new FileSource($id, $label);
     }
 
     /**
@@ -50,18 +51,18 @@ class SourceFactory
      */
     public function createGitSource(array $data): ?GitSource
     {
-        $responseDataInspector = new ArrayInspector($data);
+        $dataInspector = new ArrayInspector($data);
 
-        $label = $responseDataInspector->getNonEmptyString('label');
-        $hostUrl = $responseDataInspector->getNonEmptyString('host_url');
-        $path = $responseDataInspector->getNonEmptyString('path');
-        $id = $responseDataInspector->getNonEmptyString('id');
-        $hasCredentials = $responseDataInspector->getBoolean('has_credentials');
+        $id = $dataInspector->getNonEmptyString('id');
+        $label = $dataInspector->getNonEmptyString('label');
+        $hostUrl = $dataInspector->getNonEmptyString('host_url');
+        $path = $dataInspector->getNonEmptyString('path');
+        $hasCredentials = $dataInspector->getBoolean('has_credentials');
 
-        if (null === $label || null === $hostUrl || null === $path || null === $id || null === $hasCredentials) {
+        if (null === $id || null === $label || null === $hostUrl || null === $path || null === $hasCredentials) {
             return null;
         }
 
-        return new GitSource($label, $hostUrl, $path, $hasCredentials, $id);
+        return new GitSource($id, $label, $hostUrl, $path, $hasCredentials);
     }
 }

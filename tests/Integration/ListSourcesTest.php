@@ -53,7 +53,7 @@ class ListSourcesTest extends AbstractIntegrationTestCase
 
         $sourceLabels = [];
         foreach ($sources as $source) {
-            $sourceLabels[] = $source->label;
+            $sourceLabels[] = $source->getLabel();
         }
 
         self::assertSame($expectedLabels, $sourceLabels);

@@ -62,7 +62,7 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
         $fileSource = self::$client->createFileSource(self::$user1ApiToken->token, $label);
 
         self::assertInstanceOf(FileSource::class, $fileSource);
-        self::assertSame($label, $fileSource->label);
+        self::assertSame($label, $fileSource->getLabel());
         self::assertNotEmpty($fileSource->id);
     }
 }
