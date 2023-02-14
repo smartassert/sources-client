@@ -17,35 +17,15 @@ class InvalidRequestError extends AbstractError implements ErrorInterface
         parent::__construct($httpResponse, 'invalid_request', $payload);
     }
 
-    /**
-     * @return InvalidRequestField[]
-     */
-    public function getInvalidRequestFields(): array
+    public function getInvalidRequestField(): ?InvalidRequestField
     {
-        $fields = [];
-        foreach ($this->getPayload() as $name => $fieldData) {
-            if ('' !== $name && is_array($fieldData)) {
-                $fieldDataInspector = new ArrayInspector($fieldData);
-                $field = $this->createInvalidRequestField($name, $fieldDataInspector);
+        $inspector = new ArrayInspector($this->getPayload());
 
-                if ($field instanceof InvalidRequestField) {
-                    $fields[$name] = $field;
-                }
-            }
-        }
+        $name = $inspector->getNonEmptyString('name');
+        $value = $inspector->getString('value');
+        $message = $inspector->getNonEmptyString('message');
 
-        return $fields;
-    }
-
-    /**
-     * @param non-empty-string $name
-     */
-    private function createInvalidRequestField(string $name, ArrayInspector $data): ?InvalidRequestField
-    {
-        $value = $data->getString('value');
-        $message = $data->getNonEmptyString('message');
-
-        if (null === $value || null === $message) {
+        if (null === $name || null === $value || null === $message) {
             return null;
         }
 

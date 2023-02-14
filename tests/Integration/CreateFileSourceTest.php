@@ -13,15 +13,14 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
     /**
      * @dataProvider createFileSourceInvalidRequestDataProvider
      *
-     * @param non-empty-string      $label
-     * @param InvalidRequestField[] $expectedInvalidRequestFields
+     * @param non-empty-string $label
      */
-    public function testCreateFileSourceInvalidRequest(string $label, array $expectedInvalidRequestFields): void
+    public function testCreateFileSourceInvalidRequest(string $label, InvalidRequestField $expected): void
     {
         $invalidRequestError = self::$client->createFileSource(self::$user1ApiToken->token, $label);
 
         self::assertInstanceOf(InvalidRequestError::class, $invalidRequestError);
-        self::assertEquals($expectedInvalidRequestFields, $invalidRequestError->getInvalidRequestFields());
+        self::assertEquals($expected, $invalidRequestError->getInvalidRequestField());
     }
 
     /**
@@ -34,23 +33,19 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
         return [
             'label missing' => [
                 'label' => '  ',
-                'expectedInvalidRequestFields' => [
-                    'label' => new InvalidRequestField(
-                        'label',
-                        '',
-                        'This value is too short. It should have 1 character or more.'
-                    ),
-                ],
+                'expected' => new InvalidRequestField(
+                    'label',
+                    '',
+                    'This value is too short. It should have 1 character or more.'
+                ),
             ],
             'label too long' => [
                 'label' => $labelTooLong,
-                'expectedInvalidRequestFields' => [
-                    'label' => new InvalidRequestField(
-                        'label',
-                        $labelTooLong,
-                        'This value is too long. It should have 255 characters or less.',
-                    ),
-                ],
+                'expected' => new InvalidRequestField(
+                    'label',
+                    $labelTooLong,
+                    'This value is too long. It should have 255 characters or less.',
+                ),
             ],
         ];
     }
