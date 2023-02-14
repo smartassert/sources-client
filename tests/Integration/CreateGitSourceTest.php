@@ -55,7 +55,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
                 'expected' => new InvalidRequestField(
                     'label',
                     '',
-                    'This value is too short. It should have 1 character or more.'
+                    'This value should be between 1 and 255 characters long.'
                 ),
             ],
             'label too long' => [
@@ -65,7 +65,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
                 'expected' => new InvalidRequestField(
                     'label',
                     $labelTooLong,
-                    'This value is too long. It should have 255 characters or less.',
+                    'This value should be between 1 and 255 characters long.'
                 ),
             ],
             'host url missing' => [
@@ -75,7 +75,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
                 'expected' => new InvalidRequestField(
                     'host-url',
                     '',
-                    'This value is too short. It should have 1 character or more.'
+                    'This value should be between 1 and 255 characters long.'
                 ),
             ],
             'host url too long' => [
@@ -85,7 +85,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
                 'expected' => new InvalidRequestField(
                     'host-url',
                     $hostUrlTooLong,
-                    'This value is too long. It should have 255 characters or less.',
+                    'This value should be between 1 and 255 characters long.'
                 ),
             ],
             'path missing' => [
@@ -95,7 +95,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
                 'expected' => new InvalidRequestField(
                     'path',
                     '',
-                    'This value is too short. It should have 1 character or more.'
+                    'This value should be between 1 and 255 characters long.'
                 ),
             ],
             'path too long' => [
@@ -105,7 +105,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
                 'expected' => new InvalidRequestField(
                     'path',
                     $pathTooLong,
-                    'This value is too long. It should have 255 characters or less.',
+                    'This value should be between 1 and 255 characters long.'
                 ),
             ],
         ];
