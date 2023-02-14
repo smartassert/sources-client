@@ -13,16 +13,15 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
     /**
      * @dataProvider createGitSourceInvalidRequestDataProvider
      *
-     * @param non-empty-string      $label
-     * @param non-empty-string      $hostUrl
-     * @param non-empty-string      $path
-     * @param InvalidRequestField[] $expectedInvalidRequestFields
+     * @param non-empty-string $label
+     * @param non-empty-string $hostUrl
+     * @param non-empty-string $path
      */
     public function testCreateGitSourceInvalidRequest(
         string $label,
         string $hostUrl,
         string $path,
-        array $expectedInvalidRequestFields
+        InvalidRequestField $expected
     ): void {
         $invalidRequestError = self::$client->createGitSource(
             self::$user1ApiToken->token,
@@ -33,7 +32,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
         );
 
         self::assertInstanceOf(InvalidRequestError::class, $invalidRequestError);
-        self::assertEquals($expectedInvalidRequestFields, $invalidRequestError->getInvalidRequestFields());
+        self::assertEquals($expected, $invalidRequestError->getInvalidRequestField());
     }
 
     /**
@@ -53,73 +52,61 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
                 'label' => '  ',
                 'hostUrl' => $hostUrl,
                 'path' => $path,
-                'expectedInvalidRequestFields' => [
-                    'label' => new InvalidRequestField(
-                        'label',
-                        '',
-                        'This value is too short. It should have 1 character or more.'
-                    ),
-                ],
+                'expected' => new InvalidRequestField(
+                    'label',
+                    '',
+                    'This value is too short. It should have 1 character or more.'
+                ),
             ],
             'label too long' => [
                 'label' => $labelTooLong,
                 'hostUrl' => $hostUrl,
                 'path' => $path,
-                'expectedInvalidRequestFields' => [
-                    'label' => new InvalidRequestField(
-                        'label',
-                        $labelTooLong,
-                        'This value is too long. It should have 255 characters or less.',
-                    ),
-                ],
+                'expected' => new InvalidRequestField(
+                    'label',
+                    $labelTooLong,
+                    'This value is too long. It should have 255 characters or less.',
+                ),
             ],
             'host url missing' => [
                 'label' => $label,
                 'hostUrl' => '   ',
                 'path' => $path,
-                'expectedInvalidRequestFields' => [
-                    'host-url' => new InvalidRequestField(
-                        'host-url',
-                        '',
-                        'This value is too short. It should have 1 character or more.'
-                    ),
-                ],
+                'expected' => new InvalidRequestField(
+                    'host-url',
+                    '',
+                    'This value is too short. It should have 1 character or more.'
+                ),
             ],
             'host url too long' => [
                 'label' => $label,
                 'hostUrl' => $hostUrlTooLong,
                 'path' => $path,
-                'expectedInvalidRequestFields' => [
-                    'host-url' => new InvalidRequestField(
-                        'host-url',
-                        $hostUrlTooLong,
-                        'This value is too long. It should have 255 characters or less.',
-                    ),
-                ],
+                'expected' => new InvalidRequestField(
+                    'host-url',
+                    $hostUrlTooLong,
+                    'This value is too long. It should have 255 characters or less.',
+                ),
             ],
             'path missing' => [
                 'label' => $label,
                 'hostUrl' => $hostUrl,
                 'path' => '  ',
-                'expectedInvalidRequestFields' => [
-                    'path' => new InvalidRequestField(
-                        'path',
-                        '',
-                        'This value is too short. It should have 1 character or more.'
-                    ),
-                ],
+                'expected' => new InvalidRequestField(
+                    'path',
+                    '',
+                    'This value is too short. It should have 1 character or more.'
+                ),
             ],
             'path too long' => [
                 'label' => $label,
                 'hostUrl' => $hostUrl,
                 'path' => $pathTooLong,
-                'expectedInvalidRequestFields' => [
-                    'path' => new InvalidRequestField(
-                        'path',
-                        $pathTooLong,
-                        'This value is too long. It should have 255 characters or less.',
-                    ),
-                ],
+                'expected' => new InvalidRequestField(
+                    'path',
+                    $pathTooLong,
+                    'This value is too long. It should have 255 characters or less.',
+                ),
             ],
         ];
     }
