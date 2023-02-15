@@ -36,7 +36,7 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
                 'expected' => new InvalidRequestField(
                     'label',
                     '',
-                    'This value is too short. It should have 1 character or more.'
+                    'This value should be between 1 and 255 characters long.'
                 ),
             ],
             'label too long' => [
@@ -44,7 +44,7 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
                 'expected' => new InvalidRequestField(
                     'label',
                     $labelTooLong,
-                    'This value is too long. It should have 255 characters or less.',
+                    'This value should be between 1 and 255 characters long.',
                 ),
             ],
         ];
