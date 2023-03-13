@@ -15,6 +15,7 @@ abstract class AbstractSource implements SourceInterface
         private readonly string $id,
         private readonly string $userId,
         private readonly string $type,
+        private readonly string $label,
     ) {
     }
 
@@ -31,5 +32,10 @@ abstract class AbstractSource implements SourceInterface
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
     }
 }

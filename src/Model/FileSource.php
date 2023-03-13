@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Model;
 
-class FileSource extends AbstractOriginSource
+class FileSource extends AbstractSource
 {
     public function __construct(string $id, string $userId, string $label)
     {

@@ -19,7 +19,6 @@ use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\ErrorInterface;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\GitSource;
-use SmartAssert\SourcesClient\Model\OriginSourceInterface;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class Client
@@ -171,7 +170,7 @@ class Client
     }
 
     /**
-     * @return OriginSourceInterface[]
+     * @return SourceInterface[]
      *
      * @throws ClientExceptionInterface
      * @throws InvalidResponseContentException
@@ -195,7 +194,7 @@ class Client
             if (is_array($sourceData)) {
                 $source = $this->sourceFactory->create($sourceData);
 
-                if ($source instanceof OriginSourceInterface) {
+                if ($source instanceof SourceInterface) {
                     $sources[] = $source;
                 }
             }
