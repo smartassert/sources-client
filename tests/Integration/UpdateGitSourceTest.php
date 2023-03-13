@@ -9,9 +9,26 @@ use SmartAssert\SourcesClient\Model\InvalidRequestError;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateGitSourceDataProviderTrait;
 
-class CreateGitSourceTest extends AbstractIntegrationTestCase
+class UpdateGitSourceTest extends AbstractIntegrationTestCase
 {
     use CreateUpdateGitSourceDataProviderTrait;
+
+    private GitSource $gitSource;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $gitSource = self::$client->createGitSource(
+            self::$user1ApiToken->token,
+            md5((string) rand()),
+            'https://example.com/' . md5((string) rand()) . '.git',
+            md5((string) rand()),
+            null
+        );
+        \assert($gitSource instanceof GitSource);
+        $this->gitSource = $gitSource;
+    }
 
     /**
      * @dataProvider createUpdateGitSourceInvalidRequestDataProvider
@@ -20,14 +37,15 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
      * @param non-empty-string $hostUrl
      * @param non-empty-string $path
      */
-    public function testCreateGitSourceInvalidRequest(
+    public function testUpdateGitSourceInvalidRequest(
         string $label,
         string $hostUrl,
         string $path,
         InvalidRequestField $expected
     ): void {
-        $invalidRequestError = self::$client->createGitSource(
+        $invalidRequestError = self::$client->updateGitSource(
             self::$user1ApiToken->token,
+            $this->gitSource->getId(),
             $label,
             $hostUrl,
             $path,
@@ -46,10 +64,11 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
      * @param non-empty-string  $path
      * @param ?non-empty-string $credentials
      */
-    public function testCreateGitSourceSuccess(string $label, string $hostUrl, string $path, ?string $credentials): void
+    public function testUpdateGitSourceSuccess(string $label, string $hostUrl, string $path, ?string $credentials): void
     {
-        $gitSource = self::$client->createGitSource(
+        $gitSource = self::$client->updateGitSource(
             self::$user1ApiToken->token,
+            $this->gitSource->getId(),
             $label,
             $hostUrl,
             $path,
