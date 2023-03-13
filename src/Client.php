@@ -43,29 +43,22 @@ class Client
      */
     public function createFileSource(string $token, string $label): FileSource|ErrorInterface
     {
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('POST', $this->createUrl('/source')))
-                ->withAuthentication(new BearerAuthentication($token))
-                ->withPayload(new UrlEncodedPayload([
-                    'type' => 'file',
-                    'label' => $label,
-                ]))
-        );
+        return $this->makeFileSourceMutationRequest($token, $label, null);
+    }
 
-        if (400 === $response->getStatusCode()) {
-            return $this->createErrorModel($response);
-        }
-
-        if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
-        }
-
-        $source = $this->sourceFactory->createFileSource($response->getData());
-        if (null === $source) {
-            throw InvalidModelDataException::fromJsonResponse(FileSource::class, $response);
-        }
-
-        return $source;
+    /**
+     * @param non-empty-string $token
+     * @param non-empty-string $label
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     * @throws InvalidModelDataException
+     */
+    public function updateFileSource(string $token, string $sourceId, string $label): FileSource|ErrorInterface
+    {
+        return $this->makeFileSourceMutationRequest($token, $label, $sourceId);
     }
 
     /**
@@ -244,6 +237,54 @@ class Client
         $source = $this->sourceFactory->create($response->getData());
         if (null === $source) {
             throw InvalidModelDataException::fromJsonResponse(SourceInterface::class, $response);
+        }
+
+        return $source;
+    }
+
+    /**
+     * @param non-empty-string $token
+     * @param non-empty-string $label
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     * @throws InvalidModelDataException
+     */
+    private function makeFileSourceMutationRequest(
+        string $token,
+        string $label,
+        ?string $sourceId,
+    ): FileSource|ErrorInterface {
+        if (is_string($sourceId)) {
+            $method = 'PUT';
+            $url = $this->createUrl('/source/' . urlencode($sourceId));
+        } else {
+            $method = 'POST';
+            $url = $this->createUrl('/source');
+        }
+
+        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+            (new Request($method, $url))
+                ->withAuthentication(new BearerAuthentication($token))
+                ->withPayload(new UrlEncodedPayload([
+                    'type' => 'file',
+                    'label' => $label,
+                ]))
+        );
+
+        if (400 === $response->getStatusCode()) {
+            return $this->createErrorModel($response);
+        }
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        $source = $this->sourceFactory->createFileSource($response->getData());
+        if (null === $source) {
+            throw InvalidModelDataException::fromJsonResponse(FileSource::class, $response);
         }
 
         return $source;
