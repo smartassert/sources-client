@@ -81,37 +81,31 @@ class Client
         string $path,
         ?string $credentials,
     ): GitSource|ErrorInterface {
-        $payload = [
-            'type' => 'git',
-            'label' => $label,
-            'host-url' => $hostUrl,
-            'path' => $path,
-        ];
+        return $this->makeGitSourceMutationRequest($token, $label, $hostUrl, $path, $credentials, null);
+    }
 
-        if (is_string($credentials)) {
-            $payload['credentials'] = $credentials;
-        }
-
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('POST', $this->createUrl('/source')))
-                ->withAuthentication(new BearerAuthentication($token))
-                ->withPayload(new UrlEncodedPayload($payload))
-        );
-
-        if (400 === $response->getStatusCode()) {
-            return $this->createErrorModel($response);
-        }
-
-        if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
-        }
-
-        $source = $this->sourceFactory->createGitSource($response->getData());
-        if (null === $source) {
-            throw InvalidModelDataException::fromJsonResponse(GitSource::class, $response);
-        }
-
-        return $source;
+    /**
+     * @param non-empty-string  $label
+     * @param non-empty-string  $token
+     * @param non-empty-string  $hostUrl
+     * @param non-empty-string  $path
+     * @param ?non-empty-string $credentials
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     * @throws InvalidModelDataException
+     */
+    public function updateGitSource(
+        string $token,
+        string $sourceId,
+        string $label,
+        string $hostUrl,
+        string $path,
+        ?string $credentials,
+    ): GitSource|ErrorInterface {
+        return $this->makeGitSourceMutationRequest($token, $label, $hostUrl, $path, $credentials, $sourceId);
     }
 
     /**
@@ -285,6 +279,68 @@ class Client
         $source = $this->sourceFactory->createFileSource($response->getData());
         if (null === $source) {
             throw InvalidModelDataException::fromJsonResponse(FileSource::class, $response);
+        }
+
+        return $source;
+    }
+
+    /**
+     * @param non-empty-string  $label
+     * @param non-empty-string  $token
+     * @param non-empty-string  $hostUrl
+     * @param non-empty-string  $path
+     * @param ?non-empty-string $credentials
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     * @throws InvalidModelDataException
+     */
+    private function makeGitSourceMutationRequest(
+        string $token,
+        string $label,
+        string $hostUrl,
+        string $path,
+        ?string $credentials,
+        ?string $sourceId,
+    ): GitSource|ErrorInterface {
+        if (is_string($sourceId)) {
+            $method = 'PUT';
+            $url = $this->createUrl('/source/' . urlencode($sourceId));
+        } else {
+            $method = 'POST';
+            $url = $this->createUrl('/source');
+        }
+
+        $payload = [
+            'type' => 'git',
+            'label' => $label,
+            'host-url' => $hostUrl,
+            'path' => $path,
+        ];
+
+        if (is_string($credentials)) {
+            $payload['credentials'] = $credentials;
+        }
+
+        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+            (new Request($method, $url))
+                ->withAuthentication(new BearerAuthentication($token))
+                ->withPayload(new UrlEncodedPayload($payload))
+        );
+
+        if (400 === $response->getStatusCode()) {
+            return $this->createErrorModel($response);
+        }
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        $source = $this->sourceFactory->createGitSource($response->getData());
+        if (null === $source) {
+            throw InvalidModelDataException::fromJsonResponse(GitSource::class, $response);
         }
 
         return $source;
