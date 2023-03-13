@@ -250,6 +250,43 @@ class Client
     }
 
     /**
+     * @param non-empty-string $token
+     * @param non-empty-string $label
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     * @throws InvalidModelDataException
+     */
+    public function updateFileSource(string $token, string $sourceId, string $label): FileSource|ErrorInterface
+    {
+        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+            (new Request('PUT', $this->createUrl('/source/' . urlencode($sourceId))))
+                ->withAuthentication(new BearerAuthentication($token))
+                ->withPayload(new UrlEncodedPayload([
+                    'type' => 'file',
+                    'label' => $label,
+                ]))
+        );
+
+        if (400 === $response->getStatusCode()) {
+            return $this->createErrorModel($response);
+        }
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        $source = $this->sourceFactory->createFileSource($response->getData());
+        if (null === $source) {
+            throw InvalidModelDataException::fromJsonResponse(FileSource::class, $response);
+        }
+
+        return $source;
+    }
+
+    /**
      * @param non-empty-string $path
      *
      * @return non-empty-string
