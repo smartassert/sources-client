@@ -57,7 +57,7 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
     }
 
     /**
-     * @dataProvider updateGitSourceSuccessDataProvider
+     * @dataProvider createUpdateGitSourceSuccessDataProvider
      *
      * @param non-empty-string  $label
      * @param non-empty-string  $hostUrl
@@ -81,26 +81,5 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
         self::assertSame($path, $gitSource->getPath());
         self::assertSame(is_string($credentials), $gitSource->hasCredentials());
         self::assertNotEmpty($gitSource->getId());
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function updateGitSourceSuccessDataProvider(): array
-    {
-        return [
-            'without credentials' => [
-                'label' => md5((string) rand()),
-                'hostUrl' => md5((string) rand()),
-                'path' => md5((string) rand()),
-                'credentials' => null,
-            ],
-            'with credentials' => [
-                'label' => md5((string) rand()),
-                'hostUrl' => md5((string) rand()),
-                'path' => md5((string) rand()),
-                'credentials' => md5((string) rand()),
-            ],
-        ];
     }
 }

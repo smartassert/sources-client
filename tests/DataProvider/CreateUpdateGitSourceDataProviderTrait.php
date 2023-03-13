@@ -83,4 +83,25 @@ trait CreateUpdateGitSourceDataProviderTrait
             ],
         ];
     }
+
+    /**
+     * @return array<mixed>
+     */
+    public function createUpdateGitSourceSuccessDataProvider(): array
+    {
+        return [
+            'without credentials' => [
+                'label' => md5((string) rand()),
+                'hostUrl' => md5((string) rand()),
+                'path' => md5((string) rand()),
+                'credentials' => null,
+            ],
+            'with credentials' => [
+                'label' => md5((string) rand()),
+                'hostUrl' => md5((string) rand()),
+                'path' => md5((string) rand()),
+                'credentials' => md5((string) rand()),
+            ],
+        ];
+    }
 }
