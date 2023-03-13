@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Integration;
 
 use SmartAssert\SourcesClient\Model\ErrorInterface;
-use SmartAssert\SourcesClient\Model\FileSource;
-use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class GetSourceTest extends AbstractIntegrationTestCase
@@ -38,7 +36,7 @@ class GetSourceTest extends AbstractIntegrationTestCase
     {
         return [
             'git source without credentials' => [
-                'creator' => function (): GitSource {
+                'creator' => function () {
                     $source = self::$client->createGitSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
@@ -55,7 +53,7 @@ class GetSourceTest extends AbstractIntegrationTestCase
                 },
             ],
             'git source with credentials' => [
-                'creator' => function (): GitSource {
+                'creator' => function () {
                     $source = self::$client->createGitSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
@@ -72,7 +70,7 @@ class GetSourceTest extends AbstractIntegrationTestCase
                 },
             ],
             'file source' => [
-                'creator' => function (): FileSource {
+                'creator' => function () {
                     $source = self::$client->createFileSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
