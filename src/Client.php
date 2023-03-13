@@ -45,9 +45,10 @@ class Client
     public function createFileSource(string $token, string $label): FileSource|ErrorInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('POST', $this->createUrl('/file')))
+            (new Request('POST', $this->createUrl('/source')))
                 ->withAuthentication(new BearerAuthentication($token))
                 ->withPayload(new UrlEncodedPayload([
+                    'type' => 'file',
                     'label' => $label,
                 ]))
         );
@@ -89,6 +90,7 @@ class Client
         ?string $credentials,
     ): GitSource|ErrorInterface {
         $payload = [
+            'type' => 'git',
             'label' => $label,
             'host-url' => $hostUrl,
             'path' => $path,
@@ -99,7 +101,7 @@ class Client
         }
 
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('POST', $this->createUrl('/git')))
+            (new Request('POST', $this->createUrl('/source')))
                 ->withAuthentication(new BearerAuthentication($token))
                 ->withPayload(new UrlEncodedPayload($payload))
         );
@@ -134,7 +136,7 @@ class Client
     public function addFile(string $token, string $fileSourceId, string $filename, string $content): ?ErrorInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('POST', $this->createUrl('/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
+            (new Request('POST', $this->createUrl('/source/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
                 ->withAuthentication(new BearerAuthentication($token))
                 ->withPayload(new Payload('text/x-yaml', $content))
         );
@@ -157,7 +159,7 @@ class Client
     public function readFile(string $token, string $fileSourceId, string $filename): string
     {
         $response = $this->serviceClient->sendRequest(
-            (new Request('GET', $this->createUrl('/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
+            (new Request('GET', $this->createUrl('/source/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
                 ->withAuthentication(new BearerAuthentication($token))
         );
 
@@ -179,7 +181,7 @@ class Client
     public function listSources(string $token): array
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('GET', $this->createUrl('/list')))
+            (new Request('GET', $this->createUrl('/sources')))
                 ->withAuthentication(new BearerAuthentication($token))
         );
 
@@ -209,7 +211,11 @@ class Client
     public function removeFile(string $token, string $fileSourceId, string $filename): void
     {
         $response = $this->serviceClient->sendRequest(
-            (new Request('DELETE', $this->createUrl('/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
+            (new Request(
+                'DELETE',
+                $this->createUrl('/source/' . urlencode($fileSourceId) . '/' . urlencode($filename))
+            )
+            )
                 ->withAuthentication(new BearerAuthentication($token))
         );
 
@@ -228,7 +234,7 @@ class Client
     public function getSource(string $token, string $sourceId): SourceInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('GET', $this->createUrl('/' . urlencode($sourceId))))
+            (new Request('GET', $this->createUrl('/source/' . urlencode($sourceId))))
                 ->withAuthentication(new BearerAuthentication($token))
         );
 

@@ -16,7 +16,6 @@ class DataRepository
     public function removeAllData(): void
     {
         $tableNames = [
-            'run_source',
             'file_source',
             'git_source',
             'source',
