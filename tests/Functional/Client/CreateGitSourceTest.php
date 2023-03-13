@@ -6,7 +6,7 @@ namespace SmartAssert\SourcesClient\Tests\Functional\Client;
 
 use GuzzleHttp\Psr7\Response;
 use SmartAssert\SourcesClient\Model\ErrorInterface;
-use SmartAssert\SourcesClient\Model\GitSource;
+use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class CreateGitSourceTest extends AbstractClientModelCreationTestCase
 {
@@ -22,6 +22,7 @@ class CreateGitSourceTest extends AbstractClientModelCreationTestCase
             200,
             ['content-type' => 'application/json'],
             (string) json_encode([
+                'type' => 'git',
                 'id' => md5((string) rand()),
                 'user_id' => md5((string) rand()),
                 'label' => $label,
@@ -60,6 +61,6 @@ class CreateGitSourceTest extends AbstractClientModelCreationTestCase
 
     protected function getExpectedModelClass(): string
     {
-        return GitSource::class;
+        return SourceInterface::class;
     }
 }

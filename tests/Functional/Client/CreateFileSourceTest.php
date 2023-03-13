@@ -6,7 +6,7 @@ namespace SmartAssert\SourcesClient\Tests\Functional\Client;
 
 use GuzzleHttp\Psr7\Response;
 use SmartAssert\SourcesClient\Model\ErrorInterface;
-use SmartAssert\SourcesClient\Model\FileSource;
+use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class CreateFileSourceTest extends AbstractClientModelCreationTestCase
 {
@@ -56,6 +56,6 @@ class CreateFileSourceTest extends AbstractClientModelCreationTestCase
 
     protected function getExpectedModelClass(): string
     {
-        return FileSource::class;
+        return SourceInterface::class;
     }
 }

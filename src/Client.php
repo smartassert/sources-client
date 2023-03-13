@@ -17,8 +17,6 @@ use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\ErrorInterface;
-use SmartAssert\SourcesClient\Model\FileSource;
-use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class Client
@@ -41,13 +39,14 @@ class Client
      * @throws NonSuccessResponseException
      * @throws InvalidModelDataException
      */
-    public function createFileSource(string $token, string $label): FileSource|ErrorInterface
+    public function createFileSource(string $token, string $label): SourceInterface|ErrorInterface
     {
         return $this->makeFileSourceMutationRequest($token, $label, null);
     }
 
     /**
      * @param non-empty-string $token
+     * @param non-empty-string $sourceId
      * @param non-empty-string $label
      *
      * @throws ClientExceptionInterface
@@ -56,7 +55,7 @@ class Client
      * @throws NonSuccessResponseException
      * @throws InvalidModelDataException
      */
-    public function updateFileSource(string $token, string $sourceId, string $label): FileSource|ErrorInterface
+    public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface|ErrorInterface
     {
         return $this->makeFileSourceMutationRequest($token, $label, $sourceId);
     }
@@ -80,13 +79,14 @@ class Client
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): GitSource|ErrorInterface {
+    ): SourceInterface|ErrorInterface {
         return $this->makeGitSourceMutationRequest($token, $label, $hostUrl, $path, $credentials, null);
     }
 
     /**
      * @param non-empty-string  $label
      * @param non-empty-string  $token
+     * @param non-empty-string  $sourceId
      * @param non-empty-string  $hostUrl
      * @param non-empty-string  $path
      * @param ?non-empty-string $credentials
@@ -104,7 +104,7 @@ class Client
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): GitSource|ErrorInterface {
+    ): SourceInterface|ErrorInterface {
         return $this->makeGitSourceMutationRequest($token, $label, $hostUrl, $path, $credentials, $sourceId);
     }
 
@@ -237,8 +237,9 @@ class Client
     }
 
     /**
-     * @param non-empty-string $token
-     * @param non-empty-string $label
+     * @param non-empty-string      $token
+     * @param non-empty-string      $label
+     * @param null|non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
      * @throws InvalidResponseContentException
@@ -250,46 +251,17 @@ class Client
         string $token,
         string $label,
         ?string $sourceId,
-    ): FileSource|ErrorInterface {
-        if (is_string($sourceId)) {
-            $method = 'PUT';
-            $url = $this->createUrl('/source/' . urlencode($sourceId));
-        } else {
-            $method = 'POST';
-            $url = $this->createUrl('/source');
-        }
-
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request($method, $url))
-                ->withAuthentication(new BearerAuthentication($token))
-                ->withPayload(new UrlEncodedPayload([
-                    'type' => 'file',
-                    'label' => $label,
-                ]))
-        );
-
-        if (400 === $response->getStatusCode()) {
-            return $this->createErrorModel($response);
-        }
-
-        if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
-        }
-
-        $source = $this->sourceFactory->createFileSource($response->getData());
-        if (null === $source) {
-            throw InvalidModelDataException::fromJsonResponse(FileSource::class, $response);
-        }
-
-        return $source;
+    ): SourceInterface|ErrorInterface {
+        return $this->makeSourceMutationRequest($token, ['type' => 'file', 'label' => $label], $sourceId);
     }
 
     /**
-     * @param non-empty-string  $label
-     * @param non-empty-string  $token
-     * @param non-empty-string  $hostUrl
-     * @param non-empty-string  $path
-     * @param ?non-empty-string $credentials
+     * @param non-empty-string      $label
+     * @param non-empty-string      $token
+     * @param non-empty-string      $hostUrl
+     * @param non-empty-string      $path
+     * @param null|non-empty-string $credentials
+     * @param null|non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
      * @throws InvalidResponseContentException
@@ -304,15 +276,7 @@ class Client
         string $path,
         ?string $credentials,
         ?string $sourceId,
-    ): GitSource|ErrorInterface {
-        if (is_string($sourceId)) {
-            $method = 'PUT';
-            $url = $this->createUrl('/source/' . urlencode($sourceId));
-        } else {
-            $method = 'POST';
-            $url = $this->createUrl('/source');
-        }
-
+    ): SourceInterface|ErrorInterface {
         $payload = [
             'type' => 'git',
             'label' => $label,
@@ -322,6 +286,33 @@ class Client
 
         if (is_string($credentials)) {
             $payload['credentials'] = $credentials;
+        }
+
+        return $this->makeSourceMutationRequest($token, $payload, $sourceId);
+    }
+
+    /**
+     * @param non-empty-string      $token
+     * @param null|non-empty-string $sourceId
+     * @param array<mixed>          $payload
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     * @throws InvalidModelDataException
+     */
+    private function makeSourceMutationRequest(
+        string $token,
+        array $payload,
+        ?string $sourceId,
+    ): SourceInterface|ErrorInterface {
+        if (is_string($sourceId)) {
+            $method = 'PUT';
+            $url = $this->createUrl('/source/' . urlencode($sourceId));
+        } else {
+            $method = 'POST';
+            $url = $this->createUrl('/source');
         }
 
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
@@ -338,9 +329,9 @@ class Client
             throw new NonSuccessResponseException($response->getHttpResponse());
         }
 
-        $source = $this->sourceFactory->createGitSource($response->getData());
+        $source = $this->sourceFactory->create($response->getData());
         if (null === $source) {
-            throw InvalidModelDataException::fromJsonResponse(GitSource::class, $response);
+            throw InvalidModelDataException::fromJsonResponse(SourceInterface::class, $response);
         }
 
         return $source;
