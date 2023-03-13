@@ -20,4 +20,6 @@ interface SourceInterface
      * @return non-empty-string
      */
     public function getType(): string;
+
+    public function getLabel(): string;
 }

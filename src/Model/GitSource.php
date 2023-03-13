@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Model;
 
-class GitSource extends AbstractOriginSource
+class GitSource extends AbstractSource
 {
     /**
      * @param non-empty-string $id
