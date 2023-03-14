@@ -6,7 +6,6 @@ namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ArrayInspector\ArrayInspector;
-use SmartAssert\ServiceClient\Authentication\BearerAuthentication;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
@@ -14,7 +13,6 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\ErrorInterface;
 use SmartAssert\SourcesClient\Model\SourceInterface;
@@ -22,7 +20,7 @@ use SmartAssert\SourcesClient\Model\SourceInterface;
 class Client
 {
     public function __construct(
-        private readonly UrlFactory $urlFactory,
+        private readonly RequestFactory $requestFactory,
         private readonly ServiceClient $serviceClient,
         private readonly ErrorFactory $errorFactory,
         private readonly SourceFactory $sourceFactory,
@@ -122,8 +120,7 @@ class Client
     public function addFile(string $token, string $fileSourceId, string $filename, string $content): ?ErrorInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('POST', $this->urlFactory->createFileUrl($fileSourceId, $filename)))
-                ->withAuthentication(new BearerAuthentication($token))
+            $this->requestFactory->createFileRequest('POST', $token, $fileSourceId, $filename)
                 ->withPayload(new Payload('text/x-yaml', $content))
         );
 
@@ -145,8 +142,7 @@ class Client
     public function readFile(string $token, string $fileSourceId, string $filename): string
     {
         $response = $this->serviceClient->sendRequest(
-            (new Request('GET', $this->urlFactory->createFileUrl($fileSourceId, $filename)))
-                ->withAuthentication(new BearerAuthentication($token))
+            $this->requestFactory->createFileRequest('GET', $token, $fileSourceId, $filename)
         );
 
         if (!$response->isSuccessful()) {
@@ -167,8 +163,7 @@ class Client
     public function listSources(string $token): array
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('GET', $this->urlFactory->createSourcesUrl()))
-                ->withAuthentication(new BearerAuthentication($token))
+            $this->requestFactory->createSourcesRequest($token)
         );
 
         if (!$response->isSuccessful()) {
@@ -197,8 +192,7 @@ class Client
     public function removeFile(string $token, string $fileSourceId, string $filename): void
     {
         $response = $this->serviceClient->sendRequest(
-            (new Request('DELETE', $this->urlFactory->createFileUrl($fileSourceId, $filename)))
-                ->withAuthentication(new BearerAuthentication($token))
+            $this->requestFactory->createFileRequest('DELETE', $token, $fileSourceId, $filename)
         );
 
         if (!$response->isSuccessful()) {
@@ -216,8 +210,7 @@ class Client
     public function getSource(string $token, string $sourceId): SourceInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('GET', $this->urlFactory->createSourceUrl($sourceId)))
-                ->withAuthentication(new BearerAuthentication($token))
+            $this->requestFactory->createSourceRequest('GET', $token, $sourceId)
         );
 
         if (!$response->isSuccessful()) {
@@ -242,8 +235,7 @@ class Client
     public function deleteSource(string $token, string $sourceId): SourceInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('DELETE', $this->urlFactory->createSourceUrl($sourceId)))
-                ->withAuthentication(new BearerAuthentication($token))
+            $this->requestFactory->createSourceRequest('DELETE', $token, $sourceId)
         );
 
         if (!$response->isSuccessful()) {
@@ -329,17 +321,8 @@ class Client
         array $payload,
         ?string $sourceId,
     ): SourceInterface|ErrorInterface {
-        $url = $this->urlFactory->createSourceUrl($sourceId);
-
-        if (is_string($sourceId)) {
-            $method = 'PUT';
-        } else {
-            $method = 'POST';
-        }
-
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request($method, $url))
-                ->withAuthentication(new BearerAuthentication($token))
+            $this->requestFactory->createSourceRequest(is_string($sourceId) ? 'PUT' : 'POST', $token, $sourceId)
                 ->withPayload(new UrlEncodedPayload($payload))
         );
 

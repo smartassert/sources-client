@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ErrorFactory;
+use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\SourcesClient\UrlFactory;
@@ -32,7 +33,9 @@ abstract class AbstractIntegrationTestCase extends TestCase
     public static function setUpBeforeClass(): void
     {
         self::$client = new Client(
-            UrlFactory::createUrlFactory('http://localhost:9081'),
+            new RequestFactory(
+                UrlFactory::createUrlFactory('http://localhost:9081'),
+            ),
             self::createServiceClient(),
             new ErrorFactory(),
             new SourceFactory(),
