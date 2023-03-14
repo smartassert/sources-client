@@ -237,6 +237,32 @@ class Client
     }
 
     /**
+     * @throws ClientExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     */
+    public function deleteSource(string $token, string $sourceId): SourceInterface
+    {
+        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+            (new Request('DELETE', $this->createUrl('/source/' . urlencode($sourceId))))
+                ->withAuthentication(new BearerAuthentication($token))
+        );
+
+        if (!$response->isSuccessful()) {
+            throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        $source = $this->sourceFactory->create($response->getData());
+        if (null === $source) {
+            throw InvalidModelDataException::fromJsonResponse(SourceInterface::class, $response);
+        }
+
+        return $source;
+    }
+
+    /**
      * @param non-empty-string      $token
      * @param non-empty-string      $label
      * @param null|non-empty-string $sourceId

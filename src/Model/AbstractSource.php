@@ -10,12 +10,14 @@ abstract class AbstractSource implements SourceInterface
      * @param non-empty-string $id
      * @param non-empty-string $userId
      * @param non-empty-string $type
+     * @param null|int<0, max> $deletedAt
      */
     public function __construct(
         private readonly string $id,
         private readonly string $userId,
         private readonly string $type,
         private readonly string $label,
+        private readonly ?int $deletedAt,
     ) {
     }
 
@@ -37,5 +39,10 @@ abstract class AbstractSource implements SourceInterface
     public function getLabel(): string
     {
         return $this->label;
+    }
+
+    public function getDeletedAt(): ?int
+    {
+        return $this->deletedAt;
     }
 }

@@ -44,7 +44,12 @@ class SourceFactory
             return null;
         }
 
-        return new FileSource($id, $userId, $label);
+        $deletedAt = $dataInspector->getInteger('deleted_at');
+        if ($deletedAt < 0) {
+            $deletedAt = null;
+        }
+
+        return new FileSource($id, $userId, $label, $deletedAt);
     }
 
     /**
@@ -68,6 +73,11 @@ class SourceFactory
             return null;
         }
 
-        return new GitSource($id, $userId, $label, $hostUrl, $path, $hasCredentials);
+        $deletedAt = $dataInspector->getInteger('deleted_at');
+        if ($deletedAt < 0) {
+            $deletedAt = null;
+        }
+
+        return new GitSource($id, $userId, $label, $hostUrl, $path, $hasCredentials, $deletedAt);
     }
 }
