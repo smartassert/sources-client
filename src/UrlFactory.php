@@ -37,10 +37,25 @@ class UrlFactory
         return new UrlFactory($baseUrl, $urlGenerator);
     }
 
+    public function createFileUrl(string $fileSourceId, string $filename): string
+    {
+        return $this->create('file', ['sourceId' => $fileSourceId, 'filename' => $filename]);
+    }
+
+    public function createSourceUrl(?string $sourceId): string
+    {
+        return $this->create('source', ['sourceId' => $sourceId]);
+    }
+
+    public function createSourcesUrl(): string
+    {
+        return $this->create('sources');
+    }
+
     /**
      * @param array<string, null|int|string> $parameters
      */
-    public function create(string $routeName, array $parameters = []): string
+    private function create(string $routeName, array $parameters = []): string
     {
         return $this->baseUrl . $this->urlGenerator->generate($routeName, $parameters);
     }
