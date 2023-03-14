@@ -6,8 +6,8 @@ namespace SmartAssert\SourcesClient\Model;
 
 class FileSource extends AbstractSource
 {
-    public function __construct(string $id, string $userId, string $label)
+    public function __construct(string $id, string $userId, string $label, ?int $deletedAt)
     {
-        parent::__construct($id, $userId, 'file', $label);
+        parent::__construct($id, $userId, 'file', $label, $deletedAt);
     }
 }

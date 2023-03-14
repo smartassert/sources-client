@@ -22,4 +22,9 @@ interface SourceInterface
     public function getType(): string;
 
     public function getLabel(): string;
+
+    /**
+     * @return null|int<0, max>
+     */
+    public function getDeletedAt(): ?int;
 }

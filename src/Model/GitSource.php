@@ -12,6 +12,7 @@ class GitSource extends AbstractSource
      * @param non-empty-string $label
      * @param non-empty-string $hostUrl
      * @param non-empty-string $path
+     * @param null|int<0, max> $deletedAt
      */
     public function __construct(
         string $id,
@@ -20,8 +21,9 @@ class GitSource extends AbstractSource
         private readonly string $hostUrl,
         private readonly string $path,
         private readonly bool $hasCredentials,
+        ?int $deletedAt,
     ) {
-        parent::__construct($id, $userId, 'git', $label);
+        parent::__construct($id, $userId, 'git', $label, $deletedAt);
     }
 
     /**
