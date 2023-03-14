@@ -22,15 +22,11 @@ class UrlFactory
 
     public static function createUrlFactory(string $baseUrl): self
     {
-        $fileRoute = new Route('/source/{sourceId}/{filename}');
-        $sourcesRoute = new Route('/sources');
-        $sourceRoute = new Route('/source/{sourceId?}');
-
         $routeCollection = new RouteCollection();
 
-        $routeCollection->add('file', $fileRoute);
-        $routeCollection->add('sources', $sourcesRoute);
-        $routeCollection->add('source', $sourceRoute);
+        $routeCollection->add('file', new Route('/source/{sourceId}/{filename}'));
+        $routeCollection->add('sources', new Route('/sources'));
+        $routeCollection->add('source', new Route('/source/{sourceId?}'));
 
         $urlGenerator = new UrlGenerator($routeCollection, new RequestContext());
 
