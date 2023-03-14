@@ -22,7 +22,7 @@ use SmartAssert\SourcesClient\Model\SourceInterface;
 class Client
 {
     public function __construct(
-        private readonly string $baseUrl,
+        private readonly UrlFactory $urlFactory,
         private readonly ServiceClient $serviceClient,
         private readonly ErrorFactory $errorFactory,
         private readonly SourceFactory $sourceFactory,
@@ -122,7 +122,10 @@ class Client
     public function addFile(string $token, string $fileSourceId, string $filename, string $content): ?ErrorInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('POST', $this->createUrl('/source/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
+            (new Request(
+                'POST',
+                $this->urlFactory->create('file', ['sourceId' => $fileSourceId, 'filename' => $filename])
+            ))
                 ->withAuthentication(new BearerAuthentication($token))
                 ->withPayload(new Payload('text/x-yaml', $content))
         );
@@ -145,7 +148,10 @@ class Client
     public function readFile(string $token, string $fileSourceId, string $filename): string
     {
         $response = $this->serviceClient->sendRequest(
-            (new Request('GET', $this->createUrl('/source/' . urlencode($fileSourceId) . '/' . urlencode($filename))))
+            (new Request(
+                'GET',
+                $this->urlFactory->create('file', ['sourceId' => $fileSourceId, 'filename' => $filename])
+            ))
                 ->withAuthentication(new BearerAuthentication($token))
         );
 
@@ -167,7 +173,7 @@ class Client
     public function listSources(string $token): array
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('GET', $this->createUrl('/sources')))
+            (new Request('GET', $this->urlFactory->create('sources')))
                 ->withAuthentication(new BearerAuthentication($token))
         );
 
@@ -199,7 +205,7 @@ class Client
         $response = $this->serviceClient->sendRequest(
             (new Request(
                 'DELETE',
-                $this->createUrl('/source/' . urlencode($fileSourceId) . '/' . urlencode($filename))
+                $this->urlFactory->create('file', ['sourceId' => $fileSourceId, 'filename' => $filename])
             )
             )
                 ->withAuthentication(new BearerAuthentication($token))
@@ -220,7 +226,7 @@ class Client
     public function getSource(string $token, string $sourceId): SourceInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('GET', $this->createUrl('/source/' . urlencode($sourceId))))
+            (new Request('GET', $this->urlFactory->create('source', ['sourceId' => $sourceId])))
                 ->withAuthentication(new BearerAuthentication($token))
         );
 
@@ -246,7 +252,7 @@ class Client
     public function deleteSource(string $token, string $sourceId): SourceInterface
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            (new Request('DELETE', $this->createUrl('/source/' . urlencode($sourceId))))
+            (new Request('DELETE', $this->urlFactory->create('source', ['sourceId' => $sourceId])))
                 ->withAuthentication(new BearerAuthentication($token))
         );
 
@@ -333,12 +339,12 @@ class Client
         array $payload,
         ?string $sourceId,
     ): SourceInterface|ErrorInterface {
+        $url = $this->urlFactory->create('source', ['sourceId' => $sourceId]);
+
         if (is_string($sourceId)) {
             $method = 'PUT';
-            $url = $this->createUrl('/source/' . urlencode($sourceId));
         } else {
             $method = 'POST';
-            $url = $this->createUrl('/source');
         }
 
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
@@ -361,16 +367,6 @@ class Client
         }
 
         return $source;
-    }
-
-    /**
-     * @param non-empty-string $path
-     *
-     * @return non-empty-string
-     */
-    private function createUrl(string $path): string
-    {
-        return rtrim($this->baseUrl, '/') . $path;
     }
 
     /**

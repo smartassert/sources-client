@@ -12,6 +12,7 @@ use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ErrorFactory;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
+use SmartAssert\SourcesClient\UrlFactory;
 use SmartAssert\UsersClient\Client as UsersClient;
 use SmartAssert\UsersClient\Model\ApiKey;
 use SmartAssert\UsersClient\Model\Token;
@@ -31,7 +32,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
     public static function setUpBeforeClass(): void
     {
         self::$client = new Client(
-            'http://localhost:9081',
+            UrlFactory::createUrlFactory('http://localhost:9081'),
             self::createServiceClient(),
             new ErrorFactory(),
             new SourceFactory(),
