@@ -7,7 +7,6 @@ namespace SmartAssert\SourcesClient\Tests\Functional\Client\SourceClient;
 use GuzzleHttp\Psr7\Response;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\SourcesClient\Exception\ResponseException;
-use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
@@ -79,10 +78,5 @@ class CreateGitSourceTest extends AbstractSourceClientTest
         return function () {
             $this->sourceClient->createGitSource('api token', 'git source label', 'host url', 'path', null);
         };
-    }
-
-    protected function getExpectedModelClass(): string
-    {
-        return SourceInterface::class;
     }
 }

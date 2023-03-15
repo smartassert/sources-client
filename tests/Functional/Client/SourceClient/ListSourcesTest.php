@@ -8,32 +8,22 @@ use GuzzleHttp\Psr7\Response;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class GetSourceTest extends AbstractSourceClientTest
+class ListSourcesTest extends AbstractSourceClientTest
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
 
-    public function testGetSourceRequestProperties(): void
+    public function testListSourcesRequestProperties(): void
     {
-        $sourceId = md5((string) rand());
+        $apiKey = 'api key value';
 
         $this->mockHandler->append(new Response(
             200,
             ['content-type' => 'application/json'],
-            (string) json_encode([
-                'id' => $sourceId,
-                'type' => 'git',
-                'user_id' => md5((string) rand()),
-                'label' => 'source label',
-                'host_url' => 'https://example.com/repo.git',
-                'path' => '/',
-                'has_credentials' => false,
-            ])
+            (string) json_encode([])
         ));
 
-        $apiKey = 'api key value';
-
-        $this->sourceClient->get($apiKey, $sourceId);
+        $this->sourceClient->list($apiKey);
 
         $request = $this->getLastRequest();
         self::assertSame('GET', $request->getMethod());
@@ -51,7 +41,7 @@ class GetSourceTest extends AbstractSourceClientTest
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->sourceClient->get('api token', 'source id');
+            $this->sourceClient->list('api token');
         };
     }
 }
