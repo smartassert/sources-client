@@ -23,20 +23,6 @@ class Client
     }
 
     /**
-     * @param non-empty-string $token
-     * @param non-empty-string $sourceId
-     * @param non-empty-string $label
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     */
-    public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
-    {
-        return $this->sourceHandler->updateFileSource($token, $sourceId, $label);
-    }
-
-    /**
      * @param non-empty-string  $label
      * @param non-empty-string  $token
      * @param non-empty-string  $hostUrl

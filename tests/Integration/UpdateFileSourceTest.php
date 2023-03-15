@@ -34,7 +34,11 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
     public function testUpdateFileSourceInvalidRequest(string $label, InvalidRequestField $expected): void
     {
         try {
-            self::$client->updateFileSource(self::$user1ApiToken->token, $this->fileSource->getId(), $label);
+            self::$client->sourceHandler->updateFileSource(
+                self::$user1ApiToken->token,
+                $this->fileSource->getId(),
+                $label
+            );
         } catch (\Throwable $e) {
             self::assertInstanceOf(InvalidRequestException::class, $e);
             self::assertEquals($expected, $e->getInvalidRequestField());
@@ -45,7 +49,11 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
     {
         $label = md5((string) rand());
 
-        $fileSource = self::$client->updateFileSource(self::$user1ApiToken->token, $this->fileSource->getId(), $label);
+        $fileSource = self::$client->sourceHandler->updateFileSource(
+            self::$user1ApiToken->token,
+            $this->fileSource->getId(),
+            $label
+        );
 
         self::assertInstanceOf(FileSource::class, $fileSource);
         self::assertSame($label, $fileSource->getLabel());
