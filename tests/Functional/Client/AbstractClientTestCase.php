@@ -17,7 +17,6 @@ use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ExceptionFactory;
-use SmartAssert\SourcesClient\FileClient;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SourceClient;
 use SmartAssert\SourcesClient\SourceFactory;
@@ -60,7 +59,6 @@ abstract class AbstractClientTestCase extends TestCase
         $sourceFactory = new SourceFactory();
 
         $this->client = new Client(
-            new FileClient($this->requestFactory, $this->serviceClient, $this->exceptionFactory),
             new SourceClient($this->requestFactory, $this->serviceClient, $sourceFactory, $this->exceptionFactory),
         );
     }

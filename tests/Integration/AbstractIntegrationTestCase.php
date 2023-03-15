@@ -46,7 +46,6 @@ abstract class AbstractIntegrationTestCase extends TestCase
         self::$fileClient = new FileClient(self::$requestFactory, self::$serviceClient, self::$exceptionFactory);
 
         self::$client = new Client(
-            self::$fileClient,
             new SourceClient(self::$requestFactory, self::$serviceClient, $sourceFactory, self::$exceptionFactory),
         );
         self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
