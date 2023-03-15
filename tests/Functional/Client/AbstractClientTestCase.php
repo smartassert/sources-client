@@ -16,7 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Client;
-use SmartAssert\SourcesClient\ErrorFactory;
+use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResponseDataProviderTrait;
@@ -57,8 +57,8 @@ abstract class AbstractClientTestCase extends TestCase
                 $httpFactory,
                 new HttpClient(['handler' => $handlerStack]),
             ),
-            new ErrorFactory(),
             new SourceFactory(),
+            new ExceptionFactory(),
         );
     }
 

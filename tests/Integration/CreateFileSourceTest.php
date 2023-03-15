@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Tests\Integration;
 
+use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Model\FileSource;
-use SmartAssert\SourcesClient\Model\InvalidRequestError;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateFileSourceDataProviderTrait;
 
@@ -20,10 +20,12 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
      */
     public function testCreateFileSourceInvalidRequest(string $label, InvalidRequestField $expected): void
     {
-        $invalidRequestError = self::$client->createFileSource(self::$user1ApiToken->token, $label);
-
-        self::assertInstanceOf(InvalidRequestError::class, $invalidRequestError);
-        self::assertEquals($expected, $invalidRequestError->getInvalidRequestField());
+        try {
+            self::$client->createFileSource(self::$user1ApiToken->token, $label);
+        } catch (\Throwable $e) {
+            self::assertInstanceOf(InvalidRequestException::class, $e);
+            self::assertEquals($expected, $e->getInvalidRequestField());
+        }
     }
 
     public function testCreateFileSourceSuccess(): void

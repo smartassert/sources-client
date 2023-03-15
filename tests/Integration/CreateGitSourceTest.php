@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Tests\Integration;
 
+use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Model\GitSource;
-use SmartAssert\SourcesClient\Model\InvalidRequestError;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateGitSourceDataProviderTrait;
 
@@ -26,16 +26,18 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
         string $path,
         InvalidRequestField $expected
     ): void {
-        $invalidRequestError = self::$client->createGitSource(
-            self::$user1ApiToken->token,
-            $label,
-            $hostUrl,
-            $path,
-            null
-        );
-
-        self::assertInstanceOf(InvalidRequestError::class, $invalidRequestError);
-        self::assertEquals($expected, $invalidRequestError->getInvalidRequestField());
+        try {
+            self::$client->createGitSource(
+                self::$user1ApiToken->token,
+                $label,
+                $hostUrl,
+                $path,
+                null
+            );
+        } catch (\Throwable $e) {
+            self::assertInstanceOf(InvalidRequestException::class, $e);
+            self::assertEquals($expected, $e->getInvalidRequestField());
+        }
     }
 
     /**

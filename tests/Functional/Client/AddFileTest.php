@@ -6,8 +6,7 @@ namespace SmartAssert\SourcesClient\Tests\Functional\Client;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
-use SmartAssert\SourcesClient\Model\ErrorInterface;
-use SmartAssert\SourcesClient\Model\FilesystemError;
+use SmartAssert\SourcesClient\Exception\FilesystemException;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
 class AddFileTest extends AbstractClientTestCase
@@ -31,9 +30,9 @@ class AddFileTest extends AbstractClientTestCase
     }
 
     /**
-     * @dataProvider addFileReturnsErrorDataProvider
+     * @dataProvider addFileThrowsExceptionDataProvider
      */
-    public function testAddFileReturnsError(ResponseInterface $response, ErrorInterface $expected): void
+    public function testAddFileThrowsException(ResponseInterface $response, \Throwable $expected): void
     {
         $this->mockHandler->append($response);
 
@@ -42,15 +41,17 @@ class AddFileTest extends AbstractClientTestCase
         $filename = 'test.yaml';
         $content = 'test file content';
 
-        $error = $this->client->addFile($apiKey, $fileSourceId, $filename, $content);
-
-        self::assertEquals($expected, $error);
+        try {
+            $this->client->addFile($apiKey, $fileSourceId, $filename, $content);
+        } catch (\Throwable $e) {
+            self::assertEquals($expected, $e);
+        }
     }
 
     /**
      * @return array<mixed>
      */
-    public function addFileReturnsErrorDataProvider(): array
+    public function addFileThrowsExceptionDataProvider(): array
     {
         $filesystemWriteExceptionPayload = [
             'file' => 'file.txt',
@@ -71,10 +72,10 @@ class AddFileTest extends AbstractClientTestCase
         return [
             'write error' => [
                 'response' => $filesystemWriteExceptionResponse,
-                'expected' => new FilesystemError(
+                'expected' => new FilesystemException(
                     $filesystemWriteExceptionResponse,
                     'source_write_exception',
-                    $filesystemWriteExceptionPayload,
+                    $filesystemWriteExceptionPayload
                 ),
             ],
         ];
