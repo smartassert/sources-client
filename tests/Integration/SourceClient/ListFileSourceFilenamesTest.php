@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration;
+namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
+
+use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
 class ListFileSourceFilenamesTest extends AbstractIntegrationTestCase
 {
@@ -14,13 +16,13 @@ class ListFileSourceFilenamesTest extends AbstractIntegrationTestCase
      */
     public function testListFileSourceFilenames(array $filenamesToAdd, array $expected): void
     {
-        $fileSource = self::$client->sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $fileSource = self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
 
         foreach ($filenamesToAdd as $filename) {
             self::$fileClient->add(self::$user1ApiToken->token, $fileSource->getId(), $filename, md5((string) rand()));
         }
 
-        $actual = self::$client->sourceClient->listFiles(self::$user1ApiToken->token, $fileSource->getId());
+        $actual = self::$sourceClient->listFiles(self::$user1ApiToken->token, $fileSource->getId());
 
         self::assertSame($expected, $actual);
     }

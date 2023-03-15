@@ -15,11 +15,8 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
-use SmartAssert\SourcesClient\SourceClient;
-use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResponseDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
@@ -33,7 +30,6 @@ abstract class AbstractClientTestCase extends TestCase
     use NetworkErrorExceptionDataProviderTrait;
 
     protected MockHandler $mockHandler;
-    protected Client $client;
     protected RequestFactory $requestFactory;
     protected ServiceClient $serviceClient;
     protected ExceptionFactory $exceptionFactory;
@@ -56,11 +52,6 @@ abstract class AbstractClientTestCase extends TestCase
         $this->requestFactory = new RequestFactory(UrlFactory::createUrlFactory('https://sources.example.com'));
         $this->serviceClient = new ServiceClient($httpFactory, $httpFactory, $httpClient);
         $this->exceptionFactory = new ExceptionFactory();
-        $sourceFactory = new SourceFactory();
-
-        $this->client = new Client(
-            new SourceClient($this->requestFactory, $this->serviceClient, $sourceFactory, $this->exceptionFactory),
-        );
     }
 
     /**

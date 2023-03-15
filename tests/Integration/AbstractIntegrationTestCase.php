@@ -8,7 +8,6 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\HttpFactory;
 use PHPUnit\Framework\TestCase;
 use SmartAssert\ServiceClient\Client as ServiceClient;
-use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\FileClient;
 use SmartAssert\SourcesClient\RequestFactory;
@@ -28,8 +27,8 @@ abstract class AbstractIntegrationTestCase extends TestCase
     protected const USER2_EMAIL = 'user1@example.com';
     protected const USER2_PASSWORD = 'password';
 
-    protected static Client $client;
     protected static FileClient $fileClient;
+    protected static SourceClient $sourceClient;
     protected static Token $user1ApiToken;
     protected static DataRepository $dataRepository;
     protected static RequestFactory $requestFactory;
@@ -44,10 +43,13 @@ abstract class AbstractIntegrationTestCase extends TestCase
         $sourceFactory = new SourceFactory();
 
         self::$fileClient = new FileClient(self::$requestFactory, self::$serviceClient, self::$exceptionFactory);
-
-        self::$client = new Client(
-            new SourceClient(self::$requestFactory, self::$serviceClient, $sourceFactory, self::$exceptionFactory),
+        self::$sourceClient = new SourceClient(
+            self::$requestFactory,
+            self::$serviceClient,
+            $sourceFactory,
+            self::$exceptionFactory
         );
+
         self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
         self::$dataRepository = new DataRepository(
             'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
