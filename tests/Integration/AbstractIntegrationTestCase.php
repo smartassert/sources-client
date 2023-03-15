@@ -12,8 +12,7 @@ use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\RequestHandler\FileHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceAccessHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceMutationHandler;
+use SmartAssert\SourcesClient\RequestHandler\SourceHandler;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\SourcesClient\UrlFactory;
@@ -42,8 +41,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
 
         self::$client = new Client(
             new FileHandler($requestFactory, $serviceClient, $exceptionFactory),
-            new SourceMutationHandler($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
-            new SourceAccessHandler($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
+            new SourceHandler($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
         );
         self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
         self::$dataRepository = new DataRepository(

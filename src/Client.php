@@ -12,15 +12,13 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\RequestHandler\FileHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceAccessHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceMutationHandler;
+use SmartAssert\SourcesClient\RequestHandler\SourceHandler;
 
 class Client
 {
     public function __construct(
         public readonly FileHandler $fileSourceFileHandler,
-        private readonly SourceMutationHandler $sourceMutationHandler,
-        private readonly SourceAccessHandler $sourceAccessHandler,
+        private readonly SourceHandler $sourceHandler,
     ) {
     }
 
@@ -34,7 +32,7 @@ class Client
      */
     public function createFileSource(string $token, string $label): SourceInterface
     {
-        return $this->sourceMutationHandler->createFileSource($token, $label);
+        return $this->sourceHandler->createFileSource($token, $label);
     }
 
     /**
@@ -48,7 +46,7 @@ class Client
      */
     public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
     {
-        return $this->sourceMutationHandler->updateFileSource($token, $sourceId, $label);
+        return $this->sourceHandler->updateFileSource($token, $sourceId, $label);
     }
 
     /**
@@ -69,7 +67,7 @@ class Client
         string $path,
         ?string $credentials,
     ): SourceInterface {
-        return $this->sourceMutationHandler->createGitSource($token, $label, $hostUrl, $path, $credentials);
+        return $this->sourceHandler->createGitSource($token, $label, $hostUrl, $path, $credentials);
     }
 
     /**
@@ -92,7 +90,7 @@ class Client
         string $path,
         ?string $credentials,
     ): SourceInterface {
-        return $this->sourceMutationHandler->updateGitSource($token, $sourceId, $label, $hostUrl, $path, $credentials);
+        return $this->sourceHandler->updateGitSource($token, $sourceId, $label, $hostUrl, $path, $credentials);
     }
 
     /**
@@ -105,7 +103,7 @@ class Client
      */
     public function listSources(string $token): array
     {
-        return $this->sourceAccessHandler->list($token);
+        return $this->sourceHandler->list($token);
     }
 
     /**
@@ -117,7 +115,7 @@ class Client
      */
     public function getSource(string $token, string $sourceId): SourceInterface
     {
-        return $this->sourceAccessHandler->get($token, $sourceId);
+        return $this->sourceHandler->get($token, $sourceId);
     }
 
     /**
@@ -129,7 +127,7 @@ class Client
      */
     public function deleteSource(string $token, string $sourceId): SourceInterface
     {
-        return $this->sourceAccessHandler->delete($token, $sourceId);
+        return $this->sourceHandler->delete($token, $sourceId);
     }
 
     /**
@@ -143,6 +141,6 @@ class Client
      */
     public function listFileSourceFilenames(string $token, string $fileSourceId): array
     {
-        return $this->sourceAccessHandler->listFiles($token, $fileSourceId);
+        return $this->sourceHandler->listFiles($token, $fileSourceId);
     }
 }
