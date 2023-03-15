@@ -14,7 +14,7 @@ use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\ServiceClient\Response\Response;
 use SmartAssert\SourcesClient\Exception\FilesystemException;
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
-use SmartAssert\SourcesClient\Model\ErrorInterface;
+use SmartAssert\SourcesClient\Exception\ResponseException;
 
 class ExceptionFactory
 {
@@ -40,7 +40,7 @@ class ExceptionFactory
         $data = new ArrayInspector($response->getData());
 
         if (!$data->has('error', 'array')) {
-            return InvalidModelDataException::fromJsonResponse(ErrorInterface::class, $response);
+            return InvalidModelDataException::fromJsonResponse(ResponseException::class, $response);
         }
 
         $errorDataInspector = new ArrayInspector($data->getArray('error'));
