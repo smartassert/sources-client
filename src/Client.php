@@ -164,4 +164,18 @@ class Client
     {
         return $this->sourceAccessHandler->delete($token, $sourceId);
     }
+
+    /**
+     * @return string[]
+     *
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     */
+    public function listFileSourceFilenames(string $token, string $fileSourceId): array
+    {
+        return $this->sourceAccessHandler->listFiles($token, $fileSourceId);
+    }
 }

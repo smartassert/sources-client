@@ -96,4 +96,33 @@ class SourceAccessHandler extends AbstractSourceHandler
 
         return $source;
     }
+
+    /**
+     * @return string[]
+     *
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     */
+    public function listFiles(string $token, string $fileSourceId): array
+    {
+        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+            $this->requestFactory->createSourceFilenamesRequest($token, $fileSourceId)
+        );
+
+        if (!$response->isSuccessful()) {
+            throw $this->exceptionFactory->createFromResponse($response);
+        }
+
+        $filenames = [];
+        foreach ($response->getData() as $item) {
+            if (is_string($item)) {
+                $filenames[] = $item;
+            }
+        }
+
+        return $filenames;
+    }
 }
