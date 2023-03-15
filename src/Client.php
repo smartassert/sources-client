@@ -6,13 +6,13 @@ namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
+use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\SourcesClient\Model\ErrorInterface;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class Client
@@ -20,8 +20,8 @@ class Client
     public function __construct(
         private readonly RequestFactory $requestFactory,
         private readonly ServiceClient $serviceClient,
-        private readonly ErrorFactory $errorFactory,
         private readonly SourceFactory $sourceFactory,
+        private readonly ExceptionFactory $exceptionFactory,
     ) {
     }
 
@@ -30,12 +30,10 @@ class Client
      * @param non-empty-string $label
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
-    public function createFileSource(string $token, string $label): SourceInterface|ErrorInterface
+    public function createFileSource(string $token, string $label): SourceInterface
     {
         return $this->makeFileSourceMutationRequest($token, $label, null);
     }
@@ -46,12 +44,10 @@ class Client
      * @param non-empty-string $label
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
-    public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface|ErrorInterface
+    public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
     {
         return $this->makeFileSourceMutationRequest($token, $label, $sourceId);
     }
@@ -64,9 +60,7 @@ class Client
      * @param ?non-empty-string $credentials
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
     public function createGitSource(
@@ -75,7 +69,7 @@ class Client
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): SourceInterface|ErrorInterface {
+    ): SourceInterface {
         return $this->makeGitSourceMutationRequest($token, $label, $hostUrl, $path, $credentials, null);
     }
 
@@ -88,9 +82,7 @@ class Client
      * @param ?non-empty-string $credentials
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
     public function updateGitSource(
@@ -100,7 +92,7 @@ class Client
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): SourceInterface|ErrorInterface {
+    ): SourceInterface {
         return $this->makeGitSourceMutationRequest($token, $label, $hostUrl, $path, $credentials, $sourceId);
     }
 
@@ -109,28 +101,19 @@ class Client
      * @param non-empty-string $fileSourceId
      * @param non-empty-string $filename
      *
+     * @throws HttpResponseExceptionInterface
      * @throws ClientExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
      */
-    public function addFile(string $token, string $fileSourceId, string $filename, string $content): ?ErrorInterface
+    public function addFile(string $token, string $fileSourceId, string $filename, string $content): void
     {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
             $this->requestFactory->createFileRequest('POST', $token, $fileSourceId, $filename)
                 ->withPayload(new Payload('text/x-yaml', $content))
         );
 
-        if (400 === $response->getStatusCode()) {
-            return $this->errorFactory->createFromJsonResponse($response);
-        }
-
         if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
+            throw $this->exceptionFactory->createFromResponse($response);
         }
-
-        return null;
     }
 
     /**
@@ -200,10 +183,10 @@ class Client
 
     /**
      * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
      */
     public function getSource(string $token, string $sourceId): SourceInterface
     {
@@ -212,7 +195,7 @@ class Client
         );
 
         if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
+            throw $this->exceptionFactory->createFromResponse($response);
         }
 
         $source = $this->sourceFactory->create($response->getData());
@@ -225,10 +208,10 @@ class Client
 
     /**
      * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
      */
     public function deleteSource(string $token, string $sourceId): SourceInterface
     {
@@ -237,7 +220,7 @@ class Client
         );
 
         if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
+            throw $this->exceptionFactory->createFromResponse($response);
         }
 
         $source = $this->sourceFactory->create($response->getData());
@@ -254,16 +237,14 @@ class Client
      * @param null|non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
     private function makeFileSourceMutationRequest(
         string $token,
         string $label,
         ?string $sourceId,
-    ): SourceInterface|ErrorInterface {
+    ): SourceInterface {
         return $this->makeSourceMutationRequest($token, ['type' => 'file', 'label' => $label], $sourceId);
     }
 
@@ -276,9 +257,7 @@ class Client
      * @param null|non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
     private function makeGitSourceMutationRequest(
@@ -288,7 +267,7 @@ class Client
         string $path,
         ?string $credentials,
         ?string $sourceId,
-    ): SourceInterface|ErrorInterface {
+    ): SourceInterface {
         $payload = [
             'type' => 'git',
             'label' => $label,
@@ -309,27 +288,21 @@ class Client
      * @param array<mixed>          $payload
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
     private function makeSourceMutationRequest(
         string $token,
         array $payload,
         ?string $sourceId,
-    ): SourceInterface|ErrorInterface {
+    ): SourceInterface {
         $response = $this->serviceClient->sendRequestForJsonEncodedData(
             $this->requestFactory->createSourceRequest(is_string($sourceId) ? 'PUT' : 'POST', $token, $sourceId)
                 ->withPayload(new UrlEncodedPayload($payload))
         );
 
-        if (400 === $response->getStatusCode()) {
-            return $this->errorFactory->createFromJsonResponse($response);
-        }
-
         if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
+            throw $this->exceptionFactory->createFromResponse($response);
         }
 
         $source = $this->sourceFactory->create($response->getData());

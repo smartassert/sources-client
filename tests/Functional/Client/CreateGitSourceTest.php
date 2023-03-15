@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Functional\Client;
 
 use GuzzleHttp\Psr7\Response;
-use SmartAssert\SourcesClient\Model\ErrorInterface;
+use SmartAssert\SourcesClient\Exception\ResponseException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class CreateGitSourceTest extends AbstractClientModelCreationTestCase
@@ -48,7 +48,7 @@ class CreateGitSourceTest extends AbstractClientModelCreationTestCase
             function () {
                 $this->client->createFileSource('token value', 'label value');
             },
-            ErrorInterface::class,
+            ResponseException::class,
         );
     }
 

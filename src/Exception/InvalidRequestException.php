@@ -2,21 +2,14 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Model;
+namespace SmartAssert\SourcesClient\Exception;
 
-use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ArrayInspector\ArrayInspector;
+use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
+use SmartAssert\SourcesClient\Model\InvalidRequestField;
 
-class InvalidRequestError extends AbstractError implements ErrorInterface
+class InvalidRequestException extends ResponseException implements HttpResponseExceptionInterface
 {
-    /**
-     * @param array<mixed> $payload
-     */
-    public function __construct(ResponseInterface $httpResponse, array $payload)
-    {
-        parent::__construct($httpResponse, 'invalid_request', $payload);
-    }
-
     public function getInvalidRequestField(): ?InvalidRequestField
     {
         $inspector = new ArrayInspector($this->getPayload());
