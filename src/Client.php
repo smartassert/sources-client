@@ -9,7 +9,6 @@ use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
-use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\RequestHandler\FileHandler;
 use SmartAssert\SourcesClient\RequestHandler\SourceHandler;
@@ -20,19 +19,6 @@ class Client
         public readonly FileHandler $fileSourceFileHandler,
         public readonly SourceHandler $sourceHandler,
     ) {
-    }
-
-    /**
-     * @return SourceInterface[]
-     *
-     * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
-     */
-    public function listSources(string $token): array
-    {
-        return $this->sourceHandler->list($token);
     }
 
     /**

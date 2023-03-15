@@ -22,7 +22,7 @@ class ListSourcesTest extends AbstractIntegrationTestCase
      */
     public function testListSourcesSuccess(array $sourcesData): void
     {
-        $sources = self::$client->listSources(self::$user1ApiToken->token);
+        $sources = self::$client->sourceHandler->list(self::$user1ApiToken->token);
         self::assertSame([], $sources);
 
         $expectedLabels = [];
@@ -44,7 +44,7 @@ class ListSourcesTest extends AbstractIntegrationTestCase
             }
         }
 
-        $sources = self::$client->listSources(self::$user1ApiToken->token);
+        $sources = self::$client->sourceHandler->list(self::$user1ApiToken->token);
         self::assertCount(count($sourcesData), $sources);
 
         $sourceLabels = [];
