@@ -19,7 +19,7 @@ class AddFileReadFileRemoveFileTest extends AbstractIntegrationTestCase
         $filename = md5((string) rand()) . '.yaml';
         $content = md5((string) rand());
 
-        self::$client->addFile(
+        self::$client->fileSourceFileHandler->add(
             self::$user1ApiToken->token,
             $fileSource->getId(),
             $filename,

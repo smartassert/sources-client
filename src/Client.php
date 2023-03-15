@@ -18,7 +18,7 @@ use SmartAssert\SourcesClient\RequestHandler\SourceMutationHandler;
 class Client
 {
     public function __construct(
-        private readonly FileHandler $fileHandler,
+        public readonly FileHandler $fileSourceFileHandler,
         private readonly SourceMutationHandler $sourceMutationHandler,
         private readonly SourceAccessHandler $sourceAccessHandler,
     ) {
@@ -96,26 +96,13 @@ class Client
     }
 
     /**
-     * @param non-empty-string $token
-     * @param non-empty-string $fileSourceId
-     * @param non-empty-string $filename
-     *
-     * @throws HttpResponseExceptionInterface
-     * @throws ClientExceptionInterface
-     */
-    public function addFile(string $token, string $fileSourceId, string $filename, string $content): void
-    {
-        $this->fileHandler->add($token, $fileSourceId, $filename, $content);
-    }
-
-    /**
      * @throws ClientExceptionInterface
      * @throws NonSuccessResponseException
      * @throws HttpResponseExceptionInterface
      */
     public function readFile(string $token, string $fileSourceId, string $filename): string
     {
-        return $this->fileHandler->read($token, $fileSourceId, $filename);
+        return $this->fileSourceFileHandler->read($token, $fileSourceId, $filename);
     }
 
     /**
@@ -138,7 +125,7 @@ class Client
      */
     public function removeFile(string $token, string $fileSourceId, string $filename): void
     {
-        $this->fileHandler->remove($token, $fileSourceId, $filename);
+        $this->fileSourceFileHandler->remove($token, $fileSourceId, $filename);
     }
 
     /**
