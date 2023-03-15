@@ -2,16 +2,27 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Functional\Client;
+namespace SmartAssert\SourcesClient\Tests\Functional\Client\FileClient;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Exception\FilesystemException;
+use SmartAssert\SourcesClient\FileClient;
+use SmartAssert\SourcesClient\Tests\Functional\Client\AbstractClientTestCase;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
 class AddFileTest extends AbstractClientTestCase
 {
     use NetworkErrorExceptionDataProviderTrait;
+
+    private FileClient $fileClient;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->fileClient = new FileClient($this->requestFactory, $this->serviceClient, $this->exceptionFactory);
+    }
 
     public function testAddFileRequestProperties(): void
     {
@@ -22,7 +33,7 @@ class AddFileTest extends AbstractClientTestCase
         $filename = 'test.yaml';
         $content = 'test file content';
 
-        $this->client->fileClient->add($apiKey, $fileSourceId, $filename, $content);
+        $this->fileClient->add($apiKey, $fileSourceId, $filename, $content);
 
         $request = $this->getLastRequest();
         self::assertSame('POST', $request->getMethod());
@@ -42,7 +53,7 @@ class AddFileTest extends AbstractClientTestCase
         $content = 'test file content';
 
         try {
-            $this->client->fileClient->add($apiKey, $fileSourceId, $filename, $content);
+            $this->fileClient->add($apiKey, $fileSourceId, $filename, $content);
         } catch (\Throwable $e) {
             self::assertEquals($expected, $e);
         }
@@ -89,7 +100,7 @@ class AddFileTest extends AbstractClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->fileClient->add('api token', 'source_id', 'test.yaml', 'content');
+            $this->fileClient->add('api token', 'source_id', 'test.yaml', 'content');
         };
     }
 }

@@ -35,6 +35,9 @@ abstract class AbstractClientTestCase extends TestCase
 
     protected MockHandler $mockHandler;
     protected Client $client;
+    protected RequestFactory $requestFactory;
+    protected ServiceClient $serviceClient;
+    protected ExceptionFactory $exceptionFactory;
     private HttpHistoryContainer $httpHistoryContainer;
 
     protected function setUp(): void
@@ -49,15 +52,16 @@ abstract class AbstractClientTestCase extends TestCase
 
         $this->httpHistoryContainer = new HttpHistoryContainer();
         $handlerStack->push(Middleware::history($this->httpHistoryContainer));
+        $httpClient = new HttpClient(['handler' => $handlerStack]);
 
-        $requestFactory = new RequestFactory(UrlFactory::createUrlFactory('https://sources.example.com'));
-        $serviceClient = new ServiceClient($httpFactory, $httpFactory, new HttpClient(['handler' => $handlerStack]));
-        $exceptionFactory = new ExceptionFactory();
+        $this->requestFactory = new RequestFactory(UrlFactory::createUrlFactory('https://sources.example.com'));
+        $this->serviceClient = new ServiceClient($httpFactory, $httpFactory, $httpClient);
+        $this->exceptionFactory = new ExceptionFactory();
         $sourceFactory = new SourceFactory();
 
         $this->client = new Client(
-            new FileClient($requestFactory, $serviceClient, $exceptionFactory),
-            new SourceClient($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
+            new FileClient($this->requestFactory, $this->serviceClient, $this->exceptionFactory),
+            new SourceClient($this->requestFactory, $this->serviceClient, $sourceFactory, $this->exceptionFactory),
         );
     }
 
