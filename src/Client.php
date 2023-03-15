@@ -110,16 +110,6 @@ class Client
 
     /**
      * @throws ClientExceptionInterface
-     * @throws NonSuccessResponseException
-     * @throws HttpResponseExceptionInterface
-     */
-    public function removeFile(string $token, string $fileSourceId, string $filename): void
-    {
-        $this->fileSourceFileHandler->remove($token, $fileSourceId, $filename);
-    }
-
-    /**
-     * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseContentException

@@ -33,7 +33,7 @@ class AddFileReadFileRemoveFileTest extends AbstractIntegrationTestCase
         );
         self::assertSame($content, $readFileResponse);
 
-        self::$client->removeFile(self::$user1ApiToken->token, $fileSource->getId(), $filename);
+        self::$client->fileSourceFileHandler->remove(self::$user1ApiToken->token, $fileSource->getId(), $filename);
 
         self::expectException(NonSuccessResponseException::class);
         self::expectExceptionCode(404);
