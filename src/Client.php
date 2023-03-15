@@ -96,16 +96,6 @@ class Client
     }
 
     /**
-     * @throws ClientExceptionInterface
-     * @throws NonSuccessResponseException
-     * @throws HttpResponseExceptionInterface
-     */
-    public function readFile(string $token, string $fileSourceId, string $filename): string
-    {
-        return $this->fileSourceFileHandler->read($token, $fileSourceId, $filename);
-    }
-
-    /**
      * @return SourceInterface[]
      *
      * @throws ClientExceptionInterface
