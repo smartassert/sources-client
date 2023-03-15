@@ -29,19 +29,25 @@ abstract class AbstractIntegrationTestCase extends TestCase
     protected const USER2_PASSWORD = 'password';
 
     protected static Client $client;
+    protected static FileClient $fileClient;
     protected static Token $user1ApiToken;
     protected static DataRepository $dataRepository;
+    protected static RequestFactory $requestFactory;
+    protected static ServiceClient $serviceClient;
+    protected static ExceptionFactory $exceptionFactory;
 
     public static function setUpBeforeClass(): void
     {
-        $requestFactory = new RequestFactory(UrlFactory::createUrlFactory('http://localhost:9081'));
-        $serviceClient = self::createServiceClient();
-        $exceptionFactory = new ExceptionFactory();
+        self::$requestFactory = new RequestFactory(UrlFactory::createUrlFactory('http://localhost:9081'));
+        self::$serviceClient = self::createServiceClient();
+        self::$exceptionFactory = new ExceptionFactory();
         $sourceFactory = new SourceFactory();
 
+        self::$fileClient = new FileClient(self::$requestFactory, self::$serviceClient, self::$exceptionFactory);
+
         self::$client = new Client(
-            new FileClient($requestFactory, $serviceClient, $exceptionFactory),
-            new SourceClient($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
+            self::$fileClient,
+            new SourceClient(self::$requestFactory, self::$serviceClient, $sourceFactory, self::$exceptionFactory),
         );
         self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
         self::$dataRepository = new DataRepository(

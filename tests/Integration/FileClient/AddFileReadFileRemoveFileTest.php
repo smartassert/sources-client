@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration;
+namespace SmartAssert\SourcesClient\Tests\Integration\FileClient;
 
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\FileSource;
+use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
 class AddFileReadFileRemoveFileTest extends AbstractIntegrationTestCase
 {
@@ -19,24 +20,24 @@ class AddFileReadFileRemoveFileTest extends AbstractIntegrationTestCase
         $filename = md5((string) rand()) . '.yaml';
         $content = md5((string) rand());
 
-        self::$client->fileClient->add(
+        self::$fileClient->add(
             self::$user1ApiToken->token,
             $fileSource->getId(),
             $filename,
             $content
         );
 
-        $readFileResponse = self::$client->fileClient->read(
+        $readFileResponse = self::$fileClient->read(
             self::$user1ApiToken->token,
             $fileSource->getId(),
             $filename
         );
         self::assertSame($content, $readFileResponse);
 
-        self::$client->fileClient->remove(self::$user1ApiToken->token, $fileSource->getId(), $filename);
+        self::$fileClient->remove(self::$user1ApiToken->token, $fileSource->getId(), $filename);
 
         self::expectException(NonSuccessResponseException::class);
         self::expectExceptionCode(404);
-        self::$client->fileClient->read(self::$user1ApiToken->token, $fileSource->getId(), $filename);
+        self::$fileClient->read(self::$user1ApiToken->token, $fileSource->getId(), $filename);
     }
 }
