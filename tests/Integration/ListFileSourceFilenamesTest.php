@@ -25,7 +25,7 @@ class ListFileSourceFilenamesTest extends AbstractIntegrationTestCase
             );
         }
 
-        $actual = self::$client->listFileSourceFilenames(self::$user1ApiToken->token, $fileSource->getId());
+        $actual = self::$client->sourceHandler->listFiles(self::$user1ApiToken->token, $fileSource->getId());
 
         self::assertSame($expected, $actual);
     }
