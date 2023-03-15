@@ -41,13 +41,11 @@ class CreateGitSourceTest extends AbstractClientModelCreationTestCase
         self::assertSame('Bearer ' . $apiKey, $request->getHeaderLine('authorization'));
     }
 
-    public function testCreateGitSourceInvalidErrorResponse(): void
+    public function testCreateGitSourceThrowsInvalidModelDataException(): void
     {
         $this->doClientActionThrowsInvalidModelDataException(
             400,
-            function () {
-                $this->client->createFileSource('token value', 'label value');
-            },
+            $this->createClientActionCallable(),
             ResponseException::class,
         );
     }
