@@ -9,7 +9,6 @@ use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
-use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\RequestHandler\FileHandler;
 use SmartAssert\SourcesClient\RequestHandler\SourceHandler;
 
@@ -19,18 +18,6 @@ class Client
         public readonly FileHandler $fileSourceFileHandler,
         public readonly SourceHandler $sourceHandler,
     ) {
-    }
-
-    /**
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     */
-    public function deleteSource(string $token, string $sourceId): SourceInterface
-    {
-        return $this->sourceHandler->delete($token, $sourceId);
     }
 
     /**

@@ -26,7 +26,7 @@ class DeleteSourceTest extends AbstractIntegrationTestCase
     public function testDeleteSourceSuccess(callable $creator): void
     {
         $createdSource = $creator();
-        $retrievedSource = self::$client->deleteSource(self::$user1ApiToken->token, $createdSource->getId());
+        $retrievedSource = self::$client->sourceHandler->delete(self::$user1ApiToken->token, $createdSource->getId());
 
         self::assertSame($createdSource->getId(), $retrievedSource->getId());
         self::assertNotNull($retrievedSource->getDeletedAt());

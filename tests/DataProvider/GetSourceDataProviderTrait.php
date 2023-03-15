@@ -49,7 +49,7 @@ trait GetSourceDataProviderTrait
                         md5((string) rand()),
                     );
 
-                    return self::$client->deleteSource(
+                    return self::$client->sourceHandler->delete(
                         self::$user1ApiToken->token,
                         $createSource->getId()
                     );
