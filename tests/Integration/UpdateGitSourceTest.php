@@ -44,7 +44,7 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
         InvalidRequestField $expected
     ): void {
         try {
-            self::$client->updateGitSource(
+            self::$client->sourceHandler->updateGitSource(
                 self::$user1ApiToken->token,
                 $this->gitSource->getId(),
                 $label,
@@ -68,7 +68,7 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
      */
     public function testUpdateGitSourceSuccess(string $label, string $hostUrl, string $path, ?string $credentials): void
     {
-        $gitSource = self::$client->updateGitSource(
+        $gitSource = self::$client->sourceHandler->updateGitSource(
             self::$user1ApiToken->token,
             $this->gitSource->getId(),
             $label,

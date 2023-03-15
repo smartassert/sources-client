@@ -23,29 +23,6 @@ class Client
     }
 
     /**
-     * @param non-empty-string  $label
-     * @param non-empty-string  $token
-     * @param non-empty-string  $sourceId
-     * @param non-empty-string  $hostUrl
-     * @param non-empty-string  $path
-     * @param ?non-empty-string $credentials
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     */
-    public function updateGitSource(
-        string $token,
-        string $sourceId,
-        string $label,
-        string $hostUrl,
-        string $path,
-        ?string $credentials,
-    ): SourceInterface {
-        return $this->sourceHandler->updateGitSource($token, $sourceId, $label, $hostUrl, $path, $credentials);
-    }
-
-    /**
      * @return SourceInterface[]
      *
      * @throws ClientExceptionInterface
