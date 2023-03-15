@@ -29,6 +29,11 @@ class RequestFactory
         return $this->createRequest('GET', $this->urlFactory->createSourcesUrl(), $token);
     }
 
+    public function createSourceFilenamesRequest(string $token, string $fileSourceId): Request
+    {
+        return $this->createRequest('GET', $this->urlFactory->createSourceFilenamesUrl($fileSourceId), $token);
+    }
+
     public function createRequest(string $method, string $url, string $token): Request
     {
         return (new Request($method, $url))

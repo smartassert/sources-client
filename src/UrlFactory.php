@@ -27,6 +27,7 @@ class UrlFactory
         $routeCollection->add('file', new Route('/source/{sourceId}/{filename}'));
         $routeCollection->add('sources', new Route('/sources'));
         $routeCollection->add('source', new Route('/source/{sourceId?}'));
+        $routeCollection->add('source_filenames', new Route('/source/{sourceId}/list'));
 
         $urlGenerator = new UrlGenerator($routeCollection, new RequestContext());
 
@@ -46,6 +47,11 @@ class UrlFactory
     public function createSourcesUrl(): string
     {
         return $this->create('sources');
+    }
+
+    public function createSourceFilenamesUrl(string $fileSourceId): string
+    {
+        return $this->create('source_filenames', ['sourceId' => $fileSourceId]);
     }
 
     /**
