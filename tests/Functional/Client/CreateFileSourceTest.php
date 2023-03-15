@@ -36,13 +36,11 @@ class CreateFileSourceTest extends AbstractClientModelCreationTestCase
         self::assertSame('Bearer ' . $apiKey, $request->getHeaderLine('authorization'));
     }
 
-    public function testCreateFileSourceInvalidErrorResponse(): void
+    public function testCreateFileSourceThrowsInvalidModelDataException(): void
     {
         $this->doClientActionThrowsInvalidModelDataException(
             400,
-            function () {
-                $this->client->createFileSource('token value', 'label value');
-            },
+            $this->createClientActionCallable(),
             ResponseException::class,
         );
     }
