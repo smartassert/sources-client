@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration;
+namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
 
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateFileSourceDataProviderTrait;
+use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
 class UpdateFileSourceTest extends AbstractIntegrationTestCase
 {
@@ -21,7 +22,7 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
 
         $label = md5((string) rand());
 
-        $fileSource = self::$client->createFileSource(self::$user1ApiToken->token, $label);
+        $fileSource = self::$sourceClient->createFileSource(self::$user1ApiToken->token, $label);
         \assert($fileSource instanceof FileSource);
         $this->fileSource = $fileSource;
     }
@@ -34,7 +35,11 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
     public function testUpdateFileSourceInvalidRequest(string $label, InvalidRequestField $expected): void
     {
         try {
-            self::$client->updateFileSource(self::$user1ApiToken->token, $this->fileSource->getId(), $label);
+            self::$sourceClient->updateFileSource(
+                self::$user1ApiToken->token,
+                $this->fileSource->getId(),
+                $label
+            );
         } catch (\Throwable $e) {
             self::assertInstanceOf(InvalidRequestException::class, $e);
             self::assertEquals($expected, $e->getInvalidRequestField());
@@ -45,7 +50,11 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
     {
         $label = md5((string) rand());
 
-        $fileSource = self::$client->updateFileSource(self::$user1ApiToken->token, $this->fileSource->getId(), $label);
+        $fileSource = self::$sourceClient->updateFileSource(
+            self::$user1ApiToken->token,
+            $this->fileSource->getId(),
+            $label
+        );
 
         self::assertInstanceOf(FileSource::class, $fileSource);
         self::assertSame($label, $fileSource->getLabel());

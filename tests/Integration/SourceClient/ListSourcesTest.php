@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration;
+namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
+
+use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
 class ListSourcesTest extends AbstractIntegrationTestCase
 {
@@ -22,7 +24,7 @@ class ListSourcesTest extends AbstractIntegrationTestCase
      */
     public function testListSourcesSuccess(array $sourcesData): void
     {
-        $sources = self::$client->listSources(self::$user1ApiToken->token);
+        $sources = self::$sourceClient->list(self::$user1ApiToken->token);
         self::assertSame([], $sources);
 
         $expectedLabels = [];
@@ -30,11 +32,11 @@ class ListSourcesTest extends AbstractIntegrationTestCase
             $expectedLabels[] = $sourceData['label'];
 
             if ('file' === $sourceData['type']) {
-                self::$client->createFileSource(self::$user1ApiToken->token, $sourceData['label']);
+                self::$sourceClient->createFileSource(self::$user1ApiToken->token, $sourceData['label']);
             }
 
             if ('git' === $sourceData['type']) {
-                self::$client->createGitSource(
+                self::$sourceClient->createGitSource(
                     self::$user1ApiToken->token,
                     $sourceData['label'],
                     md5((string) rand()),
@@ -44,7 +46,7 @@ class ListSourcesTest extends AbstractIntegrationTestCase
             }
         }
 
-        $sources = self::$client->listSources(self::$user1ApiToken->token);
+        $sources = self::$sourceClient->list(self::$user1ApiToken->token);
         self::assertCount(count($sourcesData), $sources);
 
         $sourceLabels = [];

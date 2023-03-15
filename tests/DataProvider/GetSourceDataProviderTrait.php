@@ -14,7 +14,7 @@ trait GetSourceDataProviderTrait
         return [
             'git source without credentials' => [
                 'creator' => function () {
-                    return self::$client->createGitSource(
+                    return self::$sourceClient->createGitSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
                         md5((string) rand()),
@@ -25,7 +25,7 @@ trait GetSourceDataProviderTrait
             ],
             'git source with credentials' => [
                 'creator' => function () {
-                    return self::$client->createGitSource(
+                    return self::$sourceClient->createGitSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
                         md5((string) rand()),
@@ -36,7 +36,7 @@ trait GetSourceDataProviderTrait
             ],
             'file source' => [
                 'creator' => function () {
-                    return self::$client->createFileSource(
+                    return self::$sourceClient->createFileSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
                     );
@@ -44,12 +44,12 @@ trait GetSourceDataProviderTrait
             ],
             'file source, deleted' => [
                 'creator' => function () {
-                    $createSource = self::$client->createFileSource(
+                    $createSource = self::$sourceClient->createFileSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
                     );
 
-                    return self::$client->deleteSource(
+                    return self::$sourceClient->delete(
                         self::$user1ApiToken->token,
                         $createSource->getId()
                     );

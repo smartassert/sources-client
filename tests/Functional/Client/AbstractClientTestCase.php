@@ -15,13 +15,8 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
-use SmartAssert\SourcesClient\RequestHandler\FileRequestHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceAccessHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceMutationHandler;
-use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResponseDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
@@ -35,7 +30,9 @@ abstract class AbstractClientTestCase extends TestCase
     use NetworkErrorExceptionDataProviderTrait;
 
     protected MockHandler $mockHandler;
-    protected Client $client;
+    protected RequestFactory $requestFactory;
+    protected ServiceClient $serviceClient;
+    protected ExceptionFactory $exceptionFactory;
     private HttpHistoryContainer $httpHistoryContainer;
 
     protected function setUp(): void
@@ -50,17 +47,11 @@ abstract class AbstractClientTestCase extends TestCase
 
         $this->httpHistoryContainer = new HttpHistoryContainer();
         $handlerStack->push(Middleware::history($this->httpHistoryContainer));
+        $httpClient = new HttpClient(['handler' => $handlerStack]);
 
-        $requestFactory = new RequestFactory(UrlFactory::createUrlFactory('https://sources.example.com'));
-        $serviceClient = new ServiceClient($httpFactory, $httpFactory, new HttpClient(['handler' => $handlerStack]));
-        $exceptionFactory = new ExceptionFactory();
-        $sourceFactory = new SourceFactory();
-
-        $this->client = new Client(
-            new FileRequestHandler($requestFactory, $serviceClient, $exceptionFactory),
-            new SourceMutationHandler($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
-            new SourceAccessHandler($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
-        );
+        $this->requestFactory = new RequestFactory(UrlFactory::createUrlFactory('https://sources.example.com'));
+        $this->serviceClient = new ServiceClient($httpFactory, $httpFactory, $httpClient);
+        $this->exceptionFactory = new ExceptionFactory();
     }
 
     /**

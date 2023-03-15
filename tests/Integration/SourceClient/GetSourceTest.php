@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration;
+namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
 
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Tests\DataProvider\GetSourceDataProviderTrait;
+use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class DeleteSourceTest extends AbstractIntegrationTestCase
+class GetSourceTest extends AbstractIntegrationTestCase
 {
     use GetSourceDataProviderTrait;
 
@@ -23,12 +24,11 @@ class DeleteSourceTest extends AbstractIntegrationTestCase
      *
      * @param callable(): SourceInterface $creator
      */
-    public function testDeleteSourceSuccess(callable $creator): void
+    public function testGetSourceSuccess(callable $creator): void
     {
         $createdSource = $creator();
-        $retrievedSource = self::$client->deleteSource(self::$user1ApiToken->token, $createdSource->getId());
+        $retrievedSource = self::$sourceClient->get(self::$user1ApiToken->token, $createdSource->getId());
 
-        self::assertSame($createdSource->getId(), $retrievedSource->getId());
-        self::assertNotNull($retrievedSource->getDeletedAt());
+        self::assertEquals($createdSource, $retrievedSource);
     }
 }

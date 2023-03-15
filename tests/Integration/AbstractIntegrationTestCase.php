@@ -8,12 +8,10 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\HttpFactory;
 use PHPUnit\Framework\TestCase;
 use SmartAssert\ServiceClient\Client as ServiceClient;
-use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ExceptionFactory;
+use SmartAssert\SourcesClient\FileClient;
 use SmartAssert\SourcesClient\RequestFactory;
-use SmartAssert\SourcesClient\RequestHandler\FileRequestHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceAccessHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceMutationHandler;
+use SmartAssert\SourcesClient\SourceClient;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\SourcesClient\UrlFactory;
@@ -29,22 +27,29 @@ abstract class AbstractIntegrationTestCase extends TestCase
     protected const USER2_EMAIL = 'user1@example.com';
     protected const USER2_PASSWORD = 'password';
 
-    protected static Client $client;
+    protected static FileClient $fileClient;
+    protected static SourceClient $sourceClient;
     protected static Token $user1ApiToken;
     protected static DataRepository $dataRepository;
+    protected static RequestFactory $requestFactory;
+    protected static ServiceClient $serviceClient;
+    protected static ExceptionFactory $exceptionFactory;
 
     public static function setUpBeforeClass(): void
     {
-        $requestFactory = new RequestFactory(UrlFactory::createUrlFactory('http://localhost:9081'));
-        $serviceClient = self::createServiceClient();
-        $exceptionFactory = new ExceptionFactory();
+        self::$requestFactory = new RequestFactory(UrlFactory::createUrlFactory('http://localhost:9081'));
+        self::$serviceClient = self::createServiceClient();
+        self::$exceptionFactory = new ExceptionFactory();
         $sourceFactory = new SourceFactory();
 
-        self::$client = new Client(
-            new FileRequestHandler($requestFactory, $serviceClient, $exceptionFactory),
-            new SourceMutationHandler($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
-            new SourceAccessHandler($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
+        self::$fileClient = new FileClient(self::$requestFactory, self::$serviceClient, self::$exceptionFactory);
+        self::$sourceClient = new SourceClient(
+            self::$requestFactory,
+            self::$serviceClient,
+            $sourceFactory,
+            self::$exceptionFactory
         );
+
         self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
         self::$dataRepository = new DataRepository(
             'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
