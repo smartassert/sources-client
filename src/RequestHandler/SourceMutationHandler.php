@@ -5,25 +5,13 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\RequestHandler;
 
 use Psr\Http\Client\ClientExceptionInterface;
-use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\Model\SourceInterface;
-use SmartAssert\SourcesClient\RequestFactory;
-use SmartAssert\SourcesClient\SourceFactory;
 
-class SourceMutationHandler
+class SourceMutationHandler extends AbstractSourceHandler
 {
-    public function __construct(
-        private readonly RequestFactory $requestFactory,
-        private readonly ServiceClient $serviceClient,
-        private readonly SourceFactory $sourceFactory,
-        private readonly ExceptionFactory $exceptionFactory,
-    ) {
-    }
-
     /**
      * @param non-empty-string $token
      * @param non-empty-string $label
