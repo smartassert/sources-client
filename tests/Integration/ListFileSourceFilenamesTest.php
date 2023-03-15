@@ -14,10 +14,10 @@ class ListFileSourceFilenamesTest extends AbstractIntegrationTestCase
      */
     public function testListFileSourceFilenames(array $filenamesToAdd, array $expected): void
     {
-        $fileSource = self::$client->sourceHandler->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $fileSource = self::$client->sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
 
         foreach ($filenamesToAdd as $filename) {
-            self::$client->fileSourceFileHandler->add(
+            self::$client->fileClient->add(
                 self::$user1ApiToken->token,
                 $fileSource->getId(),
                 $filename,
@@ -25,7 +25,7 @@ class ListFileSourceFilenamesTest extends AbstractIntegrationTestCase
             );
         }
 
-        $actual = self::$client->sourceHandler->listFiles(self::$user1ApiToken->token, $fileSource->getId());
+        $actual = self::$client->sourceClient->listFiles(self::$user1ApiToken->token, $fileSource->getId());
 
         self::assertSame($expected, $actual);
     }

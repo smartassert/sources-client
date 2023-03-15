@@ -26,7 +26,7 @@ class GetSourceTest extends AbstractIntegrationTestCase
     public function testGetSourceSuccess(callable $creator): void
     {
         $createdSource = $creator();
-        $retrievedSource = self::$client->sourceHandler->get(self::$user1ApiToken->token, $createdSource->getId());
+        $retrievedSource = self::$client->sourceClient->get(self::$user1ApiToken->token, $createdSource->getId());
 
         self::assertEquals($createdSource, $retrievedSource);
     }

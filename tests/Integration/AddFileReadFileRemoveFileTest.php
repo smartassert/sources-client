@@ -13,30 +13,30 @@ class AddFileReadFileRemoveFileTest extends AbstractIntegrationTestCase
     {
         $label = md5((string) rand());
 
-        $fileSource = self::$client->sourceHandler->createFileSource(self::$user1ApiToken->token, $label);
+        $fileSource = self::$client->sourceClient->createFileSource(self::$user1ApiToken->token, $label);
         self::assertInstanceOf(FileSource::class, $fileSource);
 
         $filename = md5((string) rand()) . '.yaml';
         $content = md5((string) rand());
 
-        self::$client->fileSourceFileHandler->add(
+        self::$client->fileClient->add(
             self::$user1ApiToken->token,
             $fileSource->getId(),
             $filename,
             $content
         );
 
-        $readFileResponse = self::$client->fileSourceFileHandler->read(
+        $readFileResponse = self::$client->fileClient->read(
             self::$user1ApiToken->token,
             $fileSource->getId(),
             $filename
         );
         self::assertSame($content, $readFileResponse);
 
-        self::$client->fileSourceFileHandler->remove(self::$user1ApiToken->token, $fileSource->getId(), $filename);
+        self::$client->fileClient->remove(self::$user1ApiToken->token, $fileSource->getId(), $filename);
 
         self::expectException(NonSuccessResponseException::class);
         self::expectExceptionCode(404);
-        self::$client->fileSourceFileHandler->read(self::$user1ApiToken->token, $fileSource->getId(), $filename);
+        self::$client->fileClient->read(self::$user1ApiToken->token, $fileSource->getId(), $filename);
     }
 }

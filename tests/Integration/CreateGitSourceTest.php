@@ -27,7 +27,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
         InvalidRequestField $expected
     ): void {
         try {
-            self::$client->sourceHandler->createGitSource(
+            self::$client->sourceClient->createGitSource(
                 self::$user1ApiToken->token,
                 $label,
                 $hostUrl,
@@ -50,7 +50,7 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
      */
     public function testCreateGitSourceSuccess(string $label, string $hostUrl, string $path, ?string $credentials): void
     {
-        $gitSource = self::$client->sourceHandler->createGitSource(
+        $gitSource = self::$client->sourceClient->createGitSource(
             self::$user1ApiToken->token,
             $label,
             $hostUrl,

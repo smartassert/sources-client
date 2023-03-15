@@ -2,14 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\RequestHandler;
+namespace SmartAssert\SourcesClient;
 
 use SmartAssert\ServiceClient\Client as ServiceClient;
-use SmartAssert\SourcesClient\ExceptionFactory;
-use SmartAssert\SourcesClient\RequestFactory;
-use SmartAssert\SourcesClient\SourceFactory;
 
-abstract class AbstractSourceHandler
+abstract class AbstractSourceClient
 {
     public function __construct(
         protected readonly RequestFactory $requestFactory,

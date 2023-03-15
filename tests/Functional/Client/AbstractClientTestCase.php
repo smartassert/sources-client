@@ -17,9 +17,9 @@ use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ExceptionFactory;
+use SmartAssert\SourcesClient\FileClient;
 use SmartAssert\SourcesClient\RequestFactory;
-use SmartAssert\SourcesClient\RequestHandler\FileHandler;
-use SmartAssert\SourcesClient\RequestHandler\SourceHandler;
+use SmartAssert\SourcesClient\SourceClient;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResponseDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
@@ -56,8 +56,8 @@ abstract class AbstractClientTestCase extends TestCase
         $sourceFactory = new SourceFactory();
 
         $this->client = new Client(
-            new FileHandler($requestFactory, $serviceClient, $exceptionFactory),
-            new SourceHandler($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
+            new FileClient($requestFactory, $serviceClient, $exceptionFactory),
+            new SourceClient($requestFactory, $serviceClient, $sourceFactory, $exceptionFactory),
         );
     }
 

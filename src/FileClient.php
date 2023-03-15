@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\RequestHandler;
+namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
@@ -11,10 +11,8 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\Response\Response;
-use SmartAssert\SourcesClient\ExceptionFactory;
-use SmartAssert\SourcesClient\RequestFactory;
 
-class FileHandler
+class FileClient
 {
     public function __construct(
         private readonly RequestFactory $requestFactory,

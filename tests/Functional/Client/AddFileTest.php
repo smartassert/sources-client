@@ -22,7 +22,7 @@ class AddFileTest extends AbstractClientTestCase
         $filename = 'test.yaml';
         $content = 'test file content';
 
-        $this->client->fileSourceFileHandler->add($apiKey, $fileSourceId, $filename, $content);
+        $this->client->fileClient->add($apiKey, $fileSourceId, $filename, $content);
 
         $request = $this->getLastRequest();
         self::assertSame('POST', $request->getMethod());
@@ -42,7 +42,7 @@ class AddFileTest extends AbstractClientTestCase
         $content = 'test file content';
 
         try {
-            $this->client->fileSourceFileHandler->add($apiKey, $fileSourceId, $filename, $content);
+            $this->client->fileClient->add($apiKey, $fileSourceId, $filename, $content);
         } catch (\Throwable $e) {
             self::assertEquals($expected, $e);
         }
@@ -89,7 +89,7 @@ class AddFileTest extends AbstractClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->fileSourceFileHandler->add('api token', 'source_id', 'test.yaml', 'content');
+            $this->client->fileClient->add('api token', 'source_id', 'test.yaml', 'content');
         };
     }
 }

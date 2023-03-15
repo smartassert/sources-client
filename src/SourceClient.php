@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\RequestHandler;
+namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
@@ -13,7 +13,7 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
-class SourceHandler extends AbstractSourceHandler
+class SourceClient extends AbstractSourceClient
 {
     /**
      * @return SourceInterface[]

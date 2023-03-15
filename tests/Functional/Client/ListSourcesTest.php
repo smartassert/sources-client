@@ -20,7 +20,7 @@ class ListSourcesTest extends AbstractClientTestCase
             (string) json_encode([])
         ));
 
-        $this->client->sourceHandler->list($apiKey);
+        $this->client->sourceClient->list($apiKey);
 
         $request = $this->getLastRequest();
         self::assertSame('GET', $request->getMethod());
@@ -30,7 +30,7 @@ class ListSourcesTest extends AbstractClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->sourceHandler->list('api token');
+            $this->client->sourceClient->list('api token');
         };
     }
 }

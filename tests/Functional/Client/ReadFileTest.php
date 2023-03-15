@@ -20,7 +20,7 @@ class ReadFileTest extends AbstractClientTestCase
 
         $this->mockHandler->append(new Response(200, [], $content));
 
-        $this->client->fileSourceFileHandler->read($apiKey, $fileSourceId, $filename);
+        $this->client->fileClient->read($apiKey, $fileSourceId, $filename);
 
         $request = $this->getLastRequest();
         self::assertSame('GET', $request->getMethod());
@@ -35,7 +35,7 @@ class ReadFileTest extends AbstractClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->fileSourceFileHandler->read('api token', 'source_id', 'test.yaml');
+            $this->client->fileClient->read('api token', 'source_id', 'test.yaml');
         };
     }
 }

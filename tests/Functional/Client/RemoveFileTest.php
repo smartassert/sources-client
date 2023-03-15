@@ -20,7 +20,7 @@ class RemoveFileTest extends AbstractClientTestCase
 
         $this->mockHandler->append(new Response(200, [], $content));
 
-        $this->client->fileSourceFileHandler->remove($apiKey, $fileSourceId, $filename);
+        $this->client->fileClient->remove($apiKey, $fileSourceId, $filename);
 
         $request = $this->getLastRequest();
         self::assertSame('DELETE', $request->getMethod());
@@ -35,7 +35,7 @@ class RemoveFileTest extends AbstractClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->fileSourceFileHandler->remove('api token', 'source_id', 'test.yaml');
+            $this->client->fileClient->remove('api token', 'source_id', 'test.yaml');
         };
     }
 }
