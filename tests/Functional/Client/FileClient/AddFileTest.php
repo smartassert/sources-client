@@ -7,22 +7,11 @@ namespace SmartAssert\SourcesClient\Tests\Functional\Client\FileClient;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Exception\FilesystemException;
-use SmartAssert\SourcesClient\FileClient;
-use SmartAssert\SourcesClient\Tests\Functional\Client\AbstractClientTestCase;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class AddFileTest extends AbstractClientTestCase
+class AddFileTest extends AbstractFileClientTest
 {
     use NetworkErrorExceptionDataProviderTrait;
-
-    private FileClient $fileClient;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->fileClient = new FileClient($this->requestFactory, $this->serviceClient, $this->exceptionFactory);
-    }
 
     public function testAddFileRequestProperties(): void
     {

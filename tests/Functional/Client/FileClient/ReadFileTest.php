@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Functional\Client;
+namespace SmartAssert\SourcesClient\Tests\Functional\Client\FileClient;
 
 use GuzzleHttp\Psr7\Response;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class ReadFileTest extends AbstractClientTestCase
+class ReadFileTest extends AbstractFileClientTest
 {
     use NetworkErrorExceptionDataProviderTrait;
 
@@ -20,7 +20,7 @@ class ReadFileTest extends AbstractClientTestCase
 
         $this->mockHandler->append(new Response(200, [], $content));
 
-        $this->client->fileClient->read($apiKey, $fileSourceId, $filename);
+        $this->fileClient->read($apiKey, $fileSourceId, $filename);
 
         $request = $this->getLastRequest();
         self::assertSame('GET', $request->getMethod());
@@ -35,7 +35,7 @@ class ReadFileTest extends AbstractClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->fileClient->read('api token', 'source_id', 'test.yaml');
+            $this->fileClient->read('api token', 'source_id', 'test.yaml');
         };
     }
 }
