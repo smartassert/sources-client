@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Functional\Client;
+namespace SmartAssert\SourcesClient\Tests\Functional\Client\FileClient;
 
 use GuzzleHttp\Psr7\Response;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class RemoveFileTest extends AbstractClientTestCase
+class RemoveFileTest extends AbstractFileClientTest
 {
     use NetworkErrorExceptionDataProviderTrait;
 
@@ -20,7 +20,7 @@ class RemoveFileTest extends AbstractClientTestCase
 
         $this->mockHandler->append(new Response(200, [], $content));
 
-        $this->client->fileClient->remove($apiKey, $fileSourceId, $filename);
+        $this->fileClient->remove($apiKey, $fileSourceId, $filename);
 
         $request = $this->getLastRequest();
         self::assertSame('DELETE', $request->getMethod());
@@ -35,7 +35,7 @@ class RemoveFileTest extends AbstractClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->fileClient->remove('api token', 'source_id', 'test.yaml');
+            $this->fileClient->remove('api token', 'source_id', 'test.yaml');
         };
     }
 }
