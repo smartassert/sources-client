@@ -28,18 +28,6 @@ class Client
      * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
      */
-    public function getSource(string $token, string $sourceId): SourceInterface
-    {
-        return $this->sourceHandler->get($token, $sourceId);
-    }
-
-    /**
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     */
     public function deleteSource(string $token, string $sourceId): SourceInterface
     {
         return $this->sourceHandler->delete($token, $sourceId);

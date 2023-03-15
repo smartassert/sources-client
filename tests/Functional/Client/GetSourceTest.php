@@ -31,7 +31,7 @@ class GetSourceTest extends AbstractClientModelCreationTestCase
 
         $apiKey = 'api key value';
 
-        $this->client->getSource($apiKey, $sourceId);
+        $this->client->sourceHandler->get($apiKey, $sourceId);
 
         $request = $this->getLastRequest();
         self::assertSame('GET', $request->getMethod());
@@ -41,7 +41,7 @@ class GetSourceTest extends AbstractClientModelCreationTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->getSource('api token', 'source id');
+            $this->client->sourceHandler->get('api token', 'source id');
         };
     }
 
