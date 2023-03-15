@@ -6,6 +6,10 @@ namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ArrayInspector\ArrayInspector;
+use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
+use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\ErrorInterface;
 use SmartAssert\SourcesClient\Model\FilesystemError;
 use SmartAssert\SourcesClient\Model\InvalidRequestError;
@@ -32,5 +36,24 @@ class ErrorFactory
         }
 
         return null;
+    }
+
+    /**
+     * @throws InvalidResponseContentException
+     * @throws InvalidResponseDataException
+     * @throws InvalidModelDataException
+     */
+    public function createFromJsonResponse(JsonResponse $response): ErrorInterface
+    {
+        $error = $this->create(
+            $response->getHttpResponse(),
+            new ArrayInspector($response->getData())
+        );
+
+        if (null === $error) {
+            throw InvalidModelDataException::fromJsonResponse(ErrorInterface::class, $response);
+        }
+
+        return $error;
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
-use SmartAssert\ArrayInspector\ArrayInspector;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
@@ -13,7 +12,6 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\ErrorInterface;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
@@ -125,7 +123,7 @@ class Client
         );
 
         if (400 === $response->getStatusCode()) {
-            return $this->createErrorModel($response);
+            return $this->errorFactory->createFromJsonResponse($response);
         }
 
         if (!$response->isSuccessful()) {
@@ -327,7 +325,7 @@ class Client
         );
 
         if (400 === $response->getStatusCode()) {
-            return $this->createErrorModel($response);
+            return $this->errorFactory->createFromJsonResponse($response);
         }
 
         if (!$response->isSuccessful()) {
@@ -340,24 +338,5 @@ class Client
         }
 
         return $source;
-    }
-
-    /**
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseContentException
-     * @throws InvalidResponseDataException
-     */
-    private function createErrorModel(JsonResponse $response): ErrorInterface
-    {
-        $error = $this->errorFactory->create(
-            $response->getHttpResponse(),
-            new ArrayInspector($response->getData())
-        );
-
-        if (null === $error) {
-            throw InvalidModelDataException::fromJsonResponse(ErrorInterface::class, $response);
-        }
-
-        return $error;
     }
 }
