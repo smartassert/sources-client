@@ -34,7 +34,7 @@ class ListSourcesTest extends AbstractIntegrationTestCase
             }
 
             if ('git' === $sourceData['type']) {
-                self::$client->createGitSource(
+                self::$client->sourceHandler->createGitSource(
                     self::$user1ApiToken->token,
                     $sourceData['label'],
                     md5((string) rand()),

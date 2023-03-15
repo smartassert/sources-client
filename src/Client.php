@@ -25,27 +25,6 @@ class Client
     /**
      * @param non-empty-string  $label
      * @param non-empty-string  $token
-     * @param non-empty-string  $hostUrl
-     * @param non-empty-string  $path
-     * @param ?non-empty-string $credentials
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     */
-    public function createGitSource(
-        string $token,
-        string $label,
-        string $hostUrl,
-        string $path,
-        ?string $credentials,
-    ): SourceInterface {
-        return $this->sourceHandler->createGitSource($token, $label, $hostUrl, $path, $credentials);
-    }
-
-    /**
-     * @param non-empty-string  $label
-     * @param non-empty-string  $token
      * @param non-empty-string  $sourceId
      * @param non-empty-string  $hostUrl
      * @param non-empty-string  $path

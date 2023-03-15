@@ -14,7 +14,7 @@ trait GetSourceDataProviderTrait
         return [
             'git source without credentials' => [
                 'creator' => function () {
-                    return self::$client->createGitSource(
+                    return self::$client->sourceHandler->createGitSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
                         md5((string) rand()),
@@ -25,7 +25,7 @@ trait GetSourceDataProviderTrait
             ],
             'git source with credentials' => [
                 'creator' => function () {
-                    return self::$client->createGitSource(
+                    return self::$client->sourceHandler->createGitSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
                         md5((string) rand()),

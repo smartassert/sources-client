@@ -19,7 +19,7 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
     {
         parent::setUp();
 
-        $gitSource = self::$client->createGitSource(
+        $gitSource = self::$client->sourceHandler->createGitSource(
             self::$user1ApiToken->token,
             md5((string) rand()),
             'https://example.com/' . md5((string) rand()) . '.git',

@@ -34,7 +34,7 @@ class CreateGitSourceTest extends AbstractClientModelCreationTestCase
 
         $apiKey = 'api key value';
 
-        $this->client->createGitSource($apiKey, $label, $hostUrl, $path, null);
+        $this->client->sourceHandler->createGitSource($apiKey, $label, $hostUrl, $path, null);
 
         $request = $this->getLastRequest();
         self::assertSame('POST', $request->getMethod());
@@ -53,7 +53,7 @@ class CreateGitSourceTest extends AbstractClientModelCreationTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->createGitSource('api token', 'git source label', 'host url', 'path', null);
+            $this->client->sourceHandler->createGitSource('api token', 'git source label', 'host url', 'path', null);
         };
     }
 
