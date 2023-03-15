@@ -21,7 +21,7 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
     public function testCreateFileSourceInvalidRequest(string $label, InvalidRequestField $expected): void
     {
         try {
-            self::$client->createFileSource(self::$user1ApiToken->token, $label);
+            self::$client->sourceHandler->createFileSource(self::$user1ApiToken->token, $label);
         } catch (\Throwable $e) {
             self::assertInstanceOf(InvalidRequestException::class, $e);
             self::assertEquals($expected, $e->getInvalidRequestField());
@@ -32,7 +32,7 @@ class CreateFileSourceTest extends AbstractIntegrationTestCase
     {
         $label = md5((string) rand());
 
-        $fileSource = self::$client->createFileSource(self::$user1ApiToken->token, $label);
+        $fileSource = self::$client->sourceHandler->createFileSource(self::$user1ApiToken->token, $label);
 
         self::assertInstanceOf(FileSource::class, $fileSource);
         self::assertSame($label, $fileSource->getLabel());

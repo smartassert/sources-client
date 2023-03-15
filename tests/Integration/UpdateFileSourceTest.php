@@ -21,7 +21,7 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
 
         $label = md5((string) rand());
 
-        $fileSource = self::$client->createFileSource(self::$user1ApiToken->token, $label);
+        $fileSource = self::$client->sourceHandler->createFileSource(self::$user1ApiToken->token, $label);
         \assert($fileSource instanceof FileSource);
         $this->fileSource = $fileSource;
     }

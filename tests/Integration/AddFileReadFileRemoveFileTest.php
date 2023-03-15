@@ -13,7 +13,7 @@ class AddFileReadFileRemoveFileTest extends AbstractIntegrationTestCase
     {
         $label = md5((string) rand());
 
-        $fileSource = self::$client->createFileSource(self::$user1ApiToken->token, $label);
+        $fileSource = self::$client->sourceHandler->createFileSource(self::$user1ApiToken->token, $label);
         self::assertInstanceOf(FileSource::class, $fileSource);
 
         $filename = md5((string) rand()) . '.yaml';

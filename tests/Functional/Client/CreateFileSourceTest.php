@@ -29,7 +29,7 @@ class CreateFileSourceTest extends AbstractClientModelCreationTestCase
 
         $apiKey = 'api key value';
 
-        $this->client->createFileSource($apiKey, $label);
+        $this->client->sourceHandler->createFileSource($apiKey, $label);
 
         $request = $this->getLastRequest();
         self::assertSame('POST', $request->getMethod());
@@ -48,7 +48,7 @@ class CreateFileSourceTest extends AbstractClientModelCreationTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->createFileSource('api token', 'label');
+            $this->client->sourceHandler->createFileSource('api token', 'label');
         };
     }
 

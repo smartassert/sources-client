@@ -18,21 +18,8 @@ class Client
 {
     public function __construct(
         public readonly FileHandler $fileSourceFileHandler,
-        private readonly SourceHandler $sourceHandler,
+        public readonly SourceHandler $sourceHandler,
     ) {
-    }
-
-    /**
-     * @param non-empty-string $token
-     * @param non-empty-string $label
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     */
-    public function createFileSource(string $token, string $label): SourceInterface
-    {
-        return $this->sourceHandler->createFileSource($token, $label);
     }
 
     /**

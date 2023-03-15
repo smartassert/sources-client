@@ -30,7 +30,7 @@ class ListSourcesTest extends AbstractIntegrationTestCase
             $expectedLabels[] = $sourceData['label'];
 
             if ('file' === $sourceData['type']) {
-                self::$client->createFileSource(self::$user1ApiToken->token, $sourceData['label']);
+                self::$client->sourceHandler->createFileSource(self::$user1ApiToken->token, $sourceData['label']);
             }
 
             if ('git' === $sourceData['type']) {

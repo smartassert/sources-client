@@ -36,7 +36,7 @@ trait GetSourceDataProviderTrait
             ],
             'file source' => [
                 'creator' => function () {
-                    return self::$client->createFileSource(
+                    return self::$client->sourceHandler->createFileSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
                     );
@@ -44,7 +44,7 @@ trait GetSourceDataProviderTrait
             ],
             'file source, deleted' => [
                 'creator' => function () {
-                    $createSource = self::$client->createFileSource(
+                    $createSource = self::$client->sourceHandler->createFileSource(
                         self::$user1ApiToken->token,
                         md5((string) rand()),
                     );

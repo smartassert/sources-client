@@ -14,7 +14,7 @@ class ListFileSourceFilenamesTest extends AbstractIntegrationTestCase
      */
     public function testListFileSourceFilenames(array $filenamesToAdd, array $expected): void
     {
-        $fileSource = self::$client->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $fileSource = self::$client->sourceHandler->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
 
         foreach ($filenamesToAdd as $filename) {
             self::$client->fileSourceFileHandler->add(
