@@ -11,9 +11,9 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\SourcesClient\Model\SourceInterface;
+use SmartAssert\SourcesClient\RequestHandler\FileRequestHandler;
 
 class Client
 {
@@ -22,6 +22,7 @@ class Client
         private readonly ServiceClient $serviceClient,
         private readonly SourceFactory $sourceFactory,
         private readonly ExceptionFactory $exceptionFactory,
+        private readonly FileRequestHandler $fileRequestHandler,
     ) {
     }
 
@@ -106,31 +107,17 @@ class Client
      */
     public function addFile(string $token, string $fileSourceId, string $filename, string $content): void
     {
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
-            $this->requestFactory->createFileRequest('POST', $token, $fileSourceId, $filename)
-                ->withPayload(new Payload('text/x-yaml', $content))
-        );
-
-        if (!$response->isSuccessful()) {
-            throw $this->exceptionFactory->createFromResponse($response);
-        }
+        $this->fileRequestHandler->add($token, $fileSourceId, $filename, $content);
     }
 
     /**
      * @throws ClientExceptionInterface
      * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      */
     public function readFile(string $token, string $fileSourceId, string $filename): string
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createFileRequest('GET', $token, $fileSourceId, $filename)
-        );
-
-        if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
-        }
-
-        return $response->getHttpResponse()->getBody()->getContents();
+        return $this->fileRequestHandler->read($token, $fileSourceId, $filename);
     }
 
     /**
@@ -169,16 +156,11 @@ class Client
     /**
      * @throws ClientExceptionInterface
      * @throws NonSuccessResponseException
+     * @throws HttpResponseExceptionInterface
      */
     public function removeFile(string $token, string $fileSourceId, string $filename): void
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createFileRequest('DELETE', $token, $fileSourceId, $filename)
-        );
-
-        if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
-        }
+        $this->fileRequestHandler->remove($token, $fileSourceId, $filename);
     }
 
     /**

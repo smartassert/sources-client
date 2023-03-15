@@ -18,6 +18,7 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Client;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
+use SmartAssert\SourcesClient\RequestHandler\FileRequestHandler;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResponseDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
@@ -48,17 +49,16 @@ abstract class AbstractClientTestCase extends TestCase
         $this->httpHistoryContainer = new HttpHistoryContainer();
         $handlerStack->push(Middleware::history($this->httpHistoryContainer));
 
+        $requestFactory = new RequestFactory(UrlFactory::createUrlFactory('https://sources.example.com'));
+        $serviceClient = new ServiceClient($httpFactory, $httpFactory, new HttpClient(['handler' => $handlerStack]));
+        $exceptionFactory = new ExceptionFactory();
+
         $this->client = new Client(
-            new RequestFactory(
-                UrlFactory::createUrlFactory('https://sources.example.com'),
-            ),
-            new ServiceClient(
-                $httpFactory,
-                $httpFactory,
-                new HttpClient(['handler' => $handlerStack]),
-            ),
+            $requestFactory,
+            $serviceClient,
             new SourceFactory(),
-            new ExceptionFactory(),
+            $exceptionFactory,
+            new FileRequestHandler($requestFactory, $serviceClient, $exceptionFactory),
         );
     }
 
