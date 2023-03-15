@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Functional\Client;
+namespace SmartAssert\SourcesClient\Tests\Functional\Client\SourceClient;
 
 use GuzzleHttp\Psr7\Response;
 use SmartAssert\SourcesClient\Model\SourceInterface;
+use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
+use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class GetSourceTest extends AbstractClientModelCreationTestCase
+class GetSourceTest extends AbstractSourceClientTest
 {
-    use NetworkErrorExceptionAndInvalidJsonResponseExceptionDataProviderTrait;
+    use InvalidJsonResponseExceptionDataProviderTrait;
+    use NetworkErrorExceptionDataProviderTrait;
 
     public function testGetSourceRequestProperties(): void
     {
@@ -31,17 +34,25 @@ class GetSourceTest extends AbstractClientModelCreationTestCase
 
         $apiKey = 'api key value';
 
-        $this->client->sourceClient->get($apiKey, $sourceId);
+        $this->sourceClient->get($apiKey, $sourceId);
 
         $request = $this->getLastRequest();
         self::assertSame('GET', $request->getMethod());
         self::assertSame('Bearer ' . $apiKey, $request->getHeaderLine('authorization'));
     }
 
+    public function clientActionThrowsExceptionDataProvider(): array
+    {
+        return array_merge(
+            $this->networkErrorExceptionDataProvider(),
+            $this->invalidJsonResponseExceptionDataProvider(),
+        );
+    }
+
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->client->sourceClient->get('api token', 'source id');
+            $this->sourceClient->get('api token', 'source id');
         };
     }
 
