@@ -14,7 +14,7 @@ use SmartAssert\ServiceClient\Response\Response;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
 
-class FileRequestHandler
+class FileHandler
 {
     public function __construct(
         private readonly RequestFactory $requestFactory,

@@ -11,14 +11,14 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
-use SmartAssert\SourcesClient\RequestHandler\FileRequestHandler;
+use SmartAssert\SourcesClient\RequestHandler\FileHandler;
 use SmartAssert\SourcesClient\RequestHandler\SourceAccessHandler;
 use SmartAssert\SourcesClient\RequestHandler\SourceMutationHandler;
 
 class Client
 {
     public function __construct(
-        private readonly FileRequestHandler $fileRequestHandler,
+        private readonly FileHandler $fileHandler,
         private readonly SourceMutationHandler $sourceMutationHandler,
         private readonly SourceAccessHandler $sourceAccessHandler,
     ) {
@@ -105,7 +105,7 @@ class Client
      */
     public function addFile(string $token, string $fileSourceId, string $filename, string $content): void
     {
-        $this->fileRequestHandler->add($token, $fileSourceId, $filename, $content);
+        $this->fileHandler->add($token, $fileSourceId, $filename, $content);
     }
 
     /**
@@ -115,7 +115,7 @@ class Client
      */
     public function readFile(string $token, string $fileSourceId, string $filename): string
     {
-        return $this->fileRequestHandler->read($token, $fileSourceId, $filename);
+        return $this->fileHandler->read($token, $fileSourceId, $filename);
     }
 
     /**
@@ -138,7 +138,7 @@ class Client
      */
     public function removeFile(string $token, string $fileSourceId, string $filename): void
     {
-        $this->fileRequestHandler->remove($token, $fileSourceId, $filename);
+        $this->fileHandler->remove($token, $fileSourceId, $filename);
     }
 
     /**
