@@ -61,6 +61,9 @@ class FileClient
         ));
     }
 
+    /**
+     * @param non-empty-string $method
+     */
     private function createRequest(string $method, string $token, string $fileSourceId, string $filename): Request
     {
         return $this->requestFactory->createFileRequest($method, $token, $fileSourceId, $filename);
