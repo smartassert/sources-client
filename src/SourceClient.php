@@ -7,10 +7,11 @@ namespace SmartAssert\SourcesClient;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
+use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class SourceClient extends AbstractSourceClient
@@ -19,18 +20,22 @@ class SourceClient extends AbstractSourceClient
      * @return SourceInterface[]
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
      * @throws NonSuccessResponseException
+     * @throws InvalidResponseTypeException
      */
     public function list(string $token): array
     {
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+        $response = $this->serviceClient->sendRequest(
             $this->requestFactory->createSourcesRequest($token)
         );
 
         if (!$response->isSuccessful()) {
             throw new NonSuccessResponseException($response->getHttpResponse());
+        }
+
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
         }
 
         $sources = [];
@@ -52,17 +57,20 @@ class SourceClient extends AbstractSourceClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
-     * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
      */
     public function get(string $token, string $sourceId): SourceInterface
     {
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+        $response = $this->serviceClient->sendRequest(
             $this->requestFactory->createSourceRequest('GET', $token, $sourceId)
         );
 
         if (!$response->isSuccessful()) {
             throw $this->exceptionFactory->createFromResponse($response);
+        }
+
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
         }
 
         $source = $this->sourceFactory->create($response->getData());
@@ -77,17 +85,20 @@ class SourceClient extends AbstractSourceClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
-     * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
      */
     public function delete(string $token, string $sourceId): SourceInterface
     {
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+        $response = $this->serviceClient->sendRequest(
             $this->requestFactory->createSourceRequest('DELETE', $token, $sourceId)
         );
 
         if (!$response->isSuccessful()) {
             throw $this->exceptionFactory->createFromResponse($response);
+        }
+
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
         }
 
         $source = $this->sourceFactory->create($response->getData());
@@ -104,17 +115,20 @@ class SourceClient extends AbstractSourceClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
-     * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
      */
     public function listFiles(string $token, string $fileSourceId): array
     {
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+        $response = $this->serviceClient->sendRequest(
             $this->requestFactory->createSourceFilenamesRequest($token, $fileSourceId)
         );
 
         if (!$response->isSuccessful()) {
             throw $this->exceptionFactory->createFromResponse($response);
+        }
+
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
         }
 
         $filenames = [];
@@ -257,19 +271,25 @@ class SourceClient extends AbstractSourceClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      */
     private function makeSourceMutationRequest(
         string $token,
         array $payload,
         ?string $sourceId,
     ): SourceInterface {
-        $response = $this->serviceClient->sendRequestForJsonEncodedData(
+        $response = $this->serviceClient->sendRequest(
             $this->requestFactory->createSourceRequest(is_string($sourceId) ? 'PUT' : 'POST', $token, $sourceId)
                 ->withPayload(new UrlEncodedPayload($payload))
         );
 
         if (!$response->isSuccessful()) {
             throw $this->exceptionFactory->createFromResponse($response);
+        }
+
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
         }
 
         $source = $this->sourceFactory->create($response->getData());

@@ -7,11 +7,10 @@ namespace SmartAssert\SourcesClient;
 use SmartAssert\ArrayInspector\ArrayInspector;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseContentException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Response\JsonResponse;
-use SmartAssert\ServiceClient\Response\Response;
+use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Exception\FilesystemException;
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Exception\ResponseException;
@@ -19,10 +18,9 @@ use SmartAssert\SourcesClient\Exception\ResponseException;
 class ExceptionFactory
 {
     /**
-     * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
      */
-    public function createFromResponse(Response $response): HttpResponseExceptionInterface
+    public function createFromResponse(ResponseInterface $response): HttpResponseExceptionInterface
     {
         if (400 === $response->getStatusCode() && $response instanceof JsonResponse) {
             return $this->createFromJsonResponse($response);
@@ -32,7 +30,6 @@ class ExceptionFactory
     }
 
     /**
-     * @throws InvalidResponseContentException
      * @throws InvalidResponseDataException
      */
     private function createFromJsonResponse(JsonResponse $response): HttpResponseExceptionInterface

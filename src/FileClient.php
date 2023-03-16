@@ -10,7 +10,7 @@ use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\ServiceClient\Response\Response;
+use SmartAssert\ServiceClient\Response\ResponseInterface;
 
 class FileClient
 {
@@ -31,7 +31,7 @@ class FileClient
      */
     public function add(string $token, string $fileSourceId, string $filename, string $content): void
     {
-        $this->handleResponse($this->serviceClient->sendRequestForJsonEncodedData(
+        $this->handleResponse($this->serviceClient->sendRequest(
             $this->createRequest('POST', $token, $fileSourceId, $filename)
                 ->withPayload(new Payload('text/x-yaml', $content))
         ));
@@ -73,7 +73,7 @@ class FileClient
      * @throws NonSuccessResponseException
      * @throws HttpResponseExceptionInterface
      */
-    private function handleResponse(Response $response): string
+    private function handleResponse(ResponseInterface $response): string
     {
         if (!$response->isSuccessful()) {
             throw $this->exceptionFactory->createFromResponse($response);
