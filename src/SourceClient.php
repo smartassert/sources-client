@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
+use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
@@ -14,8 +15,16 @@ use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
-class SourceClient extends AbstractSourceClient
+class SourceClient
 {
+    public function __construct(
+        private readonly RequestFactory $requestFactory,
+        private readonly ServiceClient $serviceClient,
+        private readonly SourceFactory $sourceFactory,
+        private readonly ExceptionFactory $exceptionFactory,
+    ) {
+    }
+
     /**
      * @return SourceInterface[]
      *
