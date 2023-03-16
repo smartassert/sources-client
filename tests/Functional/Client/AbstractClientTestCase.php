@@ -21,7 +21,6 @@ use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResponseDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
-use SmartAssert\SourcesClient\UrlFactory;
 use webignition\HttpHistoryContainer\Container as HttpHistoryContainer;
 
 abstract class AbstractClientTestCase extends TestCase
@@ -50,7 +49,7 @@ abstract class AbstractClientTestCase extends TestCase
         $handlerStack->push(Middleware::history($this->httpHistoryContainer));
         $httpClient = new HttpClient(['handler' => $handlerStack]);
 
-        $this->requestFactory = new RequestFactory(UrlFactory::createUrlFactory('https://sources.example.com'));
+        $this->requestFactory = new RequestFactory('https://sources.example.com');
 
         $responseFactory = ResponseFactory::createFactory();
         $this->serviceClient = new ServiceClient($httpFactory, $httpFactory, $httpClient, $responseFactory);
