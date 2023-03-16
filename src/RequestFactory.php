@@ -6,12 +6,22 @@ namespace SmartAssert\SourcesClient;
 
 use SmartAssert\ServiceClient\Authentication\BearerAuthentication;
 use SmartAssert\ServiceClient\Request;
+use SmartAssert\ServiceClient\RequestFactory\AuthenticationMiddleware;
+use SmartAssert\ServiceClient\RequestFactory\RequestFactory as ServiceClientRequestFactory;
+use SmartAssert\ServiceClient\RequestFactory\RequestMiddlewareCollection;
 
-class RequestFactory
+class RequestFactory extends ServiceClientRequestFactory
 {
+    private readonly AuthenticationMiddleware $authenticationMiddleware;
+
     public function __construct(
         private readonly UrlFactory $urlFactory,
     ) {
+        $this->authenticationMiddleware = new AuthenticationMiddleware();
+
+        parent::__construct(
+            (new RequestMiddlewareCollection())->set('authentication', $this->authenticationMiddleware)
+        );
     }
 
     /**
@@ -19,7 +29,9 @@ class RequestFactory
      */
     public function createFileRequest(string $method, string $token, string $fileSourceId, string $filename): Request
     {
-        return $this->createRequest($method, $this->urlFactory->createFileUrl($fileSourceId, $filename), $token);
+        $this->authenticationMiddleware->setAuthentication(new BearerAuthentication($token));
+
+        return $this->create($method, $this->urlFactory->createFileUrl($fileSourceId, $filename));
     }
 
     /**
@@ -27,26 +39,22 @@ class RequestFactory
      */
     public function createSourceRequest(string $method, string $token, ?string $sourceId): Request
     {
-        return $this->createRequest($method, $this->urlFactory->createSourceUrl($sourceId), $token);
+        $this->authenticationMiddleware->setAuthentication(new BearerAuthentication($token));
+
+        return $this->create($method, $this->urlFactory->createSourceUrl($sourceId));
     }
 
     public function createSourcesRequest(string $token): Request
     {
-        return $this->createRequest('GET', $this->urlFactory->createSourcesUrl(), $token);
+        $this->authenticationMiddleware->setAuthentication(new BearerAuthentication($token));
+
+        return $this->create('GET', $this->urlFactory->createSourcesUrl());
     }
 
     public function createSourceFilenamesRequest(string $token, string $fileSourceId): Request
     {
-        return $this->createRequest('GET', $this->urlFactory->createSourceFilenamesUrl($fileSourceId), $token);
-    }
+        $this->authenticationMiddleware->setAuthentication(new BearerAuthentication($token));
 
-    /**
-     * @param non-empty-string $method
-     */
-    public function createRequest(string $method, string $url, string $token): Request
-    {
-        return (new Request($method, $url))
-            ->withAuthentication(new BearerAuthentication($token))
-        ;
+        return $this->create('GET', $this->urlFactory->createSourceFilenamesUrl($fileSourceId));
     }
 }
