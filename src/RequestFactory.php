@@ -14,11 +14,17 @@ class RequestFactory
     ) {
     }
 
+    /**
+     * @param non-empty-string $method
+     */
     public function createFileRequest(string $method, string $token, string $fileSourceId, string $filename): Request
     {
         return $this->createRequest($method, $this->urlFactory->createFileUrl($fileSourceId, $filename), $token);
     }
 
+    /**
+     * @param non-empty-string $method
+     */
     public function createSourceRequest(string $method, string $token, ?string $sourceId): Request
     {
         return $this->createRequest($method, $this->urlFactory->createSourceUrl($sourceId), $token);
@@ -34,6 +40,9 @@ class RequestFactory
         return $this->createRequest('GET', $this->urlFactory->createSourceFilenamesUrl($fileSourceId), $token);
     }
 
+    /**
+     * @param non-empty-string $method
+     */
     public function createRequest(string $method, string $url, string $token): Request
     {
         return (new Request($method, $url))
