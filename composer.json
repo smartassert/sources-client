@@ -67,7 +67,7 @@
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.0",
         "psr/http-factory": "^1.0",
-        "smartassert/service-client": ">=2.3,<3",
+        "smartassert/service-client": ">=4.0,<5",
         "smartassert/array-inspector": ">=0.4,<1",
         "symfony/routing": "*"
     },
@@ -79,7 +79,7 @@
         "guzzlehttp/guzzle": "^7.5",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan-phpunit": "^1.3",
-        "smartassert/users-client": "^3.0",
+        "smartassert/users-client": "^4.0",
         "webignition/http-history-container": "^2.5",
         "symfony/uid": "^6.2"
     },

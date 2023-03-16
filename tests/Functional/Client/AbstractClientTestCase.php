@@ -15,6 +15,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use SmartAssert\ServiceClient\ResponseFactory\ResponseFactory;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResponseDataProviderTrait;
@@ -50,7 +51,9 @@ abstract class AbstractClientTestCase extends TestCase
         $httpClient = new HttpClient(['handler' => $handlerStack]);
 
         $this->requestFactory = new RequestFactory(UrlFactory::createUrlFactory('https://sources.example.com'));
-        $this->serviceClient = new ServiceClient($httpFactory, $httpFactory, $httpClient);
+
+        $responseFactory = ResponseFactory::createFactory();
+        $this->serviceClient = new ServiceClient($httpFactory, $httpFactory, $httpClient, $responseFactory);
         $this->exceptionFactory = new ExceptionFactory();
     }
 
