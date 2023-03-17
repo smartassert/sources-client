@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Functional\Client\SourceClient;
 
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
@@ -12,23 +13,6 @@ class ListSourcesTest extends AbstractSourceClientTest
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
-
-    public function testListSourcesRequestProperties(): void
-    {
-        $apiKey = 'api key value';
-
-        $this->mockHandler->append(new Response(
-            200,
-            ['content-type' => 'application/json'],
-            (string) json_encode([])
-        ));
-
-        $this->sourceClient->list($apiKey);
-
-        $request = $this->getLastRequest();
-        self::assertSame('GET', $request->getMethod());
-        self::assertSame('Bearer ' . $apiKey, $request->getHeaderLine('authorization'));
-    }
 
     public function clientActionThrowsExceptionDataProvider(): array
     {
@@ -41,7 +25,21 @@ class ListSourcesTest extends AbstractSourceClientTest
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->sourceClient->list('api token');
+            $this->sourceClient->list(self::API_KEY);
         };
+    }
+
+    protected function getExpectedRequestMethod(): string
+    {
+        return 'GET';
+    }
+
+    protected function getClientActionSuccessResponse(): ResponseInterface
+    {
+        return new Response(
+            200,
+            ['content-type' => 'application/json'],
+            (string) json_encode([])
+        );
     }
 }

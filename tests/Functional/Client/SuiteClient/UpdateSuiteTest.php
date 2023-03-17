@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Functional\Client\SuiteClient;
 
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\SourcesClient\Exception\ResponseException;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
@@ -14,36 +15,6 @@ class UpdateSuiteTest extends AbstractSuiteClientTest
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
-
-    public function testRequestProperties(): void
-    {
-        $label = md5((string) rand());
-        $suiteId = md5((string) rand());
-        $sourceId = md5((string) rand());
-        $tests = [
-            md5((string) rand()) . '.yaml',
-            md5((string) rand()) . '.yaml',
-        ];
-
-        $this->mockHandler->append(new Response(
-            200,
-            ['content-type' => 'application/json'],
-            (string) json_encode([
-                'id' => md5((string) rand()),
-                'source_id' => $sourceId,
-                'label' => $label,
-                'tests' => $tests,
-            ])
-        ));
-
-        $apiKey = 'api key value';
-
-        $this->suiteClient->update($apiKey, $suiteId, $sourceId, $label, $tests);
-
-        $request = $this->getLastRequest();
-        self::assertSame('PUT', $request->getMethod());
-        self::assertSame('Bearer ' . $apiKey, $request->getHeaderLine('authorization'));
-    }
 
     public function testThrowsInvalidModelDataException(): void
     {
@@ -77,7 +48,32 @@ class UpdateSuiteTest extends AbstractSuiteClientTest
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->suiteClient->update('api token', 'suite id', 'source id', 'label', ['test.yaml']);
+            $this->suiteClient->update(
+                self::API_KEY,
+                md5((string) rand()),
+                md5((string) rand()),
+                md5((string) rand()),
+                [md5((string) rand()) . '.yaml']
+            );
         };
+    }
+
+    protected function getExpectedRequestMethod(): string
+    {
+        return 'PUT';
+    }
+
+    protected function getClientActionSuccessResponse(): ResponseInterface
+    {
+        return new Response(
+            200,
+            ['content-type' => 'application/json'],
+            (string) json_encode([
+                'id' => md5((string) rand()),
+                'source_id' => md5((string) rand()),
+                'label' => md5((string) rand()),
+                'tests' => [md5((string) rand()) . '.yaml'],
+            ])
+        );
     }
 }

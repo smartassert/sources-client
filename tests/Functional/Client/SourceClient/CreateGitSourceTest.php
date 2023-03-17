@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Functional\Client\SourceClient;
 
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\SourcesClient\Exception\ResponseException;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
@@ -14,35 +15,6 @@ class CreateGitSourceTest extends AbstractSourceClientTest
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
-
-    public function testCreateGitSourceRequestProperties(): void
-    {
-        $label = 'git source label';
-        $hostUrl = 'https://example.com/repo.git';
-        $path = '/';
-
-        $this->mockHandler->append(new Response(
-            200,
-            ['content-type' => 'application/json'],
-            (string) json_encode([
-                'type' => 'git',
-                'id' => md5((string) rand()),
-                'user_id' => md5((string) rand()),
-                'label' => $label,
-                'host_url' => $hostUrl,
-                'path' => $path,
-                'has_credentials' => false,
-            ])
-        ));
-
-        $apiKey = 'api key value';
-
-        $this->sourceClient->createGitSource($apiKey, $label, $hostUrl, $path, null);
-
-        $request = $this->getLastRequest();
-        self::assertSame('POST', $request->getMethod());
-        self::assertSame('Bearer ' . $apiKey, $request->getHeaderLine('authorization'));
-    }
 
     public function testCreateFileSourceThrowsInvalidModelDataException(): void
     {
@@ -76,7 +48,35 @@ class CreateGitSourceTest extends AbstractSourceClientTest
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->sourceClient->createGitSource('api token', 'git source label', 'host url', 'path', null);
+            $this->sourceClient->createGitSource(
+                self::API_KEY,
+                md5((string) rand()),
+                'https://example.com/' . md5((string) rand()) . '.git',
+                '/' . md5((string) rand()),
+                null
+            );
         };
+    }
+
+    protected function getExpectedRequestMethod(): string
+    {
+        return 'POST';
+    }
+
+    protected function getClientActionSuccessResponse(): ResponseInterface
+    {
+        return new Response(
+            200,
+            ['content-type' => 'application/json'],
+            (string) json_encode([
+                'type' => 'git',
+                'id' => md5((string) rand()),
+                'user_id' => md5((string) rand()),
+                'label' => md5((string) rand()),
+                'host_url' => 'https://example.com/' . md5((string) rand()) . '.git',
+                'path' => '/' . md5((string) rand()),
+                'has_credentials' => false,
+            ])
+        );
     }
 }
