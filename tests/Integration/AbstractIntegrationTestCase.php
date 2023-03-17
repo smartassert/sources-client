@@ -14,6 +14,8 @@ use SmartAssert\SourcesClient\FileClient;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SourceClient;
 use SmartAssert\SourcesClient\SourceFactory;
+use SmartAssert\SourcesClient\SuiteClient;
+use SmartAssert\SourcesClient\SuiteFactory;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\UsersClient\Client as UsersClient;
 use SmartAssert\UsersClient\Model\ApiKey;
@@ -29,6 +31,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
 
     protected static FileClient $fileClient;
     protected static SourceClient $sourceClient;
+    protected static SuiteClient $suiteClient;
     protected static Token $user1ApiToken;
     protected static DataRepository $dataRepository;
     protected static RequestFactory $requestFactory;
@@ -40,13 +43,18 @@ abstract class AbstractIntegrationTestCase extends TestCase
         self::$requestFactory = new RequestFactory('http://localhost:9081');
         self::$serviceClient = self::createServiceClient();
         self::$exceptionFactory = new ExceptionFactory();
-        $sourceFactory = new SourceFactory();
 
         self::$fileClient = new FileClient(self::$requestFactory, self::$serviceClient, self::$exceptionFactory);
         self::$sourceClient = new SourceClient(
             self::$requestFactory,
             self::$serviceClient,
-            $sourceFactory,
+            new SourceFactory(),
+            self::$exceptionFactory
+        );
+        self::$suiteClient = new SuiteClient(
+            self::$requestFactory,
+            self::$serviceClient,
+            new SuiteFactory(),
             self::$exceptionFactory
         );
 
