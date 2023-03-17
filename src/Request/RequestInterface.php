@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Request;
 
-interface SourceRequestInterface
+interface RequestInterface
 {
     public function hasId(): bool;
 

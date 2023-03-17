@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Request;
 
-class GitSourceRequest implements SourceRequestInterface
+class GitRequest implements RequestInterface
 {
     /**
      * @param non-empty-string      $label
-     * @param null|non-empty-string $sourceId
+     * @param null|non-empty-string $id
      */
     public function __construct(
         private readonly string $label,
         private readonly string $hostUrl,
         private readonly string $path,
         private readonly ?string $credentials,
-        private readonly ?string $sourceId = null,
+        private readonly ?string $id = null,
     ) {
     }
 
     public function hasId(): bool
     {
-        return is_string($this->sourceId);
+        return is_string($this->id);
     }
 
     /**
@@ -29,7 +29,7 @@ class GitSourceRequest implements SourceRequestInterface
      */
     public function getId(): ?string
     {
-        return $this->sourceId;
+        return $this->id;
     }
 
     public function getPayload(): array
