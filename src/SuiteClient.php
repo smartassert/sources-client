@@ -10,6 +10,8 @@ use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\SourcesClient\Model\Suite;
+use SmartAssert\SourcesClient\Request\RequestInterface;
+use SmartAssert\SourcesClient\Request\SuiteRequest;
 
 class SuiteClient
 {
@@ -35,7 +37,7 @@ class SuiteClient
      */
     public function create(string $token, string $sourceId, string $label, array $tests): Suite
     {
-        return $this->makeMutationRequest($token, $sourceId, $label, $tests, null);
+        return $this->makeMutationRequest($token, new SuiteRequest($sourceId, $label, $tests));
     }
 
     /**
@@ -51,36 +53,21 @@ class SuiteClient
      */
     public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite
     {
-        return $this->makeMutationRequest($token, $sourceId, $label, $tests, $suiteId);
+        return $this->makeMutationRequest($token, new SuiteRequest($sourceId, $label, $tests, $suiteId));
     }
 
     /**
-     * @param non-empty-string      $token
-     * @param non-empty-string      $sourceId
-     * @param non-empty-string      $label
-     * @param non-empty-string[]    $tests
-     * @param null|non-empty-string $suiteId
+     * @param non-empty-string $token
      *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
-    private function makeMutationRequest(
-        string $token,
-        string $sourceId,
-        string $label,
-        array $tests,
-        ?string $suiteId,
-    ): Suite {
-        $payload = [
-            'source_id' => $sourceId,
-            'label' => $label,
-            'tests' => $tests,
-        ];
-
+    private function makeMutationRequest(string $token, RequestInterface $request): Suite
+    {
         $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSuiteRequest(is_string($suiteId) ? 'PUT' : 'POST', $token, $suiteId)
-                ->withPayload(new UrlEncodedPayload($payload))
+            $this->requestFactory->createSuiteRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
+                ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 
         $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
