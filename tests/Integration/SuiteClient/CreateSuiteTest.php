@@ -8,12 +8,15 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Model\SourceInterface;
+use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateSuiteDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
 class CreateSuiteTest extends AbstractIntegrationTestCase
 {
+    use CreateUpdateSuiteDataProviderTrait;
+
     /**
-     * @dataProvider createInvalidRequestDataProvider
+     * @dataProvider createUpdateSuiteInvalidRequestDataProvider
      *
      * @param non-empty-string   $label
      * @param non-empty-string[] $tests
@@ -29,35 +32,6 @@ class CreateSuiteTest extends AbstractIntegrationTestCase
             self::assertInstanceOf(InvalidRequestException::class, $e);
             self::assertEquals($expected, $e->getInvalidRequestField());
         }
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function createInvalidRequestDataProvider(): array
-    {
-        $labelTooLong = str_repeat('.', 256);
-
-        return [
-            'label missing' => [
-                'label' => '',
-                'tests' => [],
-                'expected' => new InvalidRequestField(
-                    'label',
-                    '',
-                    'This value should be between 1 and 255 characters long.'
-                ),
-            ],
-            'label too long' => [
-                'label' => $labelTooLong,
-                'tests' => [],
-                'expected' => new InvalidRequestField(
-                    'label',
-                    $labelTooLong,
-                    'This value should be between 1 and 255 characters long.'
-                ),
-            ],
-        ];
     }
 
     public function testCreateSourceNotFound(): void
@@ -147,7 +121,7 @@ class CreateSuiteTest extends AbstractIntegrationTestCase
     }
 
     /**
-     * @dataProvider createSuccessDataProvider
+     * @dataProvider createUpdateSuiteSuccessDataProvider
      *
      * @param non-empty-string   $label
      * @param non-empty-string[] $tests
@@ -164,22 +138,5 @@ class CreateSuiteTest extends AbstractIntegrationTestCase
         self::assertSame($label, $suite->getLabel());
         self::assertSame($tests, $suite->getTests());
         self::assertNull($suite->getDeletedAt());
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function createSuccessDataProvider(): array
-    {
-        return [
-            'empty tests' => [
-                'label' => md5((string) rand()),
-                'tests' => [],
-            ],
-            'non-empty tests' => [
-                'label' => md5((string) rand()),
-                'tests' => ['test1.yaml', 'test2.yaml'],
-            ],
-        ];
     }
 }
