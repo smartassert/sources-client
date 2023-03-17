@@ -29,6 +29,8 @@ abstract class AbstractClientTestCase extends TestCase
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
 
+    protected const API_KEY = 'api key value';
+
     protected MockHandler $mockHandler;
     protected RequestFactory $requestFactory;
     protected ServiceClient $serviceClient;
@@ -93,6 +95,17 @@ abstract class AbstractClientTestCase extends TestCase
         }
     }
 
+    public function testClientActionRequestProperties(): void
+    {
+        $this->mockHandler->append($this->getClientActionSuccessResponse());
+
+        ($this->createClientActionCallable())();
+
+        $request = $this->getLastRequest();
+        self::assertSame($this->getExpectedRequestMethod(), $request->getMethod());
+        self::assertSame('Bearer ' . self::API_KEY, $request->getHeaderLine('authorization'));
+    }
+
     protected function getLastRequest(): RequestInterface
     {
         $request = $this->httpHistoryContainer->getTransactions()->getRequests()->getLast();
@@ -102,4 +115,8 @@ abstract class AbstractClientTestCase extends TestCase
     }
 
     abstract protected function createClientActionCallable(): callable;
+
+    abstract protected function getExpectedRequestMethod(): string;
+
+    abstract protected function getClientActionSuccessResponse(): ResponseInterface;
 }

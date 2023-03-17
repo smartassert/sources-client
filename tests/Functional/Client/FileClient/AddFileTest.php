@@ -13,22 +13,6 @@ class AddFileTest extends AbstractFileClientTest
 {
     use NetworkErrorExceptionDataProviderTrait;
 
-    public function testAddFileRequestProperties(): void
-    {
-        $this->mockHandler->append(new Response(200));
-
-        $apiKey = 'api key value';
-        $fileSourceId = md5((string) rand());
-        $filename = 'test.yaml';
-        $content = 'test file content';
-
-        $this->fileClient->add($apiKey, $fileSourceId, $filename, $content);
-
-        $request = $this->getLastRequest();
-        self::assertSame('POST', $request->getMethod());
-        self::assertSame('Bearer ' . $apiKey, $request->getHeaderLine('authorization'));
-    }
-
     /**
      * @dataProvider addFileThrowsExceptionDataProvider
      */
@@ -89,7 +73,17 @@ class AddFileTest extends AbstractFileClientTest
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->fileClient->add('api token', 'source_id', 'test.yaml', 'content');
+            $this->fileClient->add(self::API_KEY, 'source_id', 'test.yaml', 'content');
         };
+    }
+
+    protected function getExpectedRequestMethod(): string
+    {
+        return 'POST';
+    }
+
+    protected function getClientActionSuccessResponse(): ResponseInterface
+    {
+        return new Response(200);
     }
 }
