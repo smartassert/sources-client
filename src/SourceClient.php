@@ -13,6 +13,7 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Response\JsonResponse;
+use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class SourceClient
@@ -74,20 +75,7 @@ class SourceClient
             $this->requestFactory->createSourceRequest('GET', $token, $sourceId)
         );
 
-        if (!$response->isSuccessful()) {
-            throw $this->exceptionFactory->createFromResponse($response);
-        }
-
-        if (!$response instanceof JsonResponse) {
-            throw InvalidResponseTypeException::create($response, JsonResponse::class);
-        }
-
-        $source = $this->sourceFactory->create($response->getData());
-        if (null === $source) {
-            throw InvalidModelDataException::fromJsonResponse(SourceInterface::class, $response);
-        }
-
-        return $source;
+        return $this->handleSourceResponse($response);
     }
 
     /**
@@ -102,20 +90,7 @@ class SourceClient
             $this->requestFactory->createSourceRequest('DELETE', $token, $sourceId)
         );
 
-        if (!$response->isSuccessful()) {
-            throw $this->exceptionFactory->createFromResponse($response);
-        }
-
-        if (!$response instanceof JsonResponse) {
-            throw InvalidResponseTypeException::create($response, JsonResponse::class);
-        }
-
-        $source = $this->sourceFactory->create($response->getData());
-        if (null === $source) {
-            throw InvalidModelDataException::fromJsonResponse(SourceInterface::class, $response);
-        }
-
-        return $source;
+        return $this->handleSourceResponse($response);
     }
 
     /**
@@ -230,11 +205,8 @@ class SourceClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
-    private function makeFileSourceMutationRequest(
-        string $token,
-        string $label,
-        ?string $sourceId,
-    ): SourceInterface {
+    private function makeFileSourceMutationRequest(string $token, string $label, ?string $sourceId): SourceInterface
+    {
         return $this->makeSourceMutationRequest($token, ['type' => 'file', 'label' => $label], $sourceId);
     }
 
@@ -283,16 +255,24 @@ class SourceClient
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException
      */
-    private function makeSourceMutationRequest(
-        string $token,
-        array $payload,
-        ?string $sourceId,
-    ): SourceInterface {
+    private function makeSourceMutationRequest(string $token, array $payload, ?string $sourceId): SourceInterface
+    {
         $response = $this->serviceClient->sendRequest(
             $this->requestFactory->createSourceRequest(is_string($sourceId) ? 'PUT' : 'POST', $token, $sourceId)
                 ->withPayload(new UrlEncodedPayload($payload))
         );
 
+        return $this->handleSourceResponse($response);
+    }
+
+    /**
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     */
+    private function handleSourceResponse(ResponseInterface $response): SourceInterface
+    {
         if (!$response->isSuccessful()) {
             throw $this->exceptionFactory->createFromResponse($response);
         }
