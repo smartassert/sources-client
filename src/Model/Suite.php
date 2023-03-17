@@ -21,6 +21,9 @@ class Suite
     ) {
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getId(): string
     {
         return $this->id;
