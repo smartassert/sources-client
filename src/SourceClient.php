@@ -33,6 +33,7 @@ class SourceClient
      * @throws InvalidResponseDataException
      * @throws NonSuccessResponseException
      * @throws InvalidResponseTypeException
+     * @throws HttpResponseExceptionInterface
      */
     public function list(string $token): array
     {
@@ -40,13 +41,7 @@ class SourceClient
             $this->requestFactory->createSourcesRequest($token)
         );
 
-        if (!$response->isSuccessful()) {
-            throw new NonSuccessResponseException($response->getHttpResponse());
-        }
-
-        if (!$response instanceof JsonResponse) {
-            throw InvalidResponseTypeException::create($response, JsonResponse::class);
-        }
+        $response = $this->verifyJsonResponse($response);
 
         $sources = [];
 
@@ -107,13 +102,7 @@ class SourceClient
             $this->requestFactory->createSourceFilenamesRequest($token, $fileSourceId)
         );
 
-        if (!$response->isSuccessful()) {
-            throw $this->exceptionFactory->createFromResponse($response);
-        }
-
-        if (!$response instanceof JsonResponse) {
-            throw InvalidResponseTypeException::create($response, JsonResponse::class);
-        }
+        $response = $this->verifyJsonResponse($response);
 
         $filenames = [];
         foreach ($response->getData() as $item) {
@@ -267,11 +256,10 @@ class SourceClient
 
     /**
      * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException
      */
-    private function handleSourceResponse(ResponseInterface $response): SourceInterface
+    private function verifyJsonResponse(ResponseInterface $response): JsonResponse
     {
         if (!$response->isSuccessful()) {
             throw $this->exceptionFactory->createFromResponse($response);
@@ -280,6 +268,19 @@ class SourceClient
         if (!$response instanceof JsonResponse) {
             throw InvalidResponseTypeException::create($response, JsonResponse::class);
         }
+
+        return $response;
+    }
+
+    /**
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     * @throws HttpResponseExceptionInterface
+     */
+    private function handleSourceResponse(ResponseInterface $response): SourceInterface
+    {
+        $response = $this->verifyJsonResponse($response);
 
         $source = $this->sourceFactory->create($response->getData());
         if (null === $source) {
