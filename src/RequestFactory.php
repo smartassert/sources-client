@@ -63,6 +63,14 @@ class RequestFactory extends ServiceClientRequestFactory
     /**
      * @param non-empty-string $method
      */
+    public function createSuiteRequest(string $method, string $token, ?string $suiteId): Request
+    {
+        return $this->doCreate($token, $method, $this->urlGenerator->generate('suite', ['suiteId' => $suiteId]));
+    }
+
+    /**
+     * @param non-empty-string $method
+     */
     private function doCreate(string $token, string $method, string $url): Request
     {
         $this->authenticationMiddleware->setAuthentication(new BearerAuthentication($token));
@@ -78,6 +86,7 @@ class RequestFactory extends ServiceClientRequestFactory
         $routeCollection->add('sources', new Route('/sources'));
         $routeCollection->add('source', new Route('/source/{sourceId?}'));
         $routeCollection->add('source_filenames', new Route('/source/{sourceId}/list'));
+        $routeCollection->add('suite', new Route('/suite/{suiteId?}'));
 
         return new UrlGenerator($routeCollection, new RequestContext($baseUrl));
     }
