@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
 
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
+use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateGitSourceDataProviderTrait;
@@ -84,5 +85,22 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
         self::assertSame($path, $gitSource->getPath());
         self::assertSame(is_string($credentials), $gitSource->hasCredentials());
         self::assertNotEmpty($gitSource->getId());
+    }
+
+    public function testUpdateDeletedFileSource(): void
+    {
+        self::$sourceClient->delete(self::$user1ApiToken->token, $this->gitSource->getId());
+
+        self::expectException(ModifyReadOnlyEntityException::class);
+        self::expectErrorMessage('Cannot modify read-only source ' . $this->gitSource->getId() . '.');
+
+        self::$sourceClient->updateGitSource(
+            self::$user1ApiToken->token,
+            $this->gitSource->getId(),
+            md5((string) rand()),
+            'https://example.com/' . md5((string) rand()) . '.git',
+            '/' . md5((string) rand()),
+            null
+        );
     }
 }

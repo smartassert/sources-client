@@ -13,6 +13,7 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
+use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Request\FileRequest;
 use SmartAssert\SourcesClient\Request\GitRequest;
@@ -139,10 +140,19 @@ class SourceClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws ModifyReadOnlyEntityException
      */
     public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
     {
-        return $this->makeSourceMutationRequest($token, new FileRequest($label, $sourceId));
+        try {
+            return $this->makeSourceMutationRequest($token, new FileRequest($label, $sourceId));
+        } catch (NonSuccessResponseException $e) {
+            if (405 === $e->getCode()) {
+                throw new ModifyReadOnlyEntityException($sourceId, 'source');
+            }
+
+            throw $e;
+        }
     }
 
     /**
@@ -177,6 +187,7 @@ class SourceClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws ModifyReadOnlyEntityException
      */
     public function updateGitSource(
         string $token,
@@ -186,10 +197,18 @@ class SourceClient
         string $path,
         ?string $credentials,
     ): SourceInterface {
-        return $this->makeSourceMutationRequest(
-            $token,
-            new GitRequest($label, $hostUrl, $path, $credentials, $sourceId)
-        );
+        try {
+            return $this->makeSourceMutationRequest(
+                $token,
+                new GitRequest($label, $hostUrl, $path, $credentials, $sourceId)
+            );
+        } catch (NonSuccessResponseException $e) {
+            if (405 === $e->getCode()) {
+                throw new ModifyReadOnlyEntityException($sourceId, 'source');
+            }
+
+            throw $e;
+        }
     }
 
     /**
