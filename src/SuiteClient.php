@@ -8,13 +8,13 @@ use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\Suite;
 
 class SuiteClient
 {
+    use VerifyJsonResponseTrait;
+
     public function __construct(
         private readonly RequestFactory $requestFactory,
         private readonly ServiceClient $serviceClient,
@@ -83,13 +83,7 @@ class SuiteClient
                 ->withPayload(new UrlEncodedPayload($payload))
         );
 
-        if (!$response->isSuccessful()) {
-            throw $this->exceptionFactory->createFromResponse($response);
-        }
-
-        if (!$response instanceof JsonResponse) {
-            throw InvalidResponseTypeException::create($response, JsonResponse::class);
-        }
+        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
 
         $suite = $this->suiteFactory->create($response->getData());
         if (null === $suite) {
