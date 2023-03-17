@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
 
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
+use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateFileSourceDataProviderTrait;
@@ -59,5 +60,19 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
         self::assertInstanceOf(FileSource::class, $fileSource);
         self::assertSame($label, $fileSource->getLabel());
         self::assertNotEmpty($fileSource->getId());
+    }
+
+    public function testUpdateDeletedFileSource(): void
+    {
+        self::$sourceClient->delete(self::$user1ApiToken->token, $this->fileSource->getId());
+
+        self::expectException(ModifyReadOnlyEntityException::class);
+        self::expectErrorMessage('Cannot modify read-only source ' . $this->fileSource->getId() . '.');
+
+        self::$sourceClient->updateFileSource(
+            self::$user1ApiToken->token,
+            $this->fileSource->getId(),
+            md5((string) rand())
+        );
     }
 }
