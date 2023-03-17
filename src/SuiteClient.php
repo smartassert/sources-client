@@ -39,6 +39,22 @@ class SuiteClient
     }
 
     /**
+     * @param non-empty-string   $token
+     * @param non-empty-string   $suiteId
+     * @param non-empty-string   $sourceId
+     * @param non-empty-string   $label
+     * @param non-empty-string[] $tests
+     *
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     */
+    public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite
+    {
+        return $this->makeMutationRequest($token, $sourceId, $label, $tests, $suiteId);
+    }
+
+    /**
      * @param non-empty-string      $token
      * @param non-empty-string      $sourceId
      * @param non-empty-string      $label
