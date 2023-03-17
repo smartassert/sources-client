@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Integration\SuiteClient;
 
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
+use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Model\Suite;
@@ -76,5 +77,21 @@ class UpdateSuiteTest extends AbstractIntegrationTestCase
         self::assertSame($label, $suite->getLabel());
         self::assertSame($tests, $suite->getTests());
         self::assertNull($suite->getDeletedAt());
+    }
+
+    public function testUpdateDeletedSuite(): void
+    {
+        self::$suiteClient->delete(self::$user1ApiToken->token, $this->suite->getId());
+
+        self::expectException(ModifyReadOnlyEntityException::class);
+        self::expectErrorMessage('Cannot modify read-only suite ' . $this->suite->getId() . '.');
+
+        self::$suiteClient->update(
+            self::$user1ApiToken->token,
+            $this->suite->getId(),
+            $this->source->getId(),
+            md5((string) rand()),
+            [],
+        );
     }
 }

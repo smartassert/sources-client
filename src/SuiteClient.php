@@ -8,7 +8,9 @@ use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
+use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
+use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Request\RequestInterface;
 use SmartAssert\SourcesClient\Request\SuiteRequest;
@@ -50,10 +52,40 @@ class SuiteClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws ModifyReadOnlyEntityException
      */
     public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite
     {
-        return $this->makeMutationRequest($token, new SuiteRequest($sourceId, $label, $tests, $suiteId));
+        try {
+            return $this->makeMutationRequest($token, new SuiteRequest($sourceId, $label, $tests, $suiteId));
+        } catch (NonSuccessResponseException $e) {
+            if (405 === $e->getCode()) {
+                throw new ModifyReadOnlyEntityException($suiteId, 'suite');
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     */
+    public function delete(string $token, string $suiteId): Suite
+    {
+        $response = $this->serviceClient->sendRequest(
+            $this->requestFactory->createSuiteRequest('DELETE', $token, $suiteId)
+        );
+
+        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+
+        $suite = $this->suiteFactory->create($response->getData());
+        if (null === $suite) {
+            throw InvalidModelDataException::fromJsonResponse(Suite::class, $response);
+        }
+
+        return $suite;
     }
 
     /**
