@@ -12,12 +12,13 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 class SourceClient
 {
+    use VerifyJsonResponseTrait;
+
     public function __construct(
         private readonly RequestFactory $requestFactory,
         private readonly ServiceClient $serviceClient,
@@ -41,7 +42,7 @@ class SourceClient
             $this->requestFactory->createSourcesRequest($token)
         );
 
-        $response = $this->verifyJsonResponse($response);
+        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
 
         $sources = [];
 
@@ -102,7 +103,7 @@ class SourceClient
             $this->requestFactory->createSourceFilenamesRequest($token, $fileSourceId)
         );
 
-        $response = $this->verifyJsonResponse($response);
+        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
 
         $filenames = [];
         foreach ($response->getData() as $item) {
@@ -255,24 +256,6 @@ class SourceClient
     }
 
     /**
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidResponseDataException
-     * @throws InvalidResponseTypeException
-     */
-    private function verifyJsonResponse(ResponseInterface $response): JsonResponse
-    {
-        if (!$response->isSuccessful()) {
-            throw $this->exceptionFactory->createFromResponse($response);
-        }
-
-        if (!$response instanceof JsonResponse) {
-            throw InvalidResponseTypeException::create($response, JsonResponse::class);
-        }
-
-        return $response;
-    }
-
-    /**
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException
@@ -280,7 +263,7 @@ class SourceClient
      */
     private function handleSourceResponse(ResponseInterface $response): SourceInterface
     {
-        $response = $this->verifyJsonResponse($response);
+        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
 
         $source = $this->sourceFactory->create($response->getData());
         if (null === $source) {
