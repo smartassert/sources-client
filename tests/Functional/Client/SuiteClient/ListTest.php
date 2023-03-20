@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Functional\Client\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Functional\Client\SuiteClient;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class ListSourcesTest extends AbstractSourceClientTest
+class ListTest extends AbstractSuiteClientTest
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
@@ -25,7 +25,7 @@ class ListSourcesTest extends AbstractSourceClientTest
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->sourceClient->list(self::API_KEY);
+            $this->suiteClient->list(self::API_KEY);
         };
     }
 

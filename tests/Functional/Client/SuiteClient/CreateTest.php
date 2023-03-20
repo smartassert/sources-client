@@ -11,12 +11,12 @@ use SmartAssert\SourcesClient\Exception\ResponseException;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class DeleteSuiteTest extends AbstractSuiteClientTest
+class CreateTest extends AbstractSuiteClientTest
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
 
-    public function testDeleteThrowsInvalidModelDataException(): void
+    public function testCreateThrowsInvalidModelDataException(): void
     {
         $responsePayload = ['key' => 'value'];
         $response = new Response(
@@ -48,13 +48,18 @@ class DeleteSuiteTest extends AbstractSuiteClientTest
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->suiteClient->delete(self::API_KEY, md5((string) rand()));
+            $this->suiteClient->create(
+                self::API_KEY,
+                md5((string) rand()),
+                md5((string) rand()),
+                [md5((string) rand()) . '.yaml']
+            );
         };
     }
 
     protected function getExpectedRequestMethod(): string
     {
-        return 'DELETE';
+        return 'POST';
     }
 
     protected function getClientActionSuccessResponse(): ResponseInterface

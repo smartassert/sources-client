@@ -7,7 +7,7 @@ namespace SmartAssert\SourcesClient\Tests\Integration\SuiteClient;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class DeleteSuiteTest extends AbstractIntegrationTestCase
+class DeleteTest extends AbstractIntegrationTestCase
 {
     public function testDeleteSuccess(): void
     {

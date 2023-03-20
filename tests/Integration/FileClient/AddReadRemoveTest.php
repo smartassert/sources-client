@@ -8,7 +8,7 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class AddFileReadFileRemoveFileTest extends AbstractIntegrationTestCase
+class AddReadRemoveTest extends AbstractIntegrationTestCase
 {
     public function testAddFileReadFile(): void
     {

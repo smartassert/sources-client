@@ -6,7 +6,7 @@ namespace SmartAssert\SourcesClient\Tests\Integration\SuiteClient;
 
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class ListSuitesTest extends AbstractIntegrationTestCase
+class ListTest extends AbstractIntegrationTestCase
 {
     protected function setUp(): void
     {
