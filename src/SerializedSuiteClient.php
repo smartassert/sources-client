@@ -8,7 +8,10 @@ use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
+use SmartAssert\ServiceClient\Request;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
 
 class SerializedSuiteClient
@@ -34,12 +37,39 @@ class SerializedSuiteClient
      */
     public function create(string $token, string $suiteId, array $parameters = []): SerializedSuite
     {
-        $response = $this->serviceClient->sendRequest(
+        return $this->handleSerializedSuiteRetrievalRequest(
             $this->requestFactory->createSuiteSerializationRequest($token, $suiteId)
                 ->withPayload(new UrlEncodedPayload($parameters))
         );
+    }
 
-        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+    /**
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     */
+    public function get(string $token, string $serializedSuiteId): SerializedSuite
+    {
+        return $this->handleSerializedSuiteRetrievalRequest(
+            $this->requestFactory->createSerializedSuiteRequest($token, $serializedSuiteId)
+        );
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     */
+    private function handleSerializedSuiteRetrievalRequest(Request $request): SerializedSuite
+    {
+        $response = $this->verifyJsonResponse(
+            $this->serviceClient->sendRequest($request),
+            $this->exceptionFactory
+        );
 
         $serializedSuite = $this->serializedSuiteFactory->create($response->getData());
         if (null === $serializedSuite) {

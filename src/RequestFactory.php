@@ -82,6 +82,15 @@ class RequestFactory extends ServiceClientRequestFactory
         );
     }
 
+    public function createSerializedSuiteRequest(string $token, string $serializedSuiteId): Request
+    {
+        return $this->doCreate(
+            $token,
+            'GET',
+            $this->urlGenerator->generate('serialized_suite', ['serializedSuiteId' => $serializedSuiteId])
+        );
+    }
+
     /**
      * @param non-empty-string $method
      */
@@ -103,6 +112,7 @@ class RequestFactory extends ServiceClientRequestFactory
         $routeCollection->add('suite', new Route('/suite/{suiteId?}'));
         $routeCollection->add('suites', new Route('/suites'));
         $routeCollection->add('suite_serialize', new Route('/suite/{suiteId}/serialize'));
+        $routeCollection->add('serialized_suite', new Route('/serialized_suite/{serializedSuiteId}'));
 
         return new UrlGenerator($routeCollection, new RequestContext($baseUrl));
     }
