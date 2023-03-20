@@ -8,6 +8,8 @@ use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
@@ -86,6 +88,36 @@ class SuiteClient
         }
 
         return $suite;
+    }
+
+    /**
+     * @return Suite[]
+     *
+     * @throws ClientExceptionInterface
+     * @throws InvalidResponseDataException
+     * @throws NonSuccessResponseException
+     * @throws InvalidResponseTypeException
+     * @throws HttpResponseExceptionInterface
+     */
+    public function list(string $token): array
+    {
+        $response = $this->serviceClient->sendRequest($this->requestFactory->createSuitesRequest($token));
+
+        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+
+        $sources = [];
+
+        foreach ($response->getData() as $sourceData) {
+            if (is_array($sourceData)) {
+                $suite = $this->suiteFactory->create($sourceData);
+
+                if ($suite instanceof Suite) {
+                    $sources[] = $suite;
+                }
+            }
+        }
+
+        return $sources;
     }
 
     /**
