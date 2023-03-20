@@ -60,6 +60,24 @@ class SerializedSuiteClient
     /**
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
+     * @throws InvalidResponseDataException
+     */
+    public function read(string $token, string $serializedSuiteId): string
+    {
+        $response = $this->serviceClient->sendRequest(
+            $this->requestFactory->createReadSerializedSuiteRequest($token, $serializedSuiteId)
+        );
+
+        if (!$response->isSuccessful()) {
+            throw $this->exceptionFactory->createFromResponse($response);
+        }
+
+        return $response->getHttpResponse()->getBody()->getContents();
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException

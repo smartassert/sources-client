@@ -19,6 +19,7 @@ use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\SuiteClient;
 use SmartAssert\SourcesClient\SuiteFactory;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
+use SmartAssert\SourcesClient\Tests\Services\FixtureReader;
 use SmartAssert\UsersClient\Client as UsersClient;
 use SmartAssert\UsersClient\Model\ApiKey;
 use SmartAssert\UsersClient\Model\Token;
@@ -40,6 +41,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
     protected static RequestFactory $requestFactory;
     protected static ServiceClient $serviceClient;
     protected static ExceptionFactory $exceptionFactory;
+    protected static FixtureReader $fixtureReader;
 
     public static function setUpBeforeClass(): void
     {
@@ -71,6 +73,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
         self::$dataRepository = new DataRepository(
             'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
         );
+        self::$fixtureReader = new FixtureReader(__DIR__ . '/../Fixtures/');
     }
 
     protected static function createUserApiToken(string $email, string $password): Token
