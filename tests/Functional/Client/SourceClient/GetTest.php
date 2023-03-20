@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class GetSourceTest extends AbstractSourceClientTest
+class GetTest extends AbstractSourceClientTest
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;

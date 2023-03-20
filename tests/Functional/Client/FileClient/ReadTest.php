@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class RemoveFileTest extends AbstractFileClientTest
+class ReadTest extends AbstractFileClientTest
 {
     use NetworkErrorExceptionDataProviderTrait;
 
@@ -20,17 +20,17 @@ class RemoveFileTest extends AbstractFileClientTest
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->fileClient->remove(self::API_KEY, 'source_id', 'test.yaml');
+            $this->fileClient->read(self::API_KEY, 'source_id', 'test.yaml');
         };
     }
 
     protected function getExpectedRequestMethod(): string
     {
-        return 'DELETE';
+        return 'GET';
     }
 
     protected function getClientActionSuccessResponse(): ResponseInterface
     {
-        return new Response();
+        return new Response(200, [], 'file content');
     }
 }

@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Exception\FilesystemException;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class AddFileTest extends AbstractFileClientTest
+class AddTest extends AbstractFileClientTest
 {
     use NetworkErrorExceptionDataProviderTrait;
 

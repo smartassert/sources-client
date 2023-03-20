@@ -12,7 +12,7 @@ use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateSuiteDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class UpdateSuiteTest extends AbstractIntegrationTestCase
+class UpdateTest extends AbstractIntegrationTestCase
 {
     use CreateUpdateSuiteDataProviderTrait;
 

@@ -11,7 +11,7 @@ use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateSuiteDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class CreateSuiteTest extends AbstractIntegrationTestCase
+class CreateTest extends AbstractIntegrationTestCase
 {
     use CreateUpdateSuiteDataProviderTrait;
 
