@@ -68,6 +68,11 @@ class RequestFactory extends ServiceClientRequestFactory
         return $this->doCreate($token, $method, $this->urlGenerator->generate('suite', ['suiteId' => $suiteId]));
     }
 
+    public function createSuitesRequest(string $token): Request
+    {
+        return $this->doCreate($token, 'GET', $this->urlGenerator->generate('suites'));
+    }
+
     /**
      * @param non-empty-string $method
      */
@@ -87,6 +92,7 @@ class RequestFactory extends ServiceClientRequestFactory
         $routeCollection->add('source', new Route('/source/{sourceId?}'));
         $routeCollection->add('source_filenames', new Route('/source/{sourceId}/list'));
         $routeCollection->add('suite', new Route('/suite/{suiteId?}'));
+        $routeCollection->add('suites', new Route('/suites'));
 
         return new UrlGenerator($routeCollection, new RequestContext($baseUrl));
     }
