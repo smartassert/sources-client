@@ -12,6 +12,8 @@ use SmartAssert\ServiceClient\ResponseFactory\ResponseFactory;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\FileClient;
 use SmartAssert\SourcesClient\RequestFactory;
+use SmartAssert\SourcesClient\SerializedSuiteClient;
+use SmartAssert\SourcesClient\SerializedSuiteFactory;
 use SmartAssert\SourcesClient\SourceClient;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\SuiteClient;
@@ -32,6 +34,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
     protected static FileClient $fileClient;
     protected static SourceClient $sourceClient;
     protected static SuiteClient $suiteClient;
+    protected static SerializedSuiteClient $serializedSuiteClient;
     protected static Token $user1ApiToken;
     protected static DataRepository $dataRepository;
     protected static RequestFactory $requestFactory;
@@ -55,6 +58,12 @@ abstract class AbstractIntegrationTestCase extends TestCase
             self::$requestFactory,
             self::$serviceClient,
             new SuiteFactory(),
+            self::$exceptionFactory
+        );
+        self::$serializedSuiteClient = new SerializedSuiteClient(
+            self::$requestFactory,
+            self::$serviceClient,
+            new SerializedSuiteFactory(),
             self::$exceptionFactory
         );
 
