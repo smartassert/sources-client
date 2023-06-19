@@ -11,7 +11,7 @@ trait CreateUpdateSuiteDataProviderTrait
     /**
      * @return array<mixed>
      */
-    public function createUpdateSuiteInvalidRequestDataProvider(): array
+    public static function createUpdateSuiteInvalidRequestDataProvider(): array
     {
         $labelTooLong = str_repeat('.', 256);
 
@@ -40,7 +40,7 @@ trait CreateUpdateSuiteDataProviderTrait
     /**
      * @return array<mixed>
      */
-    public function createUpdateSuiteSuccessDataProvider(): array
+    public static function createUpdateSuiteSuccessDataProvider(): array
     {
         return [
             'empty tests' => [

@@ -30,7 +30,7 @@ class ListFileSourceFilenamesTest extends AbstractIntegrationTestCase
     /**
      * @return array<mixed>
      */
-    public function listFileSourceFilenamesDataProvider(): array
+    public static function listFileSourceFilenamesDataProvider(): array
     {
         return [
             'none' => [

@@ -77,7 +77,7 @@ abstract class AbstractClientTestCase extends TestCase
     /**
      * @return array<mixed>
      */
-    abstract public function clientActionThrowsExceptionDataProvider(): array;
+    abstract public static function clientActionThrowsExceptionDataProvider(): array;
 
     /**
      * @dataProvider commonNonSuccessResponseDataProvider

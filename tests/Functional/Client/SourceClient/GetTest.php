@@ -41,11 +41,11 @@ class GetTest extends AbstractSourceClientTestCase
         self::assertSame('Bearer ' . $apiKey, $request->getHeaderLine('authorization'));
     }
 
-    public function clientActionThrowsExceptionDataProvider(): array
+    public static function clientActionThrowsExceptionDataProvider(): array
     {
         return array_merge(
-            $this->networkErrorExceptionDataProvider(),
-            $this->invalidJsonResponseExceptionDataProvider(),
+            static::networkErrorExceptionDataProvider(),
+            static::invalidJsonResponseExceptionDataProvider(),
         );
     }
 

@@ -11,7 +11,7 @@ trait CreateUpdateGitSourceDataProviderTrait
     /**
      * @return array<mixed>
      */
-    public function createUpdateGitSourceInvalidRequestDataProvider(): array
+    public static function createUpdateGitSourceInvalidRequestDataProvider(): array
     {
         $label = 'git source label';
         $labelTooLong = str_repeat('.', 256);
@@ -87,7 +87,7 @@ trait CreateUpdateGitSourceDataProviderTrait
     /**
      * @return array<mixed>
      */
-    public function createUpdateGitSourceSuccessDataProvider(): array
+    public static function createUpdateGitSourceSuccessDataProvider(): array
     {
         return [
             'without credentials' => [
