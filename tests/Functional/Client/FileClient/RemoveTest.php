@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class RemoveTest extends AbstractFileClientTest
+class RemoveTest extends AbstractFileClientTestCase
 {
     use NetworkErrorExceptionDataProviderTrait;
 

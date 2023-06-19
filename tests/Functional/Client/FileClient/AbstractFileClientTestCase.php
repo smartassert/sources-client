@@ -8,7 +8,7 @@ use SmartAssert\SourcesClient\FileClient;
 use SmartAssert\SourcesClient\Tests\Functional\Client\AbstractClientTestCase;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-abstract class AbstractFileClientTest extends AbstractClientTestCase
+abstract class AbstractFileClientTestCase extends AbstractClientTestCase
 {
     use NetworkErrorExceptionDataProviderTrait;
 

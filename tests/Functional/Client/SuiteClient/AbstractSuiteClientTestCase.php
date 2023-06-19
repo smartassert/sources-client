@@ -8,7 +8,7 @@ use SmartAssert\SourcesClient\SuiteClient;
 use SmartAssert\SourcesClient\SuiteFactory;
 use SmartAssert\SourcesClient\Tests\Functional\Client\AbstractClientTestCase;
 
-abstract class AbstractSuiteClientTest extends AbstractClientTestCase
+abstract class AbstractSuiteClientTestCase extends AbstractClientTestCase
 {
     protected SuiteClient $suiteClient;
 

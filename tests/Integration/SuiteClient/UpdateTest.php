@@ -84,7 +84,7 @@ class UpdateTest extends AbstractIntegrationTestCase
         self::$suiteClient->delete(self::$user1ApiToken->token, $this->suite->getId());
 
         self::expectException(ModifyReadOnlyEntityException::class);
-        self::expectErrorMessage('Cannot modify read-only suite ' . $this->suite->getId() . '.');
+        self::expectExceptionMessage('Cannot modify read-only suite ' . $this->suite->getId() . '.');
 
         self::$suiteClient->update(
             self::$user1ApiToken->token,

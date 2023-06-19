@@ -67,7 +67,7 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
         self::$sourceClient->delete(self::$user1ApiToken->token, $this->fileSource->getId());
 
         self::expectException(ModifyReadOnlyEntityException::class);
-        self::expectErrorMessage('Cannot modify read-only source ' . $this->fileSource->getId() . '.');
+        self::expectExceptionMessage('Cannot modify read-only source ' . $this->fileSource->getId() . '.');
 
         self::$sourceClient->updateFileSource(
             self::$user1ApiToken->token,

@@ -92,7 +92,7 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
         self::$sourceClient->delete(self::$user1ApiToken->token, $this->gitSource->getId());
 
         self::expectException(ModifyReadOnlyEntityException::class);
-        self::expectErrorMessage('Cannot modify read-only source ' . $this->gitSource->getId() . '.');
+        self::expectExceptionMessage('Cannot modify read-only source ' . $this->gitSource->getId() . '.');
 
         self::$sourceClient->updateGitSource(
             self::$user1ApiToken->token,
