@@ -43,6 +43,9 @@ class SerializedSuite
         return $this->parameters;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getState(): string
     {
         return $this->state;
