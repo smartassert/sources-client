@@ -15,6 +15,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory;
 use SmartAssert\ServiceClient\ResponseFactory\ResponseFactory;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
@@ -54,7 +55,13 @@ abstract class AbstractClientTestCase extends TestCase
         $this->requestFactory = new RequestFactory('https://sources.example.com');
 
         $responseFactory = ResponseFactory::createFactory();
-        $this->serviceClient = new ServiceClient($httpFactory, $httpFactory, $httpClient, $responseFactory);
+        $this->serviceClient = new ServiceClient(
+            $httpFactory,
+            $httpFactory,
+            $httpClient,
+            $responseFactory,
+            new CurlExceptionFactory()
+        );
         $this->exceptionFactory = new ExceptionFactory();
     }
 
