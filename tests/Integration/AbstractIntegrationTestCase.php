@@ -8,6 +8,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\HttpFactory;
 use PHPUnit\Framework\TestCase;
 use SmartAssert\ServiceClient\Client as ServiceClient;
+use SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory;
 use SmartAssert\ServiceClient\ResponseFactory\ResponseFactory;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\FileClient;
@@ -103,6 +104,12 @@ abstract class AbstractIntegrationTestCase extends TestCase
     {
         $httpFactory = new HttpFactory();
 
-        return new ServiceClient($httpFactory, $httpFactory, new HttpClient(), ResponseFactory::createFactory());
+        return new ServiceClient(
+            $httpFactory,
+            $httpFactory,
+            new HttpClient(),
+            ResponseFactory::createFactory(),
+            new CurlExceptionFactory()
+        );
     }
 }
