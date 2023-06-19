@@ -11,7 +11,7 @@ use SmartAssert\SourcesClient\Exception\ResponseException;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class CreateFileSourceTest extends AbstractSourceClientTest
+class CreateFileSourceTest extends AbstractSourceClientTestCase
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;

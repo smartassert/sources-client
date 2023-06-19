@@ -8,7 +8,7 @@ use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
 use SmartAssert\SourcesClient\Tests\Functional\Client\AbstractClientTestCase;
 
-abstract class AbstractSuiteClientTest extends AbstractClientTestCase
+abstract class AbstractSuiteClientTestCase extends AbstractClientTestCase
 {
     protected SerializedSuiteClient $serializedSuiteClient;
 

@@ -8,7 +8,7 @@ use SmartAssert\SourcesClient\SourceClient;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\Tests\Functional\Client\AbstractClientTestCase;
 
-abstract class AbstractSourceClientTest extends AbstractClientTestCase
+abstract class AbstractSourceClientTestCase extends AbstractClientTestCase
 {
     protected SourceClient $sourceClient;
 
