@@ -61,7 +61,7 @@ class GetTest extends AbstractIntegrationTestCase
         self::assertNull($serializedSuite->getFailureReason());
         self::assertNull($serializedSuite->getFailureMessage());
 
-        $expectedStates = ['requested', 'preparing/running', 'preparing/halted'];
+        $expectedStates = ['requested', 'preparing/running', 'preparing/halted', 'prepared'];
 
         self::assertTrue(
             in_array($serializedSuite->getState(), $expectedStates),
