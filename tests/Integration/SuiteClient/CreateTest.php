@@ -85,7 +85,7 @@ class CreateTest extends AbstractIntegrationTestCase
     /**
      * @return array<mixed>
      */
-    public function createLabelNotUniqueDataProvider(): array
+    public static function createLabelNotUniqueDataProvider(): array
     {
         return [
             'same source, different tests' => [

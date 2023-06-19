@@ -35,7 +35,7 @@ class AddTest extends AbstractFileClientTestCase
     /**
      * @return array<mixed>
      */
-    public function addFileThrowsExceptionDataProvider(): array
+    public static function addFileThrowsExceptionDataProvider(): array
     {
         $filesystemWriteExceptionPayload = [
             'file' => 'file.txt',
@@ -65,9 +65,9 @@ class AddTest extends AbstractFileClientTestCase
         ];
     }
 
-    public function clientActionThrowsExceptionDataProvider(): array
+    public static function clientActionThrowsExceptionDataProvider(): array
     {
-        return $this->networkErrorExceptionDataProvider();
+        return static::networkErrorExceptionDataProvider();
     }
 
     protected function createClientActionCallable(): callable

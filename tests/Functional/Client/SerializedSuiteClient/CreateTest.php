@@ -37,11 +37,11 @@ class CreateTest extends AbstractSuiteClientTestCase
         }
     }
 
-    public function clientActionThrowsExceptionDataProvider(): array
+    public static function clientActionThrowsExceptionDataProvider(): array
     {
         return array_merge(
-            $this->networkErrorExceptionDataProvider(),
-            $this->invalidJsonResponseExceptionDataProvider(),
+            static::networkErrorExceptionDataProvider(),
+            static::invalidJsonResponseExceptionDataProvider(),
         );
     }
 

@@ -11,7 +11,7 @@ trait CreateUpdateFileSourceDataProviderTrait
     /**
      * @return array<mixed>
      */
-    public function createUpdateFileSourceInvalidRequestDataProvider(): array
+    public static function createUpdateFileSourceInvalidRequestDataProvider(): array
     {
         $labelTooLong = str_repeat('.', 256);
 

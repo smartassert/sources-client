@@ -12,9 +12,9 @@ class ReadTest extends AbstractFileClientTestCase
 {
     use NetworkErrorExceptionDataProviderTrait;
 
-    public function clientActionThrowsExceptionDataProvider(): array
+    public static function clientActionThrowsExceptionDataProvider(): array
     {
-        return $this->networkErrorExceptionDataProvider();
+        return static::networkErrorExceptionDataProvider();
     }
 
     protected function createClientActionCallable(): callable

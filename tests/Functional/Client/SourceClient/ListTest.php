@@ -14,11 +14,11 @@ class ListTest extends AbstractSourceClientTestCase
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
 
-    public function clientActionThrowsExceptionDataProvider(): array
+    public static function clientActionThrowsExceptionDataProvider(): array
     {
         return array_merge(
-            $this->networkErrorExceptionDataProvider(),
-            $this->invalidJsonResponseExceptionDataProvider(),
+            static::networkErrorExceptionDataProvider(),
+            static::invalidJsonResponseExceptionDataProvider(),
         );
     }
 
