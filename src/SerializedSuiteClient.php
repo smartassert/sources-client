@@ -28,6 +28,7 @@ class SerializedSuiteClient
 
     /**
      * @param non-empty-string                          $token
+     * @param non-empty-string                          $serializedSuiteId
      * @param non-empty-string                          $suiteId
      * @param array<non-empty-string, non-empty-string> $parameters
      *
@@ -35,10 +36,14 @@ class SerializedSuiteClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      */
-    public function create(string $token, string $suiteId, array $parameters = []): SerializedSuite
-    {
+    public function create(
+        string $token,
+        string $serializedSuiteId,
+        string $suiteId,
+        array $parameters = []
+    ): SerializedSuite {
         return $this->handleSerializedSuiteRetrievalRequest(
-            $this->requestFactory->createSuiteSerializationRequest($token, $suiteId)
+            $this->requestFactory->createSuiteSerializationRequest($token, $serializedSuiteId, $suiteId)
                 ->withPayload(new UrlEncodedPayload($parameters))
         );
     }

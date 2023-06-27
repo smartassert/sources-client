@@ -8,6 +8,7 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Tests\DataProvider\GetSuiteDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
+use Symfony\Component\Uid\Ulid;
 
 class GetTest extends AbstractIntegrationTestCase
 {
@@ -44,8 +45,12 @@ class GetTest extends AbstractIntegrationTestCase
             ['Test1.yaml', 'Test2.yaml']
         );
 
+        $serializedSuiteId = (string) new Ulid();
+        \assert('' !== $serializedSuiteId);
+
         $createdSerializedSuite = self::$serializedSuiteClient->create(
             self::$user1ApiToken->token,
+            $serializedSuiteId,
             $suite->getId(),
             $parameters
         );

@@ -8,6 +8,7 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Tests\DataProvider\GetSuiteDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
+use Symfony\Component\Uid\Ulid;
 
 class CreateTest extends AbstractIntegrationTestCase
 {
@@ -16,7 +17,11 @@ class CreateTest extends AbstractIntegrationTestCase
     public function testCreateSuiteNotFound(): void
     {
         try {
-            self::$serializedSuiteClient->create(self::$user1ApiToken->token, md5((string) rand()));
+            self::$serializedSuiteClient->create(
+                self::$user1ApiToken->token,
+                md5((string) rand()),
+                md5((string) rand())
+            );
         } catch (\Throwable $e) {
             self::assertInstanceOf(NonSuccessResponseException::class, $e);
             self::assertSame(404, $e->getCode());
@@ -44,8 +49,12 @@ class CreateTest extends AbstractIntegrationTestCase
             ['Test1.yaml', 'Test2.yaml']
         );
 
+        $serializedSuiteId = (string) new Ulid();
+        \assert('' !== $serializedSuiteId);
+
         $serializedSuite = self::$serializedSuiteClient->create(
             self::$user1ApiToken->token,
+            $serializedSuiteId,
             $suite->getId(),
             $parameters
         );
