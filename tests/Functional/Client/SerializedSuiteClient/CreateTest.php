@@ -48,7 +48,7 @@ class CreateTest extends AbstractSuiteClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->serializedSuiteClient->create(self::API_KEY, md5((string) rand()));
+            $this->serializedSuiteClient->create(self::API_KEY, md5((string) rand()), md5((string) rand()));
         };
     }
 
