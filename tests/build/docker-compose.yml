@@ -9,7 +9,7 @@ services:
       - "5432:5432"
 
   users-service:
-    image: ghcr.io/smartassert/users:0.8
+    image: ghcr.io/smartassert/users:3.1
     container_name: users-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/users?serverVersion=12&charset=utf8
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   sources-service:
-    image: ghcr.io/smartassert/sources:2.0
+    image: ghcr.io/smartassert/sources:3.0
     container_name: sources-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/sources?serverVersion=12&charset=utf8
