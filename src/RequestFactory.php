@@ -9,6 +9,7 @@ use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\RequestFactory\AuthenticationMiddleware;
 use SmartAssert\ServiceClient\RequestFactory\RequestFactory as ServiceClientRequestFactory;
 use SmartAssert\ServiceClient\RequestFactory\RequestMiddlewareCollection;
+use SmartAssert\SourcesClient\Request\RequestInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
@@ -40,32 +41,13 @@ class RequestFactory extends ServiceClientRequestFactory
         return $this->doCreate($token, $method, $url);
     }
 
-    /**
-     * @param non-empty-string $method
-     */
-    public function createSourceRequest(string $method, string $token, ?string $sourceId): Request
-    {
-        return $this->doCreate($token, $method, $this->urlGenerator->generate('source', ['sourceId' => $sourceId]));
-    }
-
-    /**
-     * @param non-empty-string $method
-     */
-    public function createFileSourceRequest(string $method, string $token, ?string $sourceId): Request
+    public function createSourceRequest(RequestInterface $request, string $token): Request
     {
         return $this->doCreate(
             $token,
-            $method,
-            $this->urlGenerator->generate('file_source', ['sourceId' => $sourceId])
+            $request->getMethod(),
+            $this->urlGenerator->generate($request->getRoute(), ['sourceId' => $request->getId()])
         );
-    }
-
-    /**
-     * @param non-empty-string $method
-     */
-    public function createGitSourceRequest(string $method, string $token, ?string $sourceId): Request
-    {
-        return $this->doCreate($token, $method, $this->urlGenerator->generate('git_source', ['sourceId' => $sourceId]));
     }
 
     public function createSourcesRequest(string $token): Request

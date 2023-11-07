@@ -18,6 +18,7 @@ use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Request\FileSourceRequest;
 use SmartAssert\SourcesClient\Request\GitSourceRequest;
 use SmartAssert\SourcesClient\Request\RequestInterface;
+use SmartAssert\SourcesClient\Request\SourceRequest;
 
 class SourceClient
 {
@@ -64,6 +65,8 @@ class SourceClient
     }
 
     /**
+     * @param non-empty-string $sourceId
+     *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
@@ -71,14 +74,12 @@ class SourceClient
      */
     public function get(string $token, string $sourceId): SourceInterface
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSourceRequest('GET', $token, $sourceId)
-        );
-
-        return $this->handleSourceResponse($response);
+        return $this->handleSourceRequest('GET', $token, $sourceId);
     }
 
     /**
+     * @param non-empty-string $sourceId
+     *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
@@ -86,11 +87,7 @@ class SourceClient
      */
     public function delete(string $token, string $sourceId): SourceInterface
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSourceRequest('DELETE', $token, $sourceId)
-        );
-
-        return $this->handleSourceResponse($response);
+        return $this->handleSourceRequest('DELETE', $token, $sourceId);
     }
 
     /**
@@ -129,7 +126,7 @@ class SourceClient
      */
     public function createFileSource(string $token, string $label): SourceInterface
     {
-        return $this->makeFileSourceMutationRequest($token, new FileSourceRequest('POST', $label));
+        return $this->makeSourceMutationRequest($token, new FileSourceRequest('POST', $label));
     }
 
     /**
@@ -145,7 +142,7 @@ class SourceClient
     public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
     {
         try {
-            return $this->makeFileSourceMutationRequest($token, new FileSourceRequest('PUT', $label, $sourceId));
+            return $this->makeSourceMutationRequest($token, new FileSourceRequest('PUT', $label, $sourceId));
         } catch (NonSuccessResponseException $e) {
             if (405 === $e->getCode()) {
                 throw new ModifyReadOnlyEntityException($sourceId, 'source');
@@ -173,7 +170,7 @@ class SourceClient
         string $path,
         ?string $credentials,
     ): SourceInterface {
-        return $this->makeGitSourceMutationRequest(
+        return $this->makeSourceMutationRequest(
             $token,
             new GitSourceRequest('POST', $label, $hostUrl, $path, $credentials)
         );
@@ -201,7 +198,7 @@ class SourceClient
         ?string $credentials,
     ): SourceInterface {
         try {
-            return $this->makeGitSourceMutationRequest(
+            return $this->makeSourceMutationRequest(
                 $token,
                 new GitSourceRequest('PUT', $label, $hostUrl, $path, $credentials, $sourceId)
             );
@@ -215,19 +212,18 @@ class SourceClient
     }
 
     /**
-     * @param non-empty-string $token
+     * @param 'DELETE'|'GET'   $method
+     * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
-     * @throws InvalidResponseTypeException
      */
-    private function makeFileSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
+    private function handleSourceRequest(string $method, string $token, string $sourceId): SourceInterface
     {
         $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createFileSourceRequest($request->getMethod(), $token, $request->getResourceId())
-                ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            $this->requestFactory->createSourceRequest(new SourceRequest($method, $sourceId), $token)
         );
 
         return $this->handleSourceResponse($response);
@@ -242,10 +238,10 @@ class SourceClient
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException
      */
-    private function makeGitSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
+    private function makeSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
     {
         $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createGitSourceRequest($request->getMethod(), $token, $request->getResourceId())
+            $this->requestFactory->createSourceRequest($request, $token)
                 ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 
