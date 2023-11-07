@@ -11,6 +11,7 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
@@ -40,6 +41,7 @@ class SourceClient
      * @throws NonSuccessResponseException
      * @throws InvalidResponseTypeException
      * @throws HttpResponseExceptionInterface
+     * @throws UnauthorizedException
      */
     public function list(string $token): array
     {
@@ -71,6 +73,7 @@ class SourceClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws UnauthorizedException
      */
     public function get(string $token, string $sourceId): SourceInterface
     {
@@ -84,6 +87,7 @@ class SourceClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws UnauthorizedException
      */
     public function delete(string $token, string $sourceId): SourceInterface
     {
@@ -97,6 +101,7 @@ class SourceClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws UnauthorizedException
      */
     public function listFiles(string $token, string $fileSourceId): array
     {
@@ -123,6 +128,7 @@ class SourceClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws UnauthorizedException
      */
     public function createFileSource(string $token, string $label): SourceInterface
     {
@@ -138,6 +144,7 @@ class SourceClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws ModifyReadOnlyEntityException
+     * @throws UnauthorizedException
      */
     public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
     {
@@ -162,6 +169,7 @@ class SourceClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws UnauthorizedException
      */
     public function createGitSource(
         string $token,
@@ -188,6 +196,7 @@ class SourceClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws ModifyReadOnlyEntityException
+     * @throws UnauthorizedException
      */
     public function updateGitSource(
         string $token,
@@ -216,6 +225,7 @@ class SourceClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws UnauthorizedException
      */
     private function handleSourceRequest(RequestInterface $request, string $token): SourceInterface
     {
