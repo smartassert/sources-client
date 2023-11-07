@@ -21,7 +21,7 @@ use SmartAssert\SourcesClient\Request\GitSourceRequest;
 use SmartAssert\SourcesClient\Request\RequestInterface;
 use SmartAssert\SourcesClient\Request\SourceRequest;
 
-class SourceClient
+class SourceClient implements SourceClientInterface
 {
     use VerifyJsonResponseTrait;
 
@@ -33,16 +33,6 @@ class SourceClient
     ) {
     }
 
-    /**
-     * @return SourceInterface[]
-     *
-     * @throws ClientExceptionInterface
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
-     * @throws InvalidResponseTypeException
-     * @throws HttpResponseExceptionInterface
-     * @throws UnauthorizedException
-     */
     public function list(string $token): array
     {
         $response = $this->serviceClient->sendRequest(
@@ -66,43 +56,16 @@ class SourceClient
         return $sources;
     }
 
-    /**
-     * @param non-empty-string $sourceId
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseDataException
-     * @throws UnauthorizedException
-     */
     public function get(string $token, string $sourceId): SourceInterface
     {
         return $this->handleSourceRequest(new SourceRequest('GET', $sourceId), $token);
     }
 
-    /**
-     * @param non-empty-string $sourceId
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseDataException
-     * @throws UnauthorizedException
-     */
     public function delete(string $token, string $sourceId): SourceInterface
     {
         return $this->handleSourceRequest(new SourceRequest('DELETE', $sourceId), $token);
     }
 
-    /**
-     * @return string[]
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseDataException
-     * @throws UnauthorizedException
-     */
     public function listFiles(string $token, string $fileSourceId): array
     {
         $response = $this->serviceClient->sendRequest(
@@ -121,31 +84,11 @@ class SourceClient
         return $filenames;
     }
 
-    /**
-     * @param non-empty-string $token
-     * @param non-empty-string $label
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws UnauthorizedException
-     */
     public function createFileSource(string $token, string $label): SourceInterface
     {
         return $this->handleSourceRequest(new FileSourceRequest('POST', $label), $token);
     }
 
-    /**
-     * @param non-empty-string $token
-     * @param non-empty-string $sourceId
-     * @param non-empty-string $label
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws ModifyReadOnlyEntityException
-     * @throws UnauthorizedException
-     */
     public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
     {
         try {
@@ -159,18 +102,6 @@ class SourceClient
         }
     }
 
-    /**
-     * @param non-empty-string  $label
-     * @param non-empty-string  $token
-     * @param non-empty-string  $hostUrl
-     * @param non-empty-string  $path
-     * @param ?non-empty-string $credentials
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws UnauthorizedException
-     */
     public function createGitSource(
         string $token,
         string $label,
@@ -184,20 +115,6 @@ class SourceClient
         );
     }
 
-    /**
-     * @param non-empty-string  $label
-     * @param non-empty-string  $token
-     * @param non-empty-string  $sourceId
-     * @param non-empty-string  $hostUrl
-     * @param non-empty-string  $path
-     * @param ?non-empty-string $credentials
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws ModifyReadOnlyEntityException
-     * @throws UnauthorizedException
-     */
     public function updateGitSource(
         string $token,
         string $sourceId,
