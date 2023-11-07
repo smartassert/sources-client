@@ -9,8 +9,8 @@ use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Payload\Payload;
-use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
+use SmartAssert\SourcesClient\Request\FileRequest;
 
 class FileClient
 {
@@ -32,12 +32,18 @@ class FileClient
     public function add(string $token, string $fileSourceId, string $filename, string $content): void
     {
         $this->handleResponse($this->serviceClient->sendRequest(
-            $this->createRequest('POST', $token, $fileSourceId, $filename)
-                ->withPayload(new Payload('text/x-yaml', $content))
+            $this->requestFactory->createFileRequest(
+                new FileRequest('POST', $fileSourceId, $filename),
+                $token
+            )->withPayload(new Payload('text/x-yaml', $content))
         ));
     }
 
     /**
+     * @param non-empty-string $token
+     * @param non-empty-string $fileSourceId
+     * @param non-empty-string $filename
+     *
      * @throws ClientExceptionInterface
      * @throws NonSuccessResponseException
      * @throws HttpResponseExceptionInterface
@@ -45,11 +51,18 @@ class FileClient
     public function read(string $token, string $fileSourceId, string $filename): string
     {
         return $this->handleResponse($this->serviceClient->sendRequest(
-            $this->createRequest('GET', $token, $fileSourceId, $filename)
+            $this->requestFactory->createFileRequest(
+                new FileRequest('GET', $fileSourceId, $filename),
+                $token
+            )
         ));
     }
 
     /**
+     * @param non-empty-string $token
+     * @param non-empty-string $fileSourceId
+     * @param non-empty-string $filename
+     *
      * @throws ClientExceptionInterface
      * @throws NonSuccessResponseException
      * @throws HttpResponseExceptionInterface
@@ -57,16 +70,11 @@ class FileClient
     public function remove(string $token, string $fileSourceId, string $filename): void
     {
         $this->handleResponse($this->serviceClient->sendRequest(
-            $this->createRequest('DELETE', $token, $fileSourceId, $filename)
+            $this->requestFactory->createFileRequest(
+                new FileRequest('DELETE', $fileSourceId, $filename),
+                $token
+            )
         ));
-    }
-
-    /**
-     * @param non-empty-string $method
-     */
-    private function createRequest(string $method, string $token, string $fileSourceId, string $filename): Request
-    {
-        return $this->requestFactory->createFileRequest($method, $token, $fileSourceId, $filename);
     }
 
     /**
