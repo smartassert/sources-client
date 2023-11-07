@@ -44,4 +44,9 @@ class SuiteRequest implements RequestInterface
     {
         return $this->method;
     }
+
+    public function getRoute(): string
+    {
+        return 'suite';
+    }
 }

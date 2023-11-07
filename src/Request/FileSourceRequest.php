@@ -40,4 +40,9 @@ class FileSourceRequest implements RequestInterface
     {
         return $this->method;
     }
+
+    public function getRoute(): string
+    {
+        return 'file_source';
+    }
 }

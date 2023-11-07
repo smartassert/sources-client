@@ -54,4 +54,9 @@ class GitSourceRequest implements RequestInterface
     {
         return $this->method;
     }
+
+    public function getRoute(): string
+    {
+        return 'git_source';
+    }
 }

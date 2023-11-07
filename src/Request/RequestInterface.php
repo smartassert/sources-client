@@ -22,4 +22,9 @@ interface RequestInterface
      * @return 'DELETE'|'GET'|'POST'|'PUT'
      */
     public function getMethod(): string;
+
+    /**
+     * @return non-empty-string
+     */
+    public function getRoute(): string;
 }
