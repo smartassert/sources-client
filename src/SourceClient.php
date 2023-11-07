@@ -173,14 +173,7 @@ class SourceClient
         string $path,
         ?string $credentials,
     ): SourceInterface {
-        $request = new GitRequest($label, $hostUrl, $path, $credentials);
-
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createGitSourceRequest('POST', $token, null)
-                ->withPayload(new UrlEncodedPayload($request->getPayload()))
-        );
-
-        return $this->handleSourceResponse($response);
+        return $this->makeGitSourceMutationRequest($token, new GitRequest($label, $hostUrl, $path, $credentials));
     }
 
     /**
@@ -205,7 +198,7 @@ class SourceClient
         ?string $credentials,
     ): SourceInterface {
         try {
-            return $this->makeSourceMutationRequest(
+            return $this->makeGitSourceMutationRequest(
                 $token,
                 new GitRequest($label, $hostUrl, $path, $credentials, $sourceId)
             );
@@ -227,10 +220,10 @@ class SourceClient
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException
      */
-    private function makeSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
+    private function makeFileSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
     {
         $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSourceRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
+            $this->requestFactory->createFileSourceRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
                 ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 
@@ -246,10 +239,10 @@ class SourceClient
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException
      */
-    private function makeFileSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
+    private function makeGitSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
     {
         $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createFileSourceRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
+            $this->requestFactory->createGitSourceRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
                 ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 
