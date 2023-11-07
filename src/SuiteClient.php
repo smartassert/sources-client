@@ -8,8 +8,6 @@ use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
@@ -18,7 +16,7 @@ use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Request\RequestInterface;
 use SmartAssert\SourcesClient\Request\SuiteRequest;
 
-class SuiteClient
+class SuiteClient implements SuiteClientInterface
 {
     use VerifyJsonResponseTrait;
 
@@ -30,35 +28,11 @@ class SuiteClient
     ) {
     }
 
-    /**
-     * @param non-empty-string   $token
-     * @param non-empty-string   $sourceId
-     * @param non-empty-string   $label
-     * @param non-empty-string[] $tests
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws UnauthorizedException
-     */
     public function create(string $token, string $sourceId, string $label, array $tests): Suite
     {
         return $this->makeMutationRequest($token, new SuiteRequest('POST', $sourceId, $label, $tests));
     }
 
-    /**
-     * @param non-empty-string   $token
-     * @param non-empty-string   $suiteId
-     * @param non-empty-string   $sourceId
-     * @param non-empty-string   $label
-     * @param non-empty-string[] $tests
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws ModifyReadOnlyEntityException
-     * @throws UnauthorizedException
-     */
     public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite
     {
         try {
@@ -72,12 +46,6 @@ class SuiteClient
         }
     }
 
-    /**
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws UnauthorizedException
-     */
     public function delete(string $token, string $suiteId): Suite
     {
         $response = $this->serviceClient->sendRequest(
@@ -94,16 +62,6 @@ class SuiteClient
         return $suite;
     }
 
-    /**
-     * @return Suite[]
-     *
-     * @throws ClientExceptionInterface
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
-     * @throws InvalidResponseTypeException
-     * @throws HttpResponseExceptionInterface
-     * @throws UnauthorizedException
-     */
     public function list(string $token): array
     {
         $response = $this->serviceClient->sendRequest($this->requestFactory->createSuitesRequest($token));

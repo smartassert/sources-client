@@ -15,7 +15,7 @@ use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
 
-class SerializedSuiteClient
+class SerializedSuiteClient implements SerializedSuiteClientInterface
 {
     use VerifyJsonResponseTrait;
 
@@ -27,17 +27,6 @@ class SerializedSuiteClient
     ) {
     }
 
-    /**
-     * @param non-empty-string                          $token
-     * @param non-empty-string                          $serializedSuiteId
-     * @param non-empty-string                          $suiteId
-     * @param array<non-empty-string, non-empty-string> $parameters
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws UnauthorizedException
-     */
     public function create(
         string $token,
         string $serializedSuiteId,
@@ -50,14 +39,6 @@ class SerializedSuiteClient
         );
     }
 
-    /**
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseDataException
-     * @throws InvalidResponseTypeException
-     * @throws UnauthorizedException
-     */
     public function get(string $token, string $serializedSuiteId): SerializedSuite
     {
         return $this->handleSerializedSuiteRetrievalRequest(
@@ -65,12 +46,6 @@ class SerializedSuiteClient
         );
     }
 
-    /**
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidResponseDataException
-     * @throws UnauthorizedException
-     */
     public function read(string $token, string $serializedSuiteId): string
     {
         $response = $this->serviceClient->sendRequest(
