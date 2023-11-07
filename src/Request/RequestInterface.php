@@ -17,4 +17,9 @@ interface RequestInterface
      * @return array<mixed>
      */
     public function getPayload(): array;
+
+    /**
+     * @return 'DELETE'|'GET'|'POST'|'PUT'
+     */
+    public function getMethod(): string;
 }

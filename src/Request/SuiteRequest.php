@@ -7,12 +7,14 @@ namespace SmartAssert\SourcesClient\Request;
 class SuiteRequest implements RequestInterface
 {
     /**
-     * @param non-empty-string      $sourceId
-     * @param non-empty-string      $label
-     * @param non-empty-string[]    $tests
-     * @param null|non-empty-string $resourceId
+     * @param 'DELETE'|'GET'|'POST'|'PUT' $method
+     * @param non-empty-string            $sourceId
+     * @param non-empty-string            $label
+     * @param non-empty-string[]          $tests
+     * @param null|non-empty-string       $resourceId
      */
     public function __construct(
+        private readonly string $method,
         private readonly string $sourceId,
         private readonly string $label,
         private readonly array $tests,
@@ -36,5 +38,10 @@ class SuiteRequest implements RequestInterface
     public function getPayload(): array
     {
         return ['source_id' => $this->sourceId, 'label' => $this->label, 'tests' => $this->tests];
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
     }
 }

@@ -7,10 +7,12 @@ namespace SmartAssert\SourcesClient\Request;
 class FileSourceRequest implements RequestInterface
 {
     /**
+     * @param 'POST'|'PUT'          $method
      * @param non-empty-string      $label
      * @param null|non-empty-string $resourceId
      */
     public function __construct(
+        private readonly string $method,
         private readonly string $label,
         private readonly ?string $resourceId = null,
     ) {
@@ -32,5 +34,10 @@ class FileSourceRequest implements RequestInterface
     public function getPayload(): array
     {
         return ['type' => 'file', 'label' => $this->label];
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
     }
 }

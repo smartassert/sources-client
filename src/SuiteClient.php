@@ -41,7 +41,7 @@ class SuiteClient
      */
     public function create(string $token, string $sourceId, string $label, array $tests): Suite
     {
-        return $this->makeMutationRequest($token, new SuiteRequest($sourceId, $label, $tests));
+        return $this->makeMutationRequest($token, new SuiteRequest('POST', $sourceId, $label, $tests));
     }
 
     /**
@@ -59,7 +59,7 @@ class SuiteClient
     public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite
     {
         try {
-            return $this->makeMutationRequest($token, new SuiteRequest($sourceId, $label, $tests, $suiteId));
+            return $this->makeMutationRequest($token, new SuiteRequest('PUT', $sourceId, $label, $tests, $suiteId));
         } catch (NonSuccessResponseException $e) {
             if (405 === $e->getCode()) {
                 throw new ModifyReadOnlyEntityException($suiteId, 'suite');
