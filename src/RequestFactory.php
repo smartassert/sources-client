@@ -46,7 +46,7 @@ class RequestFactory extends ServiceClientRequestFactory
         return $this->doCreate(
             $token,
             $request->getMethod(),
-            $this->urlGenerator->generate($request->getRoute(), ['sourceId' => $request->getId()])
+            $this->urlGenerator->generate($request->getRoute(), ['sourceId' => $request->getResourceId()])
         );
     }
 

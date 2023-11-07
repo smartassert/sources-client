@@ -19,7 +19,7 @@ class SourceRequest implements RequestInterface
     /**
      * @return null|non-empty-string
      */
-    public function getId(): ?string
+    public function getResourceId(): ?string
     {
         return $this->id;
     }
