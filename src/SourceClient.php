@@ -129,7 +129,14 @@ class SourceClient
      */
     public function createFileSource(string $token, string $label): SourceInterface
     {
-        return $this->makeSourceMutationRequest($token, new FileRequest($label));
+        $request = new FileRequest($label);
+
+        $response = $this->serviceClient->sendRequest(
+            $this->requestFactory->createFileSourceRequest('POST', $token, null)
+                ->withPayload(new UrlEncodedPayload($request->getPayload()))
+        );
+
+        return $this->handleSourceResponse($response);
     }
 
     /**
