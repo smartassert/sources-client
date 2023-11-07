@@ -22,11 +22,6 @@ class SuiteRequest implements RequestInterface
     ) {
     }
 
-    public function hasResourceId(): bool
-    {
-        return is_string($this->resourceId);
-    }
-
     /**
      * @return null|non-empty-string
      */
