@@ -8,17 +8,17 @@ class FileRequest implements RequestInterface
 {
     /**
      * @param non-empty-string      $label
-     * @param null|non-empty-string $is
+     * @param null|non-empty-string $id
      */
     public function __construct(
         private readonly string $label,
-        private readonly ?string $is = null,
+        private readonly ?string $id = null,
     ) {
     }
 
     public function hasId(): bool
     {
-        return is_string($this->is);
+        return is_string($this->id);
     }
 
     /**
@@ -26,7 +26,7 @@ class FileRequest implements RequestInterface
      */
     public function getId(): ?string
     {
-        return $this->is;
+        return $this->id;
     }
 
     public function getPayload(): array
