@@ -130,11 +130,8 @@ class SuiteClient
     private function makeMutationRequest(string $token, RequestInterface $request): Suite
     {
         $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSuiteRequest(
-                $request->hasResourceId() ? 'PUT' : 'POST',
-                $token,
-                $request->getResourceId()
-            )->withPayload(new UrlEncodedPayload($request->getPayload()))
+            $this->requestFactory->createSuiteRequest($request->getMethod(), $token, $request->getResourceId())
+                ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 
         $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
