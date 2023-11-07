@@ -129,14 +129,7 @@ class SourceClient
      */
     public function createFileSource(string $token, string $label): SourceInterface
     {
-        $request = new FileRequest($label);
-
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createFileSourceRequest('POST', $token, null)
-                ->withPayload(new UrlEncodedPayload($request->getPayload()))
-        );
-
-        return $this->handleSourceResponse($response);
+        return $this->makeFileSourceMutationRequest($token, new FileRequest($label));
     }
 
     /**
@@ -152,7 +145,7 @@ class SourceClient
     public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
     {
         try {
-            return $this->makeSourceMutationRequest($token, new FileRequest($label, $sourceId));
+            return $this->makeFileSourceMutationRequest($token, new FileRequest($label, $sourceId));
         } catch (NonSuccessResponseException $e) {
             if (405 === $e->getCode()) {
                 throw new ModifyReadOnlyEntityException($sourceId, 'source');
@@ -238,6 +231,25 @@ class SourceClient
     {
         $response = $this->serviceClient->sendRequest(
             $this->requestFactory->createSourceRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
+                ->withPayload(new UrlEncodedPayload($request->getPayload()))
+        );
+
+        return $this->handleSourceResponse($response);
+    }
+
+    /**
+     * @param non-empty-string $token
+     *
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     */
+    private function makeFileSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
+    {
+        $response = $this->serviceClient->sendRequest(
+            $this->requestFactory->createFileSourceRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
                 ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 
