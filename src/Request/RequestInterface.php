@@ -6,12 +6,12 @@ namespace SmartAssert\SourcesClient\Request;
 
 interface RequestInterface
 {
-    public function hasId(): bool;
+    public function hasResourceId(): bool;
 
     /**
      * @return null|non-empty-string
      */
-    public function getId(): ?string;
+    public function getResourceId(): ?string;
 
     /**
      * @return array<mixed>
