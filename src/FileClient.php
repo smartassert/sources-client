@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient;
 
-use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Request\FileRequest;
 
-readonly class FileClient
+readonly class FileClient implements FileClientInterface
 {
     public function __construct(
         private RequestFactory $requestFactory,
@@ -22,15 +20,6 @@ readonly class FileClient
     ) {
     }
 
-    /**
-     * @param non-empty-string $token
-     * @param non-empty-string $fileSourceId
-     * @param non-empty-string $filename
-     *
-     * @throws HttpResponseExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws UnauthorizedException
-     */
     public function add(string $token, string $fileSourceId, string $filename, string $content): void
     {
         $this->handleResponse($this->serviceClient->sendRequest(
@@ -41,16 +30,6 @@ readonly class FileClient
         ));
     }
 
-    /**
-     * @param non-empty-string $token
-     * @param non-empty-string $fileSourceId
-     * @param non-empty-string $filename
-     *
-     * @throws ClientExceptionInterface
-     * @throws NonSuccessResponseException
-     * @throws HttpResponseExceptionInterface
-     * @throws UnauthorizedException
-     */
     public function read(string $token, string $fileSourceId, string $filename): string
     {
         return $this->handleResponse($this->serviceClient->sendRequest(
@@ -61,16 +40,6 @@ readonly class FileClient
         ));
     }
 
-    /**
-     * @param non-empty-string $token
-     * @param non-empty-string $fileSourceId
-     * @param non-empty-string $filename
-     *
-     * @throws ClientExceptionInterface
-     * @throws NonSuccessResponseException
-     * @throws HttpResponseExceptionInterface
-     * @throws UnauthorizedException
-     */
     public function remove(string $token, string $fileSourceId, string $filename): void
     {
         $this->handleResponse($this->serviceClient->sendRequest(
