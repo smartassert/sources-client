@@ -140,7 +140,7 @@ class RequestFactory extends ServiceClientRequestFactory
         $routeCollection->add('sources', new Route('/sources'));
         $routeCollection->add('source', new Route('/source/{sourceId?}'));
         $routeCollection->add('file_source', new Route('/file-source/{sourceId?}'));
-        $routeCollection->add('git_source', new Route('/file-source/{sourceId?}'));
+        $routeCollection->add('git_source', new Route('/git-source/{sourceId?}'));
         $routeCollection->add('source_filenames', new Route('/source/{sourceId}/list'));
         $routeCollection->add('suite', new Route('/suite/{suiteId?}'));
         $routeCollection->add('suites', new Route('/suites'));

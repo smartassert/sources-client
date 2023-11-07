@@ -180,7 +180,14 @@ class SourceClient
         string $path,
         ?string $credentials,
     ): SourceInterface {
-        return $this->makeSourceMutationRequest($token, new GitRequest($label, $hostUrl, $path, $credentials));
+        $request = new GitRequest($label, $hostUrl, $path, $credentials);
+
+        $response = $this->serviceClient->sendRequest(
+            $this->requestFactory->createGitSourceRequest('POST', $token, null)
+                ->withPayload(new UrlEncodedPayload($request->getPayload()))
+        );
+
+        return $this->handleSourceResponse($response);
     }
 
     /**
