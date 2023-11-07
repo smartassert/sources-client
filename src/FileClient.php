@@ -8,16 +8,17 @@ use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Request\FileRequest;
 
-class FileClient
+readonly class FileClient
 {
     public function __construct(
-        private readonly RequestFactory $requestFactory,
-        private readonly ServiceClient $serviceClient,
-        private readonly ExceptionFactory $exceptionFactory,
+        private RequestFactory $requestFactory,
+        private ServiceClient $serviceClient,
+        private ExceptionFactory $exceptionFactory,
     ) {
     }
 
@@ -28,6 +29,7 @@ class FileClient
      *
      * @throws HttpResponseExceptionInterface
      * @throws ClientExceptionInterface
+     * @throws UnauthorizedException
      */
     public function add(string $token, string $fileSourceId, string $filename, string $content): void
     {
@@ -47,6 +49,7 @@ class FileClient
      * @throws ClientExceptionInterface
      * @throws NonSuccessResponseException
      * @throws HttpResponseExceptionInterface
+     * @throws UnauthorizedException
      */
     public function read(string $token, string $fileSourceId, string $filename): string
     {
@@ -66,6 +69,7 @@ class FileClient
      * @throws ClientExceptionInterface
      * @throws NonSuccessResponseException
      * @throws HttpResponseExceptionInterface
+     * @throws UnauthorizedException
      */
     public function remove(string $token, string $fileSourceId, string $filename): void
     {

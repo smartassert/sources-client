@@ -11,6 +11,7 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\Suite;
@@ -38,6 +39,7 @@ class SuiteClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws UnauthorizedException
      */
     public function create(string $token, string $sourceId, string $label, array $tests): Suite
     {
@@ -55,6 +57,7 @@ class SuiteClient
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws ModifyReadOnlyEntityException
+     * @throws UnauthorizedException
      */
     public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite
     {
@@ -73,6 +76,7 @@ class SuiteClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws UnauthorizedException
      */
     public function delete(string $token, string $suiteId): Suite
     {
@@ -98,6 +102,7 @@ class SuiteClient
      * @throws NonSuccessResponseException
      * @throws InvalidResponseTypeException
      * @throws HttpResponseExceptionInterface
+     * @throws UnauthorizedException
      */
     public function list(string $token): array
     {
@@ -126,6 +131,7 @@ class SuiteClient
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws UnauthorizedException
      */
     private function makeMutationRequest(string $token, RequestInterface $request): Suite
     {
