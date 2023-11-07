@@ -56,6 +56,14 @@ class RequestFactory extends ServiceClientRequestFactory
         return $this->doCreate($token, $method, $this->urlGenerator->generate('file_source', ['sourceId' => $sourceId]));
     }
 
+    /**
+     * @param non-empty-string $method
+     */
+    public function createGitSourceRequest(string $method, string $token, ?string $sourceId): Request
+    {
+        return $this->doCreate($token, $method, $this->urlGenerator->generate('git_source', ['sourceId' => $sourceId]));
+    }
+
     public function createSourcesRequest(string $token): Request
     {
         return $this->doCreate($token, 'GET', $this->urlGenerator->generate('sources'));
