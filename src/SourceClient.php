@@ -224,9 +224,9 @@ class SourceClient
     {
         $response = $this->serviceClient->sendRequest(
             $this->requestFactory->createFileSourceRequest(
-                $request->hasId() ? 'PUT' : 'POST',
+                $request->hasResourceId() ? 'PUT' : 'POST',
                 $token,
-                $request->getId()
+                $request->getResourceId()
             )
                 ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
@@ -246,8 +246,11 @@ class SourceClient
     private function makeGitSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
     {
         $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createGitSourceRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
-                ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            $this->requestFactory->createGitSourceRequest(
+                $request->hasResourceId() ? 'PUT' : 'POST',
+                $token,
+                $request->getResourceId()
+            )->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 
         return $this->handleSourceResponse($response);

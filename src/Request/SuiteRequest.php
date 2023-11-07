@@ -10,27 +10,27 @@ class SuiteRequest implements RequestInterface
      * @param non-empty-string      $sourceId
      * @param non-empty-string      $label
      * @param non-empty-string[]    $tests
-     * @param null|non-empty-string $id
+     * @param null|non-empty-string $resourceId
      */
     public function __construct(
         private readonly string $sourceId,
         private readonly string $label,
         private readonly array $tests,
-        private readonly ?string $id = null,
+        private readonly ?string $resourceId = null,
     ) {
     }
 
-    public function hasId(): bool
+    public function hasResourceId(): bool
     {
-        return is_string($this->id);
+        return is_string($this->resourceId);
     }
 
     /**
      * @return null|non-empty-string
      */
-    public function getId(): ?string
+    public function getResourceId(): ?string
     {
-        return $this->id;
+        return $this->resourceId;
     }
 
     public function getPayload(): array
