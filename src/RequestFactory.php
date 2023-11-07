@@ -9,6 +9,8 @@ use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\RequestFactory\AuthenticationMiddleware;
 use SmartAssert\ServiceClient\RequestFactory\RequestFactory as ServiceClientRequestFactory;
 use SmartAssert\ServiceClient\RequestFactory\RequestMiddlewareCollection;
+use SmartAssert\SourcesClient\Request\FileRequest;
+use SmartAssert\SourcesClient\Request\RequestInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
@@ -30,42 +32,28 @@ class RequestFactory extends ServiceClientRequestFactory
         $this->urlGenerator = $this->createUrlGenerator($baseUrl);
     }
 
-    /**
-     * @param non-empty-string $method
-     */
-    public function createFileRequest(string $method, string $token, string $fileSourceId, string $filename): Request
-    {
-        $url = $this->urlGenerator->generate('file', ['sourceId' => $fileSourceId, 'filename' => $filename]);
-
-        return $this->doCreate($token, $method, $url);
-    }
-
-    /**
-     * @param non-empty-string $method
-     */
-    public function createSourceRequest(string $method, string $token, ?string $sourceId): Request
-    {
-        return $this->doCreate($token, $method, $this->urlGenerator->generate('source', ['sourceId' => $sourceId]));
-    }
-
-    /**
-     * @param non-empty-string $method
-     */
-    public function createFileSourceRequest(string $method, string $token, ?string $sourceId): Request
+    public function createFileRequest(FileRequest $request, string $token): Request
     {
         return $this->doCreate(
             $token,
-            $method,
-            $this->urlGenerator->generate('file_source', ['sourceId' => $sourceId])
+            $request->getMethod(),
+            $this->urlGenerator->generate(
+                $request->getRoute(),
+                [
+                    'sourceId' => $request->getResourceId(),
+                    'filename' => $request->getFilename()
+                ]
+            )
         );
     }
 
-    /**
-     * @param non-empty-string $method
-     */
-    public function createGitSourceRequest(string $method, string $token, ?string $sourceId): Request
+    public function createSourceRequest(RequestInterface $request, string $token): Request
     {
-        return $this->doCreate($token, $method, $this->urlGenerator->generate('git_source', ['sourceId' => $sourceId]));
+        return $this->doCreate(
+            $token,
+            $request->getMethod(),
+            $this->urlGenerator->generate($request->getRoute(), ['sourceId' => $request->getResourceId()])
+        );
     }
 
     public function createSourcesRequest(string $token): Request
