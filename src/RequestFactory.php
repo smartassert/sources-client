@@ -48,6 +48,26 @@ class RequestFactory extends ServiceClientRequestFactory
         return $this->doCreate($token, $method, $this->urlGenerator->generate('source', ['sourceId' => $sourceId]));
     }
 
+    /**
+     * @param non-empty-string $method
+     */
+    public function createFileSourceRequest(string $method, string $token, ?string $sourceId): Request
+    {
+        return $this->doCreate(
+            $token,
+            $method,
+            $this->urlGenerator->generate('file_source', ['sourceId' => $sourceId])
+        );
+    }
+
+    /**
+     * @param non-empty-string $method
+     */
+    public function createGitSourceRequest(string $method, string $token, ?string $sourceId): Request
+    {
+        return $this->doCreate($token, $method, $this->urlGenerator->generate('git_source', ['sourceId' => $sourceId]));
+    }
+
     public function createSourcesRequest(string $token): Request
     {
         return $this->doCreate($token, 'GET', $this->urlGenerator->generate('sources'));
@@ -123,6 +143,8 @@ class RequestFactory extends ServiceClientRequestFactory
         $routeCollection->add('file', new Route('/source/{sourceId}/{filename<.*\.yaml>}'));
         $routeCollection->add('sources', new Route('/sources'));
         $routeCollection->add('source', new Route('/source/{sourceId?}'));
+        $routeCollection->add('file_source', new Route('/file-source/{sourceId?}'));
+        $routeCollection->add('git_source', new Route('/git-source/{sourceId?}'));
         $routeCollection->add('source_filenames', new Route('/source/{sourceId}/list'));
         $routeCollection->add('suite', new Route('/suite/{suiteId?}'));
         $routeCollection->add('suites', new Route('/suites'));
