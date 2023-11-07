@@ -15,8 +15,8 @@ use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
-use SmartAssert\SourcesClient\Request\FileRequest;
-use SmartAssert\SourcesClient\Request\GitRequest;
+use SmartAssert\SourcesClient\Request\FileSourceRequest;
+use SmartAssert\SourcesClient\Request\GitSourceRequest;
 use SmartAssert\SourcesClient\Request\RequestInterface;
 
 class SourceClient
@@ -129,7 +129,7 @@ class SourceClient
      */
     public function createFileSource(string $token, string $label): SourceInterface
     {
-        return $this->makeFileSourceMutationRequest($token, new FileRequest($label));
+        return $this->makeFileSourceMutationRequest($token, new FileSourceRequest($label));
     }
 
     /**
@@ -145,7 +145,7 @@ class SourceClient
     public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
     {
         try {
-            return $this->makeFileSourceMutationRequest($token, new FileRequest($label, $sourceId));
+            return $this->makeFileSourceMutationRequest($token, new FileSourceRequest($label, $sourceId));
         } catch (NonSuccessResponseException $e) {
             if (405 === $e->getCode()) {
                 throw new ModifyReadOnlyEntityException($sourceId, 'source');
@@ -173,7 +173,7 @@ class SourceClient
         string $path,
         ?string $credentials,
     ): SourceInterface {
-        return $this->makeGitSourceMutationRequest($token, new GitRequest($label, $hostUrl, $path, $credentials));
+        return $this->makeGitSourceMutationRequest($token, new GitSourceRequest($label, $hostUrl, $path, $credentials));
     }
 
     /**
@@ -200,7 +200,7 @@ class SourceClient
         try {
             return $this->makeGitSourceMutationRequest(
                 $token,
-                new GitRequest($label, $hostUrl, $path, $credentials, $sourceId)
+                new GitSourceRequest($label, $hostUrl, $path, $credentials, $sourceId)
             );
         } catch (NonSuccessResponseException $e) {
             if (405 === $e->getCode()) {

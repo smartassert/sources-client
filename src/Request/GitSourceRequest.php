@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Request;
 
-class FileRequest implements RequestInterface
+class GitSourceRequest implements RequestInterface
 {
     /**
      * @param non-empty-string      $label
@@ -12,6 +12,9 @@ class FileRequest implements RequestInterface
      */
     public function __construct(
         private readonly string $label,
+        private readonly string $hostUrl,
+        private readonly string $path,
+        private readonly ?string $credentials,
         private readonly ?string $id = null,
     ) {
     }
@@ -31,6 +34,17 @@ class FileRequest implements RequestInterface
 
     public function getPayload(): array
     {
-        return ['type' => 'file', 'label' => $this->label];
+        $payload = [
+            'type' => 'git',
+            'label' => $this->label,
+            'host-url' => $this->hostUrl,
+            'path' => $this->path,
+        ];
+
+        if (is_string($this->credentials)) {
+            $payload['credentials'] = $this->credentials;
+        }
+
+        return $payload;
     }
 }
