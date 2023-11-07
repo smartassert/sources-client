@@ -223,7 +223,11 @@ class SourceClient
     private function makeFileSourceMutationRequest(string $token, RequestInterface $request): SourceInterface
     {
         $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createFileSourceRequest($request->hasId() ? 'PUT' : 'POST', $token, $request->getId())
+            $this->requestFactory->createFileSourceRequest(
+                $request->hasId() ? 'PUT' : 'POST',
+                $token,
+                $request->getId()
+            )
                 ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 

@@ -53,7 +53,11 @@ class RequestFactory extends ServiceClientRequestFactory
      */
     public function createFileSourceRequest(string $method, string $token, ?string $sourceId): Request
     {
-        return $this->doCreate($token, $method, $this->urlGenerator->generate('file_source', ['sourceId' => $sourceId]));
+        return $this->doCreate(
+            $token,
+            $method,
+            $this->urlGenerator->generate('file_source', ['sourceId' => $sourceId])
+        );
     }
 
     /**
