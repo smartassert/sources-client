@@ -64,7 +64,6 @@ interface SourceClientInterface
 
     /**
      * @param non-empty-string $token
-     * @param non-empty-string $label
      *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
@@ -77,7 +76,6 @@ interface SourceClientInterface
     /**
      * @param non-empty-string $token
      * @param non-empty-string $sourceId
-     * @param non-empty-string $label
      *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
@@ -89,7 +87,6 @@ interface SourceClientInterface
     public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface;
 
     /**
-     * @param non-empty-string  $label
      * @param non-empty-string  $token
      * @param non-empty-string  $hostUrl
      * @param non-empty-string  $path
@@ -110,7 +107,6 @@ interface SourceClientInterface
     ): SourceInterface;
 
     /**
-     * @param non-empty-string  $label
      * @param non-empty-string  $token
      * @param non-empty-string  $sourceId
      * @param non-empty-string  $hostUrl
