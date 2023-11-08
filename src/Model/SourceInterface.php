@@ -21,6 +21,9 @@ interface SourceInterface
      */
     public function getType(): string;
 
+    /**
+     * @return non-empty-string
+     */
     public function getLabel(): string;
 
     /**

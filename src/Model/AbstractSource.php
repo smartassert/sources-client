@@ -10,6 +10,7 @@ abstract class AbstractSource implements SourceInterface
      * @param non-empty-string $id
      * @param non-empty-string $userId
      * @param non-empty-string $type
+     * @param non-empty-string $label
      * @param null|int<0, max> $deletedAt
      */
     public function __construct(
