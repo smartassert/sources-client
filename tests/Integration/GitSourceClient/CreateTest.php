@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Integration\GitSourceClient;
 
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Model\GitSource;
@@ -10,7 +10,7 @@ use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateGitSourceDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class CreateGitSourceTest extends AbstractIntegrationTestCase
+class CreateTest extends AbstractIntegrationTestCase
 {
     use CreateUpdateGitSourceDataProviderTrait;
 
@@ -21,14 +21,14 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
      * @param non-empty-string $hostUrl
      * @param non-empty-string $path
      */
-    public function testCreateGitSourceInvalidRequest(
+    public function testCreateInvalidRequest(
         string $label,
         string $hostUrl,
         string $path,
         InvalidRequestField $expected
     ): void {
         try {
-            self::$sourceClient->createGitSource(
+            self::$gitSourceClient->create(
                 self::$user1ApiToken->token,
                 $label,
                 $hostUrl,
@@ -49,9 +49,9 @@ class CreateGitSourceTest extends AbstractIntegrationTestCase
      * @param non-empty-string  $path
      * @param ?non-empty-string $credentials
      */
-    public function testCreateGitSourceSuccess(string $label, string $hostUrl, string $path, ?string $credentials): void
+    public function testCreateSuccess(string $label, string $hostUrl, string $path, ?string $credentials): void
     {
-        $gitSource = self::$sourceClient->createGitSource(
+        $gitSource = self::$gitSourceClient->create(
             self::$user1ApiToken->token,
             $label,
             $hostUrl,

@@ -23,7 +23,7 @@ class CreateTest extends AbstractIntegrationTestCase
      */
     public function testCreateInvalidRequest(string $label, array $tests, InvalidRequestField $expected): void
     {
-        $source = self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
         \assert($source instanceof SourceInterface);
 
         try {
@@ -90,7 +90,7 @@ class CreateTest extends AbstractIntegrationTestCase
         return [
             'same source, different tests' => [
                 'sourcesCreator' => function () {
-                    $source = self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+                    $source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
 
                     return [$source, $source];
                 },
@@ -100,8 +100,8 @@ class CreateTest extends AbstractIntegrationTestCase
             'different source, same tests' => [
                 'sourcesCreator' => function () {
                     return [
-                        self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand())),
-                        self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()))
+                        self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand())),
+                        self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()))
                     ];
                 },
                 'firstRequestTests' => ['test.yaml'],
@@ -110,8 +110,8 @@ class CreateTest extends AbstractIntegrationTestCase
             'different source, different tests' => [
                 'sourcesCreator' => function () {
                     return [
-                        self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand())),
-                        self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()))
+                        self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand())),
+                        self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()))
                     ];
                 },
                 'firstRequestTests' => ['test1.yaml'],
@@ -128,7 +128,7 @@ class CreateTest extends AbstractIntegrationTestCase
      */
     public function testCreateSuccess(string $label, array $tests): void
     {
-        $source = self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
         \assert($source instanceof SourceInterface);
 
         $suite = self::$suiteClient->create(self::$user1ApiToken->token, $source->getId(), $label, $tests);

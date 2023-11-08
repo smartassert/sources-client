@@ -27,7 +27,7 @@ class ReadTest extends AbstractIntegrationTestCase
 
     public function testReadSuccess(): void
     {
-        $source = self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
 
         $sourcePaths = [
             'Source/File.yaml',

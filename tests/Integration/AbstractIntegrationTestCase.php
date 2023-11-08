@@ -12,6 +12,8 @@ use SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory;
 use SmartAssert\ServiceClient\ResponseFactory\ResponseFactory;
 use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\FileClient;
+use SmartAssert\SourcesClient\FileSourceClient;
+use SmartAssert\SourcesClient\GitSourceClient;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
@@ -35,6 +37,8 @@ abstract class AbstractIntegrationTestCase extends TestCase
 
     protected static FileClient $fileClient;
     protected static SourceClient $sourceClient;
+    protected static FileSourceClient $fileSourceClient;
+    protected static GitSourceClient $gitSourceClient;
     protected static SuiteClient $suiteClient;
     protected static SerializedSuiteClient $serializedSuiteClient;
     protected static Token $user1ApiToken;
@@ -52,6 +56,18 @@ abstract class AbstractIntegrationTestCase extends TestCase
 
         self::$fileClient = new FileClient(self::$requestFactory, self::$serviceClient, self::$exceptionFactory);
         self::$sourceClient = new SourceClient(
+            self::$requestFactory,
+            self::$serviceClient,
+            new SourceFactory(),
+            self::$exceptionFactory
+        );
+        self::$fileSourceClient = new FileSourceClient(
+            self::$requestFactory,
+            self::$serviceClient,
+            new SourceFactory(),
+            self::$exceptionFactory
+        );
+        self::$gitSourceClient = new GitSourceClient(
             self::$requestFactory,
             self::$serviceClient,
             new SourceFactory(),

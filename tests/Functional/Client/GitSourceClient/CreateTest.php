@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Functional\Client\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Functional\Client\GitSourceClient;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -11,12 +11,12 @@ use SmartAssert\SourcesClient\Exception\ResponseException;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class CreateGitSourceTest extends AbstractSourceClientTestCase
+class CreateTest extends AbstractGitSourceClientTestCase
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
 
-    public function testCreateFileSourceThrowsInvalidModelDataException(): void
+    public function testCreateThrowsInvalidModelDataException(): void
     {
         $responsePayload = ['key' => 'value'];
         $response = new Response(
@@ -48,7 +48,7 @@ class CreateGitSourceTest extends AbstractSourceClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->sourceClient->createGitSource(
+            $this->gitSourceClient->create(
                 self::API_KEY,
                 md5((string) rand()),
                 'https://example.com/' . md5((string) rand()) . '.git',

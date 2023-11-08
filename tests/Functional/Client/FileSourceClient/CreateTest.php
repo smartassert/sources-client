@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Functional\Client\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Functional\Client\FileSourceClient;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -11,12 +11,12 @@ use SmartAssert\SourcesClient\Exception\ResponseException;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class CreateFileSourceTest extends AbstractSourceClientTestCase
+class CreateTest extends AbstractFileSourceClientTestCase
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
 
-    public function testCreateFileSourceThrowsInvalidModelDataException(): void
+    public function testCreateThrowsInvalidModelDataException(): void
     {
         $responsePayload = ['key' => 'value'];
         $response = new Response(
@@ -48,7 +48,7 @@ class CreateFileSourceTest extends AbstractSourceClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->sourceClient->createFileSource(self::API_KEY, md5((string) rand()));
+            $this->fileSourceClient->create(self::API_KEY, md5((string) rand()));
         };
     }
 
