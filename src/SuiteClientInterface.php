@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
+use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
-use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\Suite;
@@ -46,8 +46,11 @@ interface SuiteClientInterface
 
     /**
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function delete(string $token, string $suiteId): Suite;
@@ -56,10 +59,10 @@ interface SuiteClientInterface
      * @return Suite[]
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
-     * @throws InvalidResponseTypeException
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function list(string $token): array;
