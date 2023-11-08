@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Integration\GitSourceClient;
 
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
@@ -11,7 +11,7 @@ use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateGitSourceDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class UpdateGitSourceTest extends AbstractIntegrationTestCase
+class UpdateTest extends AbstractIntegrationTestCase
 {
     use CreateUpdateGitSourceDataProviderTrait;
 
@@ -21,7 +21,7 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
     {
         parent::setUp();
 
-        $gitSource = self::$sourceClient->createGitSource(
+        $gitSource = self::$gitSourceClient->create(
             self::$user1ApiToken->token,
             md5((string) rand()),
             'https://example.com/' . md5((string) rand()) . '.git',
@@ -39,14 +39,14 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
      * @param non-empty-string $hostUrl
      * @param non-empty-string $path
      */
-    public function testUpdateGitSourceInvalidRequest(
+    public function testUpdateInvalidRequest(
         string $label,
         string $hostUrl,
         string $path,
         InvalidRequestField $expected
     ): void {
         try {
-            self::$sourceClient->updateGitSource(
+            self::$gitSourceClient->update(
                 self::$user1ApiToken->token,
                 $this->gitSource->getId(),
                 $label,
@@ -68,9 +68,9 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
      * @param non-empty-string  $path
      * @param ?non-empty-string $credentials
      */
-    public function testUpdateGitSourceSuccess(string $label, string $hostUrl, string $path, ?string $credentials): void
+    public function testUpdateSuccess(string $label, string $hostUrl, string $path, ?string $credentials): void
     {
-        $gitSource = self::$sourceClient->updateGitSource(
+        $gitSource = self::$gitSourceClient->update(
             self::$user1ApiToken->token,
             $this->gitSource->getId(),
             $label,
@@ -89,12 +89,12 @@ class UpdateGitSourceTest extends AbstractIntegrationTestCase
 
     public function testUpdateDeletedFileSource(): void
     {
-        self::$sourceClient->delete(self::$user1ApiToken->token, $this->gitSource->getId());
+        self::$gitSourceClient->delete(self::$user1ApiToken->token, $this->gitSource->getId());
 
         self::expectException(ModifyReadOnlyEntityException::class);
         self::expectExceptionMessage('Cannot modify read-only source ' . $this->gitSource->getId() . '.');
 
-        self::$sourceClient->updateGitSource(
+        self::$gitSourceClient->update(
             self::$user1ApiToken->token,
             $this->gitSource->getId(),
             md5((string) rand()),

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Integration\GitSourceClient;
 
 use SmartAssert\SourcesClient\Model\SourceInterface;
-use SmartAssert\SourcesClient\Tests\DataProvider\GetSourceDataProviderTrait;
+use SmartAssert\SourcesClient\Tests\DataProvider\GetGitSourceDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
 class DeleteTest extends AbstractIntegrationTestCase
 {
-    use GetSourceDataProviderTrait;
+    use GetGitSourceDataProviderTrait;
 
     protected function setUp(): void
     {
@@ -20,14 +20,14 @@ class DeleteTest extends AbstractIntegrationTestCase
     }
 
     /**
-     * @dataProvider getSourceDataProvider
+     * @dataProvider getGitSourceDataProvider
      *
      * @param callable(): SourceInterface $creator
      */
-    public function testDeleteSourceSuccess(callable $creator): void
+    public function testDeleteSuccess(callable $creator): void
     {
         $createdSource = $creator();
-        $retrievedSource = self::$sourceClient->delete(self::$user1ApiToken->token, $createdSource->getId());
+        $retrievedSource = self::$gitSourceClient->delete(self::$user1ApiToken->token, $createdSource->getId());
 
         self::assertSame($createdSource->getId(), $retrievedSource->getId());
         self::assertNotNull($retrievedSource->getDeletedAt());

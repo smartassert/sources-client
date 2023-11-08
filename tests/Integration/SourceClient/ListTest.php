@@ -22,7 +22,7 @@ class ListTest extends AbstractIntegrationTestCase
      *   array{'type':non-empty-string, 'label':non-empty-string}
      * } $sourcesData
      */
-    public function testListSourcesSuccess(array $sourcesData): void
+    public function testListSuccess(array $sourcesData): void
     {
         $sources = self::$sourceClient->list(self::$user1ApiToken->token);
         self::assertSame([], $sources);
@@ -32,11 +32,11 @@ class ListTest extends AbstractIntegrationTestCase
             $expectedLabels[] = $sourceData['label'];
 
             if ('file' === $sourceData['type']) {
-                self::$sourceClient->createFileSource(self::$user1ApiToken->token, $sourceData['label']);
+                self::$fileSourceClient->create(self::$user1ApiToken->token, $sourceData['label']);
             }
 
             if ('git' === $sourceData['type']) {
-                self::$sourceClient->createGitSource(
+                self::$gitSourceClient->create(
                     self::$user1ApiToken->token,
                     $sourceData['label'],
                     md5((string) rand()),

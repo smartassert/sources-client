@@ -31,7 +31,7 @@ class ListTest extends AbstractIntegrationTestCase
         foreach ($suitesData as $suiteData) {
             $expectedLabels[] = $suiteData['label'];
 
-            $source = self::$sourceClient->createFileSource(self::$user1ApiToken->token, $suiteData['source_label']);
+            $source = self::$fileSourceClient->create(self::$user1ApiToken->token, $suiteData['source_label']);
 
             self::$suiteClient->create(
                 self::$user1ApiToken->token,

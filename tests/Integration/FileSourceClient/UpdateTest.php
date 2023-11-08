@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Integration\FileSourceClient;
 
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
@@ -11,7 +11,7 @@ use SmartAssert\SourcesClient\Model\InvalidRequestField;
 use SmartAssert\SourcesClient\Tests\DataProvider\CreateUpdateFileSourceDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
-class UpdateFileSourceTest extends AbstractIntegrationTestCase
+class UpdateTest extends AbstractIntegrationTestCase
 {
     use CreateUpdateFileSourceDataProviderTrait;
 
@@ -23,7 +23,7 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
 
         $label = md5((string) rand());
 
-        $fileSource = self::$sourceClient->createFileSource(self::$user1ApiToken->token, $label);
+        $fileSource = self::$fileSourceClient->create(self::$user1ApiToken->token, $label);
         \assert($fileSource instanceof FileSource);
         $this->fileSource = $fileSource;
     }
@@ -33,10 +33,10 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
      *
      * @param non-empty-string $label
      */
-    public function testUpdateFileSourceInvalidRequest(string $label, InvalidRequestField $expected): void
+    public function testUpdateInvalidRequest(string $label, InvalidRequestField $expected): void
     {
         try {
-            self::$sourceClient->updateFileSource(
+            self::$fileSourceClient->update(
                 self::$user1ApiToken->token,
                 $this->fileSource->getId(),
                 $label
@@ -47,11 +47,11 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
         }
     }
 
-    public function testUpdateFileSourceSuccess(): void
+    public function testUpdateSuccess(): void
     {
         $label = md5((string) rand());
 
-        $fileSource = self::$sourceClient->updateFileSource(
+        $fileSource = self::$fileSourceClient->update(
             self::$user1ApiToken->token,
             $this->fileSource->getId(),
             $label
@@ -64,12 +64,12 @@ class UpdateFileSourceTest extends AbstractIntegrationTestCase
 
     public function testUpdateDeletedFileSource(): void
     {
-        self::$sourceClient->delete(self::$user1ApiToken->token, $this->fileSource->getId());
+        self::$fileSourceClient->delete(self::$user1ApiToken->token, $this->fileSource->getId());
 
         self::expectException(ModifyReadOnlyEntityException::class);
         self::expectExceptionMessage('Cannot modify read-only source ' . $this->fileSource->getId() . '.');
 
-        self::$sourceClient->updateFileSource(
+        self::$fileSourceClient->update(
             self::$user1ApiToken->token,
             $this->fileSource->getId(),
             md5((string) rand())

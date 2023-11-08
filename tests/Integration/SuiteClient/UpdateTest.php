@@ -23,7 +23,7 @@ class UpdateTest extends AbstractIntegrationTestCase
     {
         parent::setUp();
 
-        $this->source = self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $this->source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
         $this->suite = self::$suiteClient->create(
             self::$user1ApiToken->token,
             $this->source->getId(),
@@ -62,7 +62,7 @@ class UpdateTest extends AbstractIntegrationTestCase
      */
     public function testUpdateSuccess(string $label, array $tests): void
     {
-        $newSource = self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $newSource = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
 
         $suite = self::$suiteClient->update(
             self::$user1ApiToken->token,

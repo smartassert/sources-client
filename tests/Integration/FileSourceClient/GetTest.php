@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Integration\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Integration\FileSourceClient;
 
 use SmartAssert\SourcesClient\Model\SourceInterface;
-use SmartAssert\SourcesClient\Tests\DataProvider\GetSourceDataProviderTrait;
+use SmartAssert\SourcesClient\Tests\DataProvider\GetFileSourceDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 
 class GetTest extends AbstractIntegrationTestCase
 {
-    use GetSourceDataProviderTrait;
+    use GetFileSourceDataProviderTrait;
 
     protected function setUp(): void
     {
@@ -20,14 +20,14 @@ class GetTest extends AbstractIntegrationTestCase
     }
 
     /**
-     * @dataProvider getSourceDataProvider
+     * @dataProvider getFileSourceDataProvider
      *
      * @param callable(): SourceInterface $creator
      */
-    public function testGetSourceSuccess(callable $creator): void
+    public function testGetSuccess(callable $creator): void
     {
         $createdSource = $creator();
-        $retrievedSource = self::$sourceClient->get(self::$user1ApiToken->token, $createdSource->getId());
+        $retrievedSource = self::$fileSourceClient->get(self::$user1ApiToken->token, $createdSource->getId());
 
         self::assertEquals($createdSource, $retrievedSource);
     }

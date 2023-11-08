@@ -11,7 +11,7 @@ class DeleteTest extends AbstractIntegrationTestCase
 {
     public function testDeleteSuccess(): void
     {
-        $source = self::$sourceClient->createFileSource(self::$user1ApiToken->token, md5((string) rand()));
+        $source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
         \assert($source instanceof SourceInterface);
 
         $label = md5((string) rand());

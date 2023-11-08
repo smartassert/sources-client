@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient\Tests\Functional\Client\SourceClient;
+namespace SmartAssert\SourcesClient\Tests\Functional\Client\GitSourceClient;
 
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 
-class GetTest extends AbstractSourceClientTestCase
+class GetTest extends AbstractGitSourceClientTestCase
 {
     use InvalidJsonResponseExceptionDataProviderTrait;
     use NetworkErrorExceptionDataProviderTrait;
 
-    public function testGetSourceRequestProperties(): void
+    public function testGetRequestProperties(): void
     {
         $sourceId = md5((string) rand());
 
@@ -34,7 +34,7 @@ class GetTest extends AbstractSourceClientTestCase
 
         $apiKey = 'api key value';
 
-        $this->sourceClient->get($apiKey, $sourceId);
+        $this->gitSourceClient->get($apiKey, $sourceId);
 
         $request = $this->getLastRequest();
         self::assertSame('GET', $request->getMethod());
@@ -52,7 +52,7 @@ class GetTest extends AbstractSourceClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->sourceClient->get(self::API_KEY, md5((string) rand()));
+            $this->gitSourceClient->get(self::API_KEY, md5((string) rand()));
         };
     }
 
@@ -68,9 +68,12 @@ class GetTest extends AbstractSourceClientTestCase
             ['content-type' => 'application/json'],
             (string) json_encode([
                 'id' => md5((string) rand()),
+                'type' => 'git',
                 'user_id' => md5((string) rand()),
-                'type' => 'file',
-                'label' => md5((string) rand()),
+                'label' => 'source label',
+                'host_url' => 'https://example.com/repo.git',
+                'path' => '/',
+                'has_credentials' => false,
             ])
         );
     }
