@@ -15,6 +15,8 @@ use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
+use SmartAssert\SourcesClient\Model\FileSource;
+use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Request\FileSourceRequest;
 use SmartAssert\SourcesClient\Request\GitSourceRequest;
@@ -58,12 +60,12 @@ class SourceClient implements SourceClientInterface
 
     public function get(string $token, string $sourceId): SourceInterface
     {
-        return $this->handleSourceRequest(new SourceRequest('GET', $sourceId), $token);
+        return $this->handleFileSourceRequest(new SourceRequest('GET', $sourceId), $token);
     }
 
     public function delete(string $token, string $sourceId): SourceInterface
     {
-        return $this->handleSourceRequest(new SourceRequest('DELETE', $sourceId), $token);
+        return $this->handleFileSourceRequest(new SourceRequest('DELETE', $sourceId), $token);
     }
 
     public function listFiles(string $token, string $fileSourceId): array
@@ -84,15 +86,15 @@ class SourceClient implements SourceClientInterface
         return $filenames;
     }
 
-    public function createFileSource(string $token, string $label): SourceInterface
+    public function createFileSource(string $token, string $label): FileSource
     {
-        return $this->handleSourceRequest(new FileSourceRequest('POST', $label), $token);
+        return $this->handleFileSourceRequest(new FileSourceRequest('POST', $label), $token);
     }
 
-    public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface
+    public function updateFileSource(string $token, string $sourceId, string $label): FileSource
     {
         try {
-            return $this->handleSourceRequest(new FileSourceRequest('PUT', $label, $sourceId), $token);
+            return $this->handleFileSourceRequest(new FileSourceRequest('PUT', $label, $sourceId), $token);
         } catch (NonSuccessResponseException $e) {
             if (405 === $e->getCode()) {
                 throw new ModifyReadOnlyEntityException($sourceId, 'source');
@@ -108,8 +110,8 @@ class SourceClient implements SourceClientInterface
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): SourceInterface {
-        return $this->handleSourceRequest(
+    ): GitSource {
+        return $this->handleGitSourceRequest(
             new GitSourceRequest('POST', $label, $hostUrl, $path, $credentials),
             $token
         );
@@ -122,9 +124,9 @@ class SourceClient implements SourceClientInterface
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): SourceInterface {
+    ): GitSource {
         try {
-            return $this->handleSourceRequest(
+            return $this->handleGitSourceRequest(
                 new GitSourceRequest('PUT', $label, $hostUrl, $path, $credentials, $sourceId),
                 $token
             );
@@ -144,7 +146,7 @@ class SourceClient implements SourceClientInterface
      * @throws InvalidResponseDataException
      * @throws UnauthorizedException
      */
-    private function handleSourceRequest(RequestInterface $request, string $token): SourceInterface
+    private function handleFileSourceRequest(RequestInterface $request, string $token): FileSource
     {
         $response = $this->serviceClient->sendRequest(
             $this->requestFactory
@@ -152,7 +154,25 @@ class SourceClient implements SourceClientInterface
                 ->withPayload(new UrlEncodedPayload($request->getPayload()))
         );
 
-        return $this->handleSourceResponse($response);
+        return $this->handleFileSourceResponse($response);
+    }
+
+    /**
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws UnauthorizedException
+     */
+    private function handleGitSourceRequest(RequestInterface $request, string $token): GitSource
+    {
+        $response = $this->serviceClient->sendRequest(
+            $this->requestFactory
+                ->createSourceRequest($request, $token)
+                ->withPayload(new UrlEncodedPayload($request->getPayload()))
+        );
+
+        return $this->handleGitSourceResponse($response);
     }
 
     /**
@@ -161,11 +181,29 @@ class SourceClient implements SourceClientInterface
      * @throws InvalidResponseTypeException
      * @throws HttpResponseExceptionInterface
      */
-    private function handleSourceResponse(ResponseInterface $response): SourceInterface
+    private function handleFileSourceResponse(ResponseInterface $response): FileSource
     {
         $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
 
-        $source = $this->sourceFactory->create($response->getData());
+        $source = $this->sourceFactory->createFileSource($response->getData());
+        if (null === $source) {
+            throw InvalidModelDataException::fromJsonResponse(SourceInterface::class, $response);
+        }
+
+        return $source;
+    }
+
+    /**
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     * @throws HttpResponseExceptionInterface
+     */
+    private function handleGitSourceResponse(ResponseInterface $response): GitSource
+    {
+        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+
+        $source = $this->sourceFactory->createGitSource($response->getData());
         if (null === $source) {
             throw InvalidModelDataException::fromJsonResponse(SourceInterface::class, $response);
         }

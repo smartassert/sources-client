@@ -12,6 +12,8 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
+use SmartAssert\SourcesClient\Model\FileSource;
+use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 
 interface SourceClientInterface
@@ -71,7 +73,7 @@ interface SourceClientInterface
      * @throws InvalidResponseDataException
      * @throws UnauthorizedException
      */
-    public function createFileSource(string $token, string $label): SourceInterface;
+    public function createFileSource(string $token, string $label): FileSource;
 
     /**
      * @param non-empty-string $token
@@ -84,7 +86,7 @@ interface SourceClientInterface
      * @throws ModifyReadOnlyEntityException
      * @throws UnauthorizedException
      */
-    public function updateFileSource(string $token, string $sourceId, string $label): SourceInterface;
+    public function updateFileSource(string $token, string $sourceId, string $label): FileSource;
 
     /**
      * @param non-empty-string  $token
@@ -104,7 +106,7 @@ interface SourceClientInterface
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): SourceInterface;
+    ): GitSource;
 
     /**
      * @param non-empty-string  $token
@@ -127,5 +129,5 @@ interface SourceClientInterface
         string $hostUrl,
         string $path,
         ?string $credentials,
-    ): SourceInterface;
+    ): GitSource;
 }
