@@ -27,8 +27,6 @@ interface GitSourceClientInterface
 
     /**
      * @param non-empty-string  $token
-     * @param non-empty-string  $hostUrl
-     * @param non-empty-string  $path
      * @param ?non-empty-string $credentials
      *
      * @throws ClientExceptionInterface
