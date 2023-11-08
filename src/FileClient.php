@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient;
 
-use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
-use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\ServiceClient\Exception\UnauthorizedException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
 use SmartAssert\SourcesClient\Request\FileRequest;
@@ -53,7 +51,7 @@ readonly class FileClient implements FileClientInterface
     }
 
     /**
-     * @throws NonSuccessResponseException
+     * @throws InvalidResponseDataException
      * @throws HttpResponseExceptionInterface
      */
     private function handleResponse(ResponseInterface $response): string
