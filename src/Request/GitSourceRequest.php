@@ -8,7 +8,6 @@ class GitSourceRequest implements RequestInterface
 {
     /**
      * @param 'POST'|'PUT'          $method
-     * @param non-empty-string      $label
      * @param null|non-empty-string $resourceId
      */
     public function __construct(
