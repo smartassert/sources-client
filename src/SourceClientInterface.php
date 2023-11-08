@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
+use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
-use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
@@ -20,10 +20,10 @@ interface SourceClientInterface
      * @return SourceInterface[]
      *
      * @throws ClientExceptionInterface
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
-     * @throws InvalidResponseTypeException
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function list(string $token): array;
@@ -54,9 +54,10 @@ interface SourceClientInterface
      * @return string[]
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function listFiles(string $token, string $fileSourceId): array;
@@ -68,6 +69,7 @@ interface SourceClientInterface
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
      * @throws UnauthorizedException
      */
     public function createFileSource(string $token, string $label): SourceInterface;
@@ -80,6 +82,7 @@ interface SourceClientInterface
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
      * @throws ModifyReadOnlyEntityException
      * @throws UnauthorizedException
      */
@@ -95,6 +98,7 @@ interface SourceClientInterface
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
      * @throws UnauthorizedException
      */
     public function createGitSource(
@@ -116,6 +120,7 @@ interface SourceClientInterface
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
      * @throws ModifyReadOnlyEntityException
      * @throws UnauthorizedException
      */
