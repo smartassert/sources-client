@@ -19,6 +19,7 @@ interface FileClientInterface
      * @throws HttpResponseExceptionInterface
      * @throws ClientExceptionInterface
      * @throws UnauthorizedException
+     * @throws NonSuccessResponseException
      */
     public function add(string $token, string $fileSourceId, string $filename, string $content): void;
 
