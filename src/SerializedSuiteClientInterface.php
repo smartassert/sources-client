@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
+use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
@@ -23,6 +24,8 @@ interface SerializedSuiteClientInterface
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function create(
@@ -44,6 +47,7 @@ interface SerializedSuiteClientInterface
 
     /**
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidResponseDataException
      * @throws UnauthorizedException
