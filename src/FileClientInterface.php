@@ -15,8 +15,6 @@ interface FileClientInterface
 {
     /**
      * @param non-empty-string $token
-     * @param non-empty-string $fileSourceId
-     * @param non-empty-string $filename
      *
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
@@ -29,8 +27,6 @@ interface FileClientInterface
 
     /**
      * @param non-empty-string $token
-     * @param non-empty-string $fileSourceId
-     * @param non-empty-string $filename
      *
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
@@ -43,8 +39,6 @@ interface FileClientInterface
 
     /**
      * @param non-empty-string $token
-     * @param non-empty-string $fileSourceId
-     * @param non-empty-string $filename
      *
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
