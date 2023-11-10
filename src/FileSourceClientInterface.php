@@ -20,9 +20,11 @@ interface FileSourceClientInterface
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function get(string $token, string $sourceId): FileSource;
@@ -33,6 +35,7 @@ interface FileSourceClientInterface
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
@@ -43,9 +46,11 @@ interface FileSourceClientInterface
      * @param non-empty-string $token
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function create(string $token, string $label): FileSource;
@@ -55,9 +60,11 @@ interface FileSourceClientInterface
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws ModifyReadOnlyEntityException
      * @throws UnauthorizedException
      */
@@ -67,9 +74,11 @@ interface FileSourceClientInterface
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function delete(string $token, string $sourceId): FileSource;
