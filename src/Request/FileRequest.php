@@ -8,8 +8,6 @@ class FileRequest implements RequestInterface
 {
     /**
      * @param 'DELETE'|'GET'|'POST' $method
-     * @param non-empty-string      $resourceId
-     * @param non-empty-string      $filename
      */
     public function __construct(
         private readonly string $method,
