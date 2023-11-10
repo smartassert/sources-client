@@ -24,6 +24,7 @@ interface FileSourceClientInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function get(string $token, string $sourceId): FileSource;
@@ -34,6 +35,7 @@ interface FileSourceClientInterface
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
      * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
@@ -48,6 +50,7 @@ interface FileSourceClientInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function create(string $token, string $label): FileSource;
@@ -61,6 +64,7 @@ interface FileSourceClientInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws ModifyReadOnlyEntityException
      * @throws UnauthorizedException
      */
@@ -74,6 +78,7 @@ interface FileSourceClientInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
     public function delete(string $token, string $sourceId): FileSource;
