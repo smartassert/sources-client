@@ -63,7 +63,7 @@ class RequestFactory extends ServiceClientRequestFactory
 
     public function createSourceFilenamesRequest(string $token, string $fileSourceId): Request
     {
-        $url = $this->urlGenerator->generate('source_filenames', ['sourceId' => $fileSourceId]);
+        $url = $this->urlGenerator->generate('file_source_filenames', ['sourceId' => $fileSourceId]);
 
         return $this->doCreate($token, 'GET', $url);
     }
@@ -133,7 +133,7 @@ class RequestFactory extends ServiceClientRequestFactory
         $routeCollection->add('source', new Route('/source/{sourceId?}'));
         $routeCollection->add('file_source', new Route('/file-source/{sourceId?}'));
         $routeCollection->add('git_source', new Route('/git-source/{sourceId?}'));
-        $routeCollection->add('source_filenames', new Route('/source/{sourceId}/list'));
+        $routeCollection->add('file_source_filenames', new Route('/file-source/{sourceId}/list/'));
         $routeCollection->add('suite', new Route('/suite/{suiteId?}'));
         $routeCollection->add('suites', new Route('/suites'));
         $routeCollection->add('suite_serialize', new Route('/suite/{suiteId}/{serializedSuiteId}'));
