@@ -20,6 +20,7 @@ interface FileSourceClientInterface
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
@@ -43,6 +44,7 @@ interface FileSourceClientInterface
      * @param non-empty-string $token
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
@@ -55,6 +57,7 @@ interface FileSourceClientInterface
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
@@ -67,6 +70,7 @@ interface FileSourceClientInterface
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws InvalidModelDataException
      * @throws InvalidResponseDataException
