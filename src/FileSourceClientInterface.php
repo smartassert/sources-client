@@ -17,6 +17,7 @@ use SmartAssert\SourcesClient\Model\FileSource;
 interface FileSourceClientInterface
 {
     /**
+     * @param non-empty-string $token
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
@@ -30,6 +31,9 @@ interface FileSourceClientInterface
     public function get(string $token, string $sourceId): FileSource;
 
     /**
+     * @param non-empty-string $token
+     * @param non-empty-string $fileSourceId
+     *
      * @return string[]
      *
      * @throws ClientExceptionInterface
@@ -71,6 +75,7 @@ interface FileSourceClientInterface
     public function update(string $token, string $sourceId, string $label): FileSource;
 
     /**
+     * @param non-empty-string $token
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
