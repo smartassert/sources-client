@@ -51,11 +51,8 @@ interface GitSourceClientInterface
     ): GitSource;
 
     /**
-     * @param non-empty-string  $token
-     * @param non-empty-string  $sourceId
-     * @param non-empty-string  $hostUrl
-     * @param non-empty-string  $path
-     * @param ?non-empty-string $credentials
+     * @param non-empty-string $token
+     * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
