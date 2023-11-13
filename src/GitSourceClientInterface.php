@@ -17,6 +17,7 @@ use SmartAssert\SourcesClient\Model\GitSource;
 interface GitSourceClientInterface
 {
     /**
+     * @param non-empty-string $token
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
@@ -75,6 +76,7 @@ interface GitSourceClientInterface
     ): GitSource;
 
     /**
+     * @param non-empty-string $token
      * @param non-empty-string $sourceId
      *
      * @throws ClientExceptionInterface
