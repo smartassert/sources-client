@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Model;
 
-abstract class AbstractSource implements SourceInterface
+use SmartAssert\ServiceClient\SerializableInterface;
+
+abstract class AbstractSource implements SourceInterface, SerializableInterface
 {
     /**
      * @param non-empty-string $id
@@ -45,5 +47,24 @@ abstract class AbstractSource implements SourceInterface
     public function getDeletedAt(): ?int
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * @return array{id: non-empty-string, label: non-empty-string, type: non-empty-string, deleted_at?: int}
+     */
+    public function toArray(): array
+    {
+        $data = [
+            'id' => $this->getId(),
+            'label' => $this->getLabel(),
+            'type' => $this->getType(),
+        ];
+
+        $deletedAt = $this->getDeletedAt();
+        if (null !== $deletedAt) {
+            $data['deleted_at'] = $deletedAt;
+        }
+
+        return $data;
     }
 }

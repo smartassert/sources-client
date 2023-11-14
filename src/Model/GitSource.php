@@ -46,4 +46,13 @@ class GitSource extends AbstractSource
     {
         return $this->hasCredentials;
     }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'host_url' => $this->getHostUrl(),
+            'path' => $this->getPath(),
+            'has_credentials' => $this->hasCredentials(),
+        ]);
+    }
 }

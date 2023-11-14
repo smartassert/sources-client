@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Model;
 
-class Suite
+use SmartAssert\ServiceClient\SerializableInterface;
+
+readonly class Suite implements SerializableInterface
 {
     /**
      * @param non-empty-string   $id
      * @param non-empty-string   $sourceId
+     * @param non-empty-string   $label
      * @param non-empty-string[] $tests
      * @param null|int<0, max>   $deletedAt
      */
     public function __construct(
-        private readonly string $id,
-        private readonly string $sourceId,
-        private readonly string $label,
-        private readonly array $tests,
-        private readonly ?int $deletedAt,
+        private string $id,
+        private string $sourceId,
+        private string $label,
+        private array $tests,
+        private ?int $deletedAt,
     ) {
     }
 
@@ -50,5 +53,31 @@ class Suite
     public function getDeletedAt(): ?int
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * @return array{
+     *   id: non-empty-string,
+     *   source_id: non-empty-string,
+     *   label: non-empty-string,
+     *   tests: non-empty-string[],
+     *   deleted_at?: int
+     * }
+     */
+    public function toArray(): array
+    {
+        $data = [
+            'id' => $this->id,
+            'source_id' => $this->sourceId,
+            'label' => $this->label,
+            'tests' => $this->tests,
+        ];
+
+        $deletedAt = $this->getDeletedAt();
+        if (null !== $deletedAt) {
+            $data['deleted_at'] = $deletedAt;
+        }
+
+        return $data;
     }
 }
