@@ -27,7 +27,7 @@ class AddReadRemoveTest extends AbstractIntegrationTestCase
         self::$fileClient->add(self::$user1ApiToken->token, $fileSource->getId(), $filename, $content);
     }
 
-    public function testAddFileReadFile(): void
+    public function testAddReadUpdateDeleteFile(): void
     {
         $label = md5((string) rand());
 
@@ -44,12 +44,14 @@ class AddReadRemoveTest extends AbstractIntegrationTestCase
             $content
         );
 
-        $readFileResponse = self::$fileClient->read(
-            self::$user1ApiToken->token,
-            $fileSource->getId(),
-            $filename
-        );
+        $readFileResponse = self::$fileClient->read(self::$user1ApiToken->token, $fileSource->getId(), $filename);
         self::assertSame($content, $readFileResponse);
+
+        $updatedContent = md5((string) rand());
+        self::$fileClient->update(self::$user1ApiToken->token, $fileSource->getId(), $filename, $updatedContent);
+
+        $readFileResponse = self::$fileClient->read(self::$user1ApiToken->token, $fileSource->getId(), $filename);
+        self::assertSame($updatedContent, $readFileResponse);
 
         self::$fileClient->remove(self::$user1ApiToken->token, $fileSource->getId(), $filename);
 

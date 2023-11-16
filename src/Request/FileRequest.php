@@ -7,7 +7,7 @@ namespace SmartAssert\SourcesClient\Request;
 class FileRequest implements RequestInterface
 {
     /**
-     * @param 'DELETE'|'GET'|'POST' $method
+     * @param 'DELETE'|'GET'|'POST'|'PUT' $method
      */
     public function __construct(
         private readonly string $method,
