@@ -19,8 +19,7 @@ interface SuiteClientInterface
     /**
      * @param non-empty-string   $token
      * @param non-empty-string   $sourceId
-     * @param non-empty-string   $label
-     * @param non-empty-string[] $tests
+     * @param string[] $tests
      *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
@@ -33,8 +32,7 @@ interface SuiteClientInterface
      * @param non-empty-string   $token
      * @param non-empty-string   $suiteId
      * @param non-empty-string   $sourceId
-     * @param non-empty-string   $label
-     * @param non-empty-string[] $tests
+     * @param string[] $tests
      *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
@@ -45,6 +43,9 @@ interface SuiteClientInterface
     public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite;
 
     /**
+     * @param non-empty-string $token
+     * @param non-empty-string $suiteId
+     *
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
@@ -56,6 +57,8 @@ interface SuiteClientInterface
     public function delete(string $token, string $suiteId): Suite;
 
     /**
+     * @param non-empty-string $token
+     *
      * @return Suite[]
      *
      * @throws ClientExceptionInterface
