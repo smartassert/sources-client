@@ -24,6 +24,6 @@ class GetTest extends AbstractIntegrationTestCase
         self::assertSame($createdSuite->getSourceId(), $retrievedSuite->getSourceId());
         self::assertSame($createdSuite->getLabel(), $retrievedSuite->getLabel());
         self::assertSame($createdSuite->getTests(), $retrievedSuite->getTests());
-        self::assertNotNull($retrievedSuite->getDeletedAt());
+        self::assertNull($retrievedSuite->getDeletedAt());
     }
 }
