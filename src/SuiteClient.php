@@ -14,7 +14,8 @@ use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Request\RequestInterface;
-use SmartAssert\SourcesClient\Request\SuiteRequest;
+use SmartAssert\SourcesClient\Request\SuiteCreationRequest;
+use SmartAssert\SourcesClient\Request\SuiteMutationRequest;
 
 class SuiteClient implements SuiteClientInterface
 {
@@ -30,13 +31,13 @@ class SuiteClient implements SuiteClientInterface
 
     public function create(string $token, string $sourceId, string $label, array $tests): Suite
     {
-        return $this->makeMutationRequest($token, new SuiteRequest('POST', $sourceId, $label, $tests));
+        return $this->makeMutationRequest($token, new SuiteCreationRequest($sourceId, $label, $tests));
     }
 
     public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite
     {
         try {
-            return $this->makeMutationRequest($token, new SuiteRequest('PUT', $sourceId, $label, $tests, $suiteId));
+            return $this->makeMutationRequest($token, new SuiteMutationRequest($sourceId, $label, $tests, $suiteId));
         } catch (NonSuccessResponseException $e) {
             if (405 === $e->getCode()) {
                 throw new ModifyReadOnlyEntityException($suiteId, 'suite');
