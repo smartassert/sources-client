@@ -30,6 +30,20 @@ interface SuiteClientInterface
     /**
      * @param non-empty-string $token
      * @param non-empty-string $suiteId
+     *
+     * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     * @throws UnauthorizedException
+     */
+    public function get(string $token, string $suiteId): Suite;
+
+    /**
+     * @param non-empty-string $token
+     * @param non-empty-string $suiteId
      * @param non-empty-string $sourceId
      * @param string[]         $tests
      *
