@@ -44,7 +44,6 @@ interface SuiteClientInterface
     /**
      * @param non-empty-string $token
      * @param non-empty-string $suiteId
-     * @param non-empty-string $sourceId
      * @param string[]         $tests
      *
      * @throws ClientExceptionInterface
