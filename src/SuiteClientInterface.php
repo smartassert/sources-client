@@ -17,9 +17,9 @@ use SmartAssert\SourcesClient\Model\Suite;
 interface SuiteClientInterface
 {
     /**
-     * @param non-empty-string   $token
-     * @param non-empty-string   $sourceId
-     * @param string[] $tests
+     * @param non-empty-string $token
+     * @param non-empty-string $sourceId
+     * @param string[]         $tests
      *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
@@ -29,10 +29,10 @@ interface SuiteClientInterface
     public function create(string $token, string $sourceId, string $label, array $tests): Suite;
 
     /**
-     * @param non-empty-string   $token
-     * @param non-empty-string   $suiteId
-     * @param non-empty-string   $sourceId
-     * @param string[] $tests
+     * @param non-empty-string $token
+     * @param non-empty-string $suiteId
+     * @param non-empty-string $sourceId
+     * @param string[]         $tests
      *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface

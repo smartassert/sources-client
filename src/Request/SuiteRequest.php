@@ -9,8 +9,7 @@ class SuiteRequest implements RequestInterface
     /**
      * @param 'DELETE'|'GET'|'POST'|'PUT' $method
      * @param non-empty-string            $sourceId
-     * @param non-empty-string            $label
-     * @param non-empty-string[]          $tests
+     * @param string[]                    $tests
      * @param null|non-empty-string       $resourceId
      */
     public function __construct(
