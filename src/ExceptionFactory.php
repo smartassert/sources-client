@@ -27,7 +27,7 @@ class ExceptionFactory
             return $this->createFromJsonResponse($response);
         }
 
-        return new NonSuccessResponseException($response->getHttpResponse());
+        return new NonSuccessResponseException($response);
     }
 
     /**
@@ -61,6 +61,6 @@ class ExceptionFactory
             return new DuplicateFilePathException($path, $response->getHttpResponse(), $type, $payload);
         }
 
-        return new NonSuccessResponseException($response->getHttpResponse());
+        return new NonSuccessResponseException($response);
     }
 }
