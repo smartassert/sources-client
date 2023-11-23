@@ -14,6 +14,7 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
+use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
@@ -23,8 +24,6 @@ use SmartAssert\SourcesClient\Request\SourceRequest;
 
 class GitSourceClient implements GitSourceClientInterface
 {
-    use VerifyJsonResponseTrait;
-
     public function __construct(
         private readonly RequestFactory $requestFactory,
         private readonly ServiceClient $serviceClient,
@@ -89,13 +88,19 @@ class GitSourceClient implements GitSourceClientInterface
      */
     private function handleRequest(RequestInterface $request, string $token): GitSource
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory
-                ->createSourceRequest($request, $token)
-                ->withPayload(new UrlEncodedPayload($request->getPayload()))
-        );
+        try {
+            $response = $this->serviceClient->sendRequest(
+                $this->requestFactory
+                    ->createSourceRequest($request, $token)
+                    ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            );
+        } catch (NonSuccessResponseException $e) {
+            throw $this->exceptionFactory->createFromResponse($e->getResponse());
+        }
 
-        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
+        }
 
         $source = $this->sourceFactory->createGitSource($response->getData());
         if (null === $source) {

@@ -32,7 +32,7 @@ class CreateTest extends AbstractFileSourceClientTestCase
             self::fail(InvalidModelDataException::class . ' not thrown');
         } catch (InvalidModelDataException $e) {
             self::assertSame(ResponseException::class, $e->class);
-            self::assertSame($response, $e->response);
+            self::assertSame($response, $e->getHttpResponse());
             self::assertSame($responsePayload, $e->payload);
         }
     }

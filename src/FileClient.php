@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient;
 
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\NetworkExceptionInterface;
+use Psr\Http\Client\RequestExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
+use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
+use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\Payload;
-use SmartAssert\ServiceClient\Response\ResponseInterface;
+use SmartAssert\ServiceClient\Request;
 use SmartAssert\SourcesClient\Request\FileRequest;
 
 readonly class FileClient implements FileClientInterface
@@ -22,52 +28,59 @@ readonly class FileClient implements FileClientInterface
 
     public function add(string $token, string $fileSourceId, string $filename, string $content): void
     {
-        $this->handleResponse($this->serviceClient->sendRequest(
-            $this->requestFactory->createFileRequest(
-                new FileRequest('POST', $fileSourceId, $filename),
-                $token
-            )->withPayload(new Payload('text/x-yaml', $content))
-        ));
+        $request = $this->requestFactory->createFileRequest(
+            new FileRequest('POST', $fileSourceId, $filename),
+            $token
+        )->withPayload(new Payload('text/x-yaml', $content));
+
+        $this->handleRequest($request);
     }
 
     public function update(string $token, string $fileSourceId, string $filename, string $content): void
     {
-        $this->handleResponse($this->serviceClient->sendRequest(
-            $this->requestFactory->createFileRequest(
-                new FileRequest('PUT', $fileSourceId, $filename),
-                $token
-            )->withPayload(new Payload('text/x-yaml', $content))
-        ));
+        $request = $this->requestFactory->createFileRequest(
+            new FileRequest('PUT', $fileSourceId, $filename),
+            $token
+        )->withPayload(new Payload('text/x-yaml', $content));
+
+        $this->handleRequest($request);
     }
 
     public function read(string $token, string $fileSourceId, string $filename): string
     {
-        return $this->handleResponse($this->serviceClient->sendRequest(
-            $this->requestFactory->createFileRequest(
-                new FileRequest('GET', $fileSourceId, $filename),
-                $token
-            )
-        ));
+        $request = $this->requestFactory->createFileRequest(
+            new FileRequest('GET', $fileSourceId, $filename),
+            $token
+        );
+
+        return $this->handleRequest($request);
     }
 
     public function remove(string $token, string $fileSourceId, string $filename): void
     {
-        $this->handleResponse($this->serviceClient->sendRequest(
-            $this->requestFactory->createFileRequest(
-                new FileRequest('DELETE', $fileSourceId, $filename),
-                $token
-            )
-        ));
+        $request = $this->requestFactory->createFileRequest(
+            new FileRequest('DELETE', $fileSourceId, $filename),
+            $token
+        );
+
+        $this->handleRequest($request);
     }
 
     /**
-     * @throws InvalidResponseDataException
+     * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
      * @throws HttpResponseExceptionInterface
+     * @throws InvalidResponseDataException
+     * @throws NetworkExceptionInterface
+     * @throws RequestExceptionInterface
+     * @throws UnauthorizedException
      */
-    private function handleResponse(ResponseInterface $response): string
+    private function handleRequest(Request $request): string
     {
-        if (!$response->isSuccessful()) {
-            throw $this->exceptionFactory->createFromResponse($response);
+        try {
+            $response = $this->serviceClient->sendRequest($request);
+        } catch (NonSuccessResponseException $e) {
+            throw $this->exceptionFactory->createFromResponse($e->getResponse());
         }
 
         return $response->getHttpResponse()->getBody()->getContents();

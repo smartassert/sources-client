@@ -8,9 +8,11 @@ use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
+use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
+use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Request\RequestInterface;
@@ -19,8 +21,6 @@ use SmartAssert\SourcesClient\Request\SuiteMutationRequest;
 
 class SuiteClient implements SuiteClientInterface
 {
-    use VerifyJsonResponseTrait;
-
     public function __construct(
         private readonly RequestFactory $requestFactory,
         private readonly ServiceClient $serviceClient,
@@ -36,11 +36,17 @@ class SuiteClient implements SuiteClientInterface
 
     public function get(string $token, string $suiteId): Suite
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSuiteRequest('GET', $token, $suiteId)
-        );
+        try {
+            $response = $this->serviceClient->sendRequest(
+                $this->requestFactory->createSuiteRequest('GET', $token, $suiteId)
+            );
+        } catch (NonSuccessResponseException $e) {
+            throw $this->exceptionFactory->createFromResponse($e->getResponse());
+        }
 
-        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
+        }
 
         $suite = $this->suiteFactory->create($response->getData());
         if (null === $suite) {
@@ -65,11 +71,17 @@ class SuiteClient implements SuiteClientInterface
 
     public function delete(string $token, string $suiteId): Suite
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSuiteRequest('DELETE', $token, $suiteId)
-        );
+        try {
+            $response = $this->serviceClient->sendRequest(
+                $this->requestFactory->createSuiteRequest('DELETE', $token, $suiteId)
+            );
+        } catch (NonSuccessResponseException $e) {
+            throw $this->exceptionFactory->createFromResponse($e->getResponse());
+        }
 
-        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
+        }
 
         $suite = $this->suiteFactory->create($response->getData());
         if (null === $suite) {
@@ -81,9 +93,15 @@ class SuiteClient implements SuiteClientInterface
 
     public function list(string $token): array
     {
-        $response = $this->serviceClient->sendRequest($this->requestFactory->createSuitesRequest($token));
+        try {
+            $response = $this->serviceClient->sendRequest($this->requestFactory->createSuitesRequest($token));
+        } catch (NonSuccessResponseException $e) {
+            throw $this->exceptionFactory->createFromResponse($e->getResponse());
+        }
 
-        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
+        }
 
         $sources = [];
 
@@ -110,12 +128,18 @@ class SuiteClient implements SuiteClientInterface
      */
     private function makeMutationRequest(string $token, RequestInterface $request): Suite
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSuiteRequest($request->getMethod(), $token, $request->getResourceId())
-                ->withPayload(new UrlEncodedPayload($request->getPayload()))
-        );
+        try {
+            $response = $this->serviceClient->sendRequest(
+                $this->requestFactory->createSuiteRequest($request->getMethod(), $token, $request->getResourceId())
+                    ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            );
+        } catch (NonSuccessResponseException $e) {
+            throw $this->exceptionFactory->createFromResponse($e->getResponse());
+        }
 
-        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
+        }
 
         $suite = $this->suiteFactory->create($response->getData());
         if (null === $suite) {

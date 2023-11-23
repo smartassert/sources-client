@@ -14,6 +14,7 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
+use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
@@ -23,8 +24,6 @@ use SmartAssert\SourcesClient\Request\SourceRequest;
 
 class FileSourceClient implements FileSourceClientInterface
 {
-    use VerifyJsonResponseTrait;
-
     public function __construct(
         private readonly RequestFactory $requestFactory,
         private readonly ServiceClient $serviceClient,
@@ -40,11 +39,17 @@ class FileSourceClient implements FileSourceClientInterface
 
     public function list(string $token, string $fileSourceId): array
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory->createSourceFilenamesRequest($token, $fileSourceId)
-        );
+        try {
+            $response = $this->serviceClient->sendRequest(
+                $this->requestFactory->createSourceFilenamesRequest($token, $fileSourceId)
+            );
+        } catch (NonSuccessResponseException $e) {
+            throw $this->exceptionFactory->createFromResponse($e->getResponse());
+        }
 
-        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
+        }
 
         $filenames = [];
         foreach ($response->getData() as $item) {
@@ -90,13 +95,19 @@ class FileSourceClient implements FileSourceClientInterface
      */
     private function handleRequest(RequestInterface $request, string $token): FileSource
     {
-        $response = $this->serviceClient->sendRequest(
-            $this->requestFactory
-                ->createSourceRequest($request, $token)
-                ->withPayload(new UrlEncodedPayload($request->getPayload()))
-        );
+        try {
+            $response = $this->serviceClient->sendRequest(
+                $this->requestFactory
+                    ->createSourceRequest($request, $token)
+                    ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            );
+        } catch (NonSuccessResponseException $e) {
+            throw $this->exceptionFactory->createFromResponse($e->getResponse());
+        }
 
-        $response = $this->verifyJsonResponse($response, $this->exceptionFactory);
+        if (!$response instanceof JsonResponse) {
+            throw InvalidResponseTypeException::create($response, JsonResponse::class);
+        }
 
         $source = $this->sourceFactory->createFileSource($response->getData());
         if (null === $source) {
