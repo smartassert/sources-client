@@ -14,7 +14,6 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
@@ -89,17 +88,13 @@ class GitSourceClient implements GitSourceClientInterface
     private function handleRequest(RequestInterface $request, string $token): GitSource
     {
         try {
-            $response = $this->serviceClient->sendRequest(
+            $response = $this->serviceClient->sendRequestForJson(
                 $this->requestFactory
                     ->createSourceRequest($request, $token)
                     ->withPayload(new UrlEncodedPayload($request->getPayload()))
             );
         } catch (NonSuccessResponseException $e) {
             throw $this->exceptionFactory->createFromResponse($e->getResponse());
-        }
-
-        if (!$response instanceof JsonResponse) {
-            throw InvalidResponseTypeException::create($response, JsonResponse::class);
         }
 
         $source = $this->sourceFactory->createGitSource($response->getData());

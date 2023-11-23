@@ -14,7 +14,6 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
 
 class SerializedSuiteClient implements SerializedSuiteClientInterface
@@ -70,13 +69,9 @@ class SerializedSuiteClient implements SerializedSuiteClientInterface
     private function handleSerializedSuiteRetrievalRequest(Request $request): SerializedSuite
     {
         try {
-            $response = $this->serviceClient->sendRequest($request);
+            $response = $this->serviceClient->sendRequestForJson($request);
         } catch (NonSuccessResponseException $e) {
             throw $this->exceptionFactory->createFromResponse($e->getResponse());
-        }
-
-        if (!$response instanceof JsonResponse) {
-            throw InvalidResponseTypeException::create($response, JsonResponse::class);
         }
 
         $serializedSuite = $this->serializedSuiteFactory->create($response->getData());
