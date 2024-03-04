@@ -15,7 +15,7 @@ use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Request\RequestInterface;
 use SmartAssert\SourcesClient\Request\SuiteCreationRequest;
 
-class SuiteClient implements SuiteClientInterface
+class SuiteClient
 {
     public function __construct(
         private readonly RequestFactory $requestFactory,
@@ -25,6 +25,15 @@ class SuiteClient implements SuiteClientInterface
     ) {
     }
 
+    /**
+     * @param non-empty-string $token
+     * @param string[]         $tests
+     *
+     * @throws ClientExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws UnauthorizedException
+     */
     public function create(string $token, string $sourceId, string $label, array $tests): Suite
     {
         return $this->makeMutationRequest($token, new SuiteCreationRequest($sourceId, $label, $tests));
