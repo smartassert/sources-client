@@ -9,7 +9,6 @@ use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\RequestFactory\AuthenticationMiddleware;
 use SmartAssert\ServiceClient\RequestFactory\RequestFactory as ServiceClientRequestFactory;
 use SmartAssert\ServiceClient\RequestFactory\RequestMiddlewareCollection;
-use SmartAssert\SourcesClient\Request\FileRequest;
 use SmartAssert\SourcesClient\Request\RequestInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
@@ -30,21 +29,6 @@ class RequestFactory extends ServiceClientRequestFactory
         );
 
         $this->urlGenerator = $this->createUrlGenerator($baseUrl);
-    }
-
-    public function createFileRequest(FileRequest $request, string $token): Request
-    {
-        return $this->doCreate(
-            $token,
-            $request->getMethod(),
-            $this->urlGenerator->generate(
-                $request->getRoute(),
-                [
-                    'sourceId' => $request->getResourceId(),
-                    'filename' => $request->getFilename()
-                ]
-            )
-        );
     }
 
     public function createSourceRequest(RequestInterface $request, string $token): Request

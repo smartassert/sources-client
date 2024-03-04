@@ -18,6 +18,10 @@ abstract class AbstractFileClientTestCase extends AbstractClientTestCase
     {
         parent::setUp();
 
-        $this->fileClient = new FileClient($this->requestFactory, $this->serviceClient, $this->exceptionFactory);
+        $this->fileClient = new FileClient(
+            $this->serviceClient,
+            $this->exceptionFactory,
+            'https://sources.example.com'
+        );
     }
 }
