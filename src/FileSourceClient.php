@@ -14,12 +14,10 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Request\FileSourceRequest;
 use SmartAssert\SourcesClient\Request\RequestInterface;
-use SmartAssert\SourcesClient\Request\SourceRequest;
 
 class FileSourceClient implements FileSourceClientInterface
 {
@@ -31,52 +29,9 @@ class FileSourceClient implements FileSourceClientInterface
     ) {
     }
 
-    public function get(string $token, string $sourceId): FileSource
-    {
-        return $this->handleRequest(new SourceRequest('GET', $sourceId), $token);
-    }
-
-    public function list(string $token, string $fileSourceId): array
-    {
-        try {
-            $response = $this->serviceClient->sendRequestForJson(
-                $this->requestFactory->createSourceFilenamesRequest($token, $fileSourceId)
-            );
-        } catch (NonSuccessResponseException $e) {
-            throw $this->exceptionFactory->createFromResponse($e->getResponse());
-        }
-
-        $filenames = [];
-        foreach ($response->getData() as $item) {
-            if (is_string($item)) {
-                $filenames[] = $item;
-            }
-        }
-
-        return $filenames;
-    }
-
     public function create(string $token, string $label): FileSource
     {
         return $this->handleRequest(new FileSourceRequest('POST', $label), $token);
-    }
-
-    public function update(string $token, string $sourceId, string $label): FileSource
-    {
-        try {
-            return $this->handleRequest(new FileSourceRequest('PUT', $label, $sourceId), $token);
-        } catch (NonSuccessResponseException $e) {
-            if (405 === $e->getCode()) {
-                throw new ModifyReadOnlyEntityException($sourceId, 'source');
-            }
-
-            throw $e;
-        }
-    }
-
-    public function delete(string $token, string $sourceId): FileSource
-    {
-        return $this->handleRequest(new SourceRequest('DELETE', $sourceId), $token);
     }
 
     /**
