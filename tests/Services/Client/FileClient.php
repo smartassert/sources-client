@@ -10,23 +10,27 @@ use Psr\Http\Client\RequestExceptionInterface;
 use SmartAssert\ServiceClient\Authentication\BearerAuthentication;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
-use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
-use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\ExceptionFactory;
 
 readonly class FileClient
 {
     public function __construct(
         private ServiceClient $serviceClient,
-        private ExceptionFactory $exceptionFactory,
         private string $baseUrl,
     ) {
     }
 
+    /**
+     * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
+     * @throws NetworkExceptionInterface
+     * @throws NonSuccessResponseException
+     * @throws RequestExceptionInterface
+     * @throws UnauthorizedException
+     */
     public function add(string $token, string $fileSourceId, string $filename, string $content): void
     {
         $request = (
@@ -39,26 +43,6 @@ readonly class FileClient
             ->withAuthentication(new BearerAuthentication($token))
         ;
 
-        $this->handleRequest($request);
-    }
-
-    /**
-     * @throws ClientExceptionInterface
-     * @throws CurlExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidResponseDataException
-     * @throws NetworkExceptionInterface
-     * @throws RequestExceptionInterface
-     * @throws UnauthorizedException
-     */
-    private function handleRequest(Request $request): string
-    {
-        try {
-            $response = $this->serviceClient->sendRequest($request);
-        } catch (NonSuccessResponseException $e) {
-            throw $this->exceptionFactory->createFromResponse($e->getResponse());
-        }
-
-        return $response->getHttpResponse()->getBody()->getContents();
+        $this->serviceClient->sendRequest($request);
     }
 }

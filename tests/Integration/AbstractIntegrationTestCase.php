@@ -51,11 +51,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
         self::$serviceClient = self::createServiceClient();
         self::$exceptionFactory = new ExceptionFactory();
 
-        self::$fileClient = new FileClient(
-            self::$serviceClient,
-            self::$exceptionFactory,
-            'http://localhost:9081'
-        );
+        self::$fileClient = new FileClient(self::$serviceClient, 'http://localhost:9081');
         self::$fileSourceClient = new FileSourceClient(
             self::$serviceClient,
             new SourceFactory(),
