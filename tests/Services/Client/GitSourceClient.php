@@ -14,7 +14,6 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\Request\GitSourceRequest;
 
 readonly class GitSourceClient
 {
@@ -37,10 +36,13 @@ readonly class GitSourceClient
      */
     public function create(string $token, string $label, string $hostUrl, string $path, ?string $credentials): ?string
     {
-        $request = new GitSourceRequest('POST', $label, $hostUrl, $path, $credentials);
+        $payload = ['type' => 'git', 'label' => $label, 'host-url' => $hostUrl, 'path' => $path];
+        if (is_string($credentials)) {
+            $payload['credentials'] = $credentials;
+        }
 
         $serviceRequest = (new Request('POST', $this->baseUrl . '/git-source'))
-            ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            ->withPayload(new UrlEncodedPayload($payload))
             ->withAuthentication(new BearerAuthentication($token))
         ;
 
