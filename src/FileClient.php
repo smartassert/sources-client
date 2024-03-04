@@ -7,6 +7,7 @@ namespace SmartAssert\SourcesClient;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Client\RequestExceptionInterface;
+use SmartAssert\ServiceClient\Authentication\BearerAuthentication;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
@@ -15,23 +16,27 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\Request\FileRequest;
 
 readonly class FileClient
 {
     public function __construct(
-        private RequestFactory $requestFactory,
         private ServiceClient $serviceClient,
         private ExceptionFactory $exceptionFactory,
+        private string $baseUrl,
     ) {
     }
 
     public function add(string $token, string $fileSourceId, string $filename, string $content): void
     {
-        $request = $this->requestFactory->createFileRequest(
-            new FileRequest('POST', $fileSourceId, $filename),
-            $token
-        )->withPayload(new Payload('text/x-yaml', $content));
+        $request = (
+            new Request(
+                'POST',
+                $this->baseUrl . '/file-source/' . $fileSourceId . '/' . $filename
+            )
+        )
+            ->withPayload(new Payload('text/x-yaml', $content))
+            ->withAuthentication(new BearerAuthentication($token))
+        ;
 
         $this->handleRequest($request);
     }
