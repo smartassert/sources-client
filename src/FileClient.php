@@ -36,16 +36,6 @@ readonly class FileClient implements FileClientInterface
         $this->handleRequest($request);
     }
 
-    public function update(string $token, string $fileSourceId, string $filename, string $content): void
-    {
-        $request = $this->requestFactory->createFileRequest(
-            new FileRequest('PUT', $fileSourceId, $filename),
-            $token
-        )->withPayload(new Payload('text/x-yaml', $content));
-
-        $this->handleRequest($request);
-    }
-
     public function remove(string $token, string $fileSourceId, string $filename): void
     {
         $request = $this->requestFactory->createFileRequest(

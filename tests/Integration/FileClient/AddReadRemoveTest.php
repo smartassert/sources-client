@@ -43,8 +43,6 @@ class AddReadRemoveTest extends AbstractIntegrationTestCase
             $content
         );
 
-        $updatedContent = md5((string) rand());
-        self::$fileClient->update(self::$user1ApiToken->token, $fileSource->getId(), $filename, $updatedContent);
         self::$fileClient->remove(self::$user1ApiToken->token, $fileSource->getId(), $filename);
     }
 }
