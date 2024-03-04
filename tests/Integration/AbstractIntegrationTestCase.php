@@ -57,16 +57,16 @@ abstract class AbstractIntegrationTestCase extends TestCase
             'http://localhost:9081'
         );
         self::$fileSourceClient = new FileSourceClient(
-            self::$requestFactory,
             self::$serviceClient,
             new SourceFactory(),
-            self::$exceptionFactory
+            self::$exceptionFactory,
+            'http://localhost:9081'
         );
         self::$gitSourceClient = new GitSourceClient(
-            self::$requestFactory,
             self::$serviceClient,
             new SourceFactory(),
-            self::$exceptionFactory
+            self::$exceptionFactory,
+            'http://localhost:9081'
         );
         self::$suiteClient = new SuiteClient(
             self::$serviceClient,

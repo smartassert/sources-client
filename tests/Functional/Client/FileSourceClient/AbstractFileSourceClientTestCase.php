@@ -19,10 +19,10 @@ abstract class AbstractFileSourceClientTestCase extends AbstractClientTestCase
         $sourceFactory = new SourceFactory();
 
         $this->fileSourceClient = new FileSourceClient(
-            $this->requestFactory,
             $this->serviceClient,
             $sourceFactory,
-            $this->exceptionFactory
+            $this->exceptionFactory,
+            'https://sources.example.com'
         );
     }
 }
