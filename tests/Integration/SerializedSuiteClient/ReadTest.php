@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Integration\SerializedSuiteClient;
 
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
 use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
@@ -29,6 +30,7 @@ class ReadTest extends AbstractIntegrationTestCase
     public function testReadSuccess(): void
     {
         $source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
+        \assert($source instanceof FileSource);
 
         $sourcePaths = [
             'Source/File.yaml',
