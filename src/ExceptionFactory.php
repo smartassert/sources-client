@@ -11,8 +11,6 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Response\JsonResponse;
 use SmartAssert\ServiceClient\Response\ResponseInterface;
-use SmartAssert\SourcesClient\Exception\DuplicateFilePathException;
-use SmartAssert\SourcesClient\Exception\FilesystemException;
 use SmartAssert\SourcesClient\Exception\InvalidRequestException;
 use SmartAssert\SourcesClient\Exception\ResponseException;
 
@@ -48,17 +46,6 @@ class ExceptionFactory
 
         if ('invalid_request' === $type) {
             return new InvalidRequestException($response->getHttpResponse(), $type, $payload);
-        }
-
-        if (is_string($type) && str_starts_with($type, 'source_')) {
-            return new FilesystemException($response->getHttpResponse(), $type, $payload);
-        }
-
-        if ('duplicate_file_path' === $type) {
-            $path = $payload['path'];
-            $path = is_string($path) ? $path : '';
-
-            return new DuplicateFilePathException($path, $response->getHttpResponse(), $type, $payload);
         }
 
         return new NonSuccessResponseException($response);
