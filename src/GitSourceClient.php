@@ -14,12 +14,10 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
-use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Request\GitSourceRequest;
 use SmartAssert\SourcesClient\Request\RequestInterface;
-use SmartAssert\SourcesClient\Request\SourceRequest;
 
 class GitSourceClient implements GitSourceClientInterface
 {
@@ -29,11 +27,6 @@ class GitSourceClient implements GitSourceClientInterface
         private readonly SourceFactory $sourceFactory,
         private readonly ExceptionFactory $exceptionFactory,
     ) {
-    }
-
-    public function get(string $token, string $sourceId): GitSource
-    {
-        return $this->handleRequest(new SourceRequest('GET', $sourceId), $token);
     }
 
     public function create(
@@ -47,33 +40,6 @@ class GitSourceClient implements GitSourceClientInterface
             new GitSourceRequest('POST', $label, $hostUrl, $path, $credentials),
             $token
         );
-    }
-
-    public function update(
-        string $token,
-        string $sourceId,
-        string $label,
-        string $hostUrl,
-        string $path,
-        ?string $credentials,
-    ): GitSource {
-        try {
-            return $this->handleRequest(
-                new GitSourceRequest('PUT', $label, $hostUrl, $path, $credentials, $sourceId),
-                $token
-            );
-        } catch (NonSuccessResponseException $e) {
-            if (405 === $e->getCode()) {
-                throw new ModifyReadOnlyEntityException($sourceId, 'source');
-            }
-
-            throw $e;
-        }
-    }
-
-    public function delete(string $token, string $sourceId): GitSource
-    {
-        return $this->handleRequest(new SourceRequest('DELETE', $sourceId), $token);
     }
 
     /**
