@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient;
 
 use Psr\Http\Client\ClientExceptionInterface;
+use SmartAssert\ServiceClient\Authentication\BearerAuthentication;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
@@ -14,6 +15,7 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
+use SmartAssert\ServiceClient\Request;
 use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Request\GitSourceRequest;
@@ -22,10 +24,10 @@ use SmartAssert\SourcesClient\Request\RequestInterface;
 class GitSourceClient
 {
     public function __construct(
-        private readonly RequestFactory $requestFactory,
         private readonly ServiceClient $serviceClient,
         private readonly SourceFactory $sourceFactory,
         private readonly ExceptionFactory $exceptionFactory,
+        private readonly string $baseUrl,
     ) {
     }
 
@@ -65,12 +67,13 @@ class GitSourceClient
      */
     private function handleRequest(RequestInterface $request, string $token): GitSource
     {
+        $serviceRequest = (new Request('POST', $this->baseUrl . '/git-source'))
+            ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            ->withAuthentication(new BearerAuthentication($token))
+        ;
+
         try {
-            $response = $this->serviceClient->sendRequestForJson(
-                $this->requestFactory
-                    ->createSourceRequest($request, $token)
-                    ->withPayload(new UrlEncodedPayload($request->getPayload()))
-            );
+            $response = $this->serviceClient->sendRequestForJson($serviceRequest);
         } catch (NonSuccessResponseException $e) {
             throw $this->exceptionFactory->createFromResponse($e->getResponse());
         }

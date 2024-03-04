@@ -19,10 +19,10 @@ abstract class AbstractGitSourceClientTestCase extends AbstractClientTestCase
         $sourceFactory = new SourceFactory();
 
         $this->gitSourceClient = new GitSourceClient(
-            $this->requestFactory,
             $this->serviceClient,
             $sourceFactory,
-            $this->exceptionFactory
+            $this->exceptionFactory,
+            'https://sources.example.com'
         );
     }
 }
