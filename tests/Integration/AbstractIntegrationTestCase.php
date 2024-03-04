@@ -11,14 +11,14 @@ use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory;
 use SmartAssert\ServiceClient\ResponseFactory\ResponseFactory;
 use SmartAssert\SourcesClient\ExceptionFactory;
-use SmartAssert\SourcesClient\FileSourceClient;
-use SmartAssert\SourcesClient\GitSourceClient;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\SuiteFactory;
 use SmartAssert\SourcesClient\Tests\Services\Client\FileClient;
+use SmartAssert\SourcesClient\Tests\Services\Client\FileSourceClient;
+use SmartAssert\SourcesClient\Tests\Services\Client\GitSourceClient;
 use SmartAssert\SourcesClient\Tests\Services\Client\SuiteClient;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\SourcesClient\Tests\Services\FixtureReader;
@@ -47,24 +47,16 @@ abstract class AbstractIntegrationTestCase extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$requestFactory = new RequestFactory('http://localhost:9081');
+        $baseUrl = 'http://localhost:9081';
+
+        self::$requestFactory = new RequestFactory($baseUrl);
         self::$serviceClient = self::createServiceClient();
         self::$exceptionFactory = new ExceptionFactory();
 
-        self::$fileClient = new FileClient(self::$serviceClient, 'http://localhost:9081');
-        self::$fileSourceClient = new FileSourceClient(
-            self::$serviceClient,
-            new SourceFactory(),
-            self::$exceptionFactory,
-            'http://localhost:9081'
-        );
-        self::$gitSourceClient = new GitSourceClient(
-            self::$serviceClient,
-            new SourceFactory(),
-            self::$exceptionFactory,
-            'http://localhost:9081'
-        );
-        self::$suiteClient = new SuiteClient(self::$serviceClient, new SuiteFactory(), 'http://localhost:9081');
+        self::$fileClient = new FileClient(self::$serviceClient, $baseUrl);
+        self::$fileSourceClient = new FileSourceClient(self::$serviceClient, new SourceFactory(), $baseUrl);
+        self::$gitSourceClient = new GitSourceClient(self::$serviceClient, new SourceFactory(), $baseUrl);
+        self::$suiteClient = new SuiteClient(self::$serviceClient, new SuiteFactory(), $baseUrl);
         self::$serializedSuiteClient = new SerializedSuiteClient(
             self::$requestFactory,
             self::$serviceClient,
