@@ -17,7 +17,6 @@ use SmartAssert\SourcesClient\GitSourceClient;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
-use SmartAssert\SourcesClient\SourceClient;
 use SmartAssert\SourcesClient\SourceFactory;
 use SmartAssert\SourcesClient\SuiteClient;
 use SmartAssert\SourcesClient\SuiteFactory;
@@ -34,9 +33,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
     protected const USER1_PASSWORD = 'password';
     protected const USER2_EMAIL = 'user1@example.com';
     protected const USER2_PASSWORD = 'password';
-
     protected static FileClient $fileClient;
-    protected static SourceClient $sourceClient;
     protected static FileSourceClient $fileSourceClient;
     protected static GitSourceClient $gitSourceClient;
     protected static SuiteClient $suiteClient;
@@ -55,12 +52,6 @@ abstract class AbstractIntegrationTestCase extends TestCase
         self::$exceptionFactory = new ExceptionFactory();
 
         self::$fileClient = new FileClient(self::$requestFactory, self::$serviceClient, self::$exceptionFactory);
-        self::$sourceClient = new SourceClient(
-            self::$requestFactory,
-            self::$serviceClient,
-            new SourceFactory(),
-            self::$exceptionFactory
-        );
         self::$fileSourceClient = new FileSourceClient(
             self::$requestFactory,
             self::$serviceClient,
