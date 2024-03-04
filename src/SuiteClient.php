@@ -32,24 +32,6 @@ class SuiteClient implements SuiteClientInterface
         return $this->makeMutationRequest($token, new SuiteCreationRequest($sourceId, $label, $tests));
     }
 
-    public function get(string $token, string $suiteId): Suite
-    {
-        try {
-            $response = $this->serviceClient->sendRequestForJson(
-                $this->requestFactory->createSuiteRequest('GET', $token, $suiteId)
-            );
-        } catch (NonSuccessResponseException $e) {
-            throw $this->exceptionFactory->createFromResponse($e->getResponse());
-        }
-
-        $suite = $this->suiteFactory->create($response->getData());
-        if (null === $suite) {
-            throw InvalidModelDataException::fromJsonResponse(Suite::class, $response);
-        }
-
-        return $suite;
-    }
-
     public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite
     {
         try {
