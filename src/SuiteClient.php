@@ -30,47 +30,6 @@ class SuiteClient implements SuiteClientInterface
         return $this->makeMutationRequest($token, new SuiteCreationRequest($sourceId, $label, $tests));
     }
 
-    public function delete(string $token, string $suiteId): Suite
-    {
-        try {
-            $response = $this->serviceClient->sendRequestForJson(
-                $this->requestFactory->createSuiteRequest('DELETE', $token, $suiteId)
-            );
-        } catch (NonSuccessResponseException $e) {
-            throw $this->exceptionFactory->createFromResponse($e->getResponse());
-        }
-
-        $suite = $this->suiteFactory->create($response->getData());
-        if (null === $suite) {
-            throw InvalidModelDataException::fromJsonResponse(Suite::class, $response);
-        }
-
-        return $suite;
-    }
-
-    public function list(string $token): array
-    {
-        try {
-            $response = $this->serviceClient->sendRequestForJson($this->requestFactory->createSuitesRequest($token));
-        } catch (NonSuccessResponseException $e) {
-            throw $this->exceptionFactory->createFromResponse($e->getResponse());
-        }
-
-        $sources = [];
-
-        foreach ($response->getData() as $sourceData) {
-            if (is_array($sourceData)) {
-                $suite = $this->suiteFactory->create($sourceData);
-
-                if ($suite instanceof Suite) {
-                    $sources[] = $suite;
-                }
-            }
-        }
-
-        return $sources;
-    }
-
     /**
      * @param non-empty-string $token
      *
