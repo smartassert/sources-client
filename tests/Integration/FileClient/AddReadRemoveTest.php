@@ -42,7 +42,5 @@ class AddReadRemoveTest extends AbstractIntegrationTestCase
             $filename,
             $content
         );
-
-        self::$fileClient->remove(self::$user1ApiToken->token, $fileSource->getId(), $filename);
     }
 }

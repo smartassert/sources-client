@@ -36,16 +36,6 @@ readonly class FileClient implements FileClientInterface
         $this->handleRequest($request);
     }
 
-    public function remove(string $token, string $fileSourceId, string $filename): void
-    {
-        $request = $this->requestFactory->createFileRequest(
-            new FileRequest('DELETE', $fileSourceId, $filename),
-            $token
-        );
-
-        $this->handleRequest($request);
-    }
-
     /**
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
