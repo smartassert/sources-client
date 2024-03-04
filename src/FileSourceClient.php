@@ -19,7 +19,7 @@ use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Request\FileSourceRequest;
 use SmartAssert\SourcesClient\Request\RequestInterface;
 
-class FileSourceClient implements FileSourceClientInterface
+class FileSourceClient
 {
     public function __construct(
         private readonly RequestFactory $requestFactory,
@@ -29,6 +29,17 @@ class FileSourceClient implements FileSourceClientInterface
     ) {
     }
 
+    /**
+     * @param non-empty-string $token
+     *
+     * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     * @throws UnauthorizedException
+     */
     public function create(string $token, string $label): FileSource
     {
         return $this->handleRequest(new FileSourceRequest('POST', $label), $token);
