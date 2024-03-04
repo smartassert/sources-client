@@ -11,7 +11,6 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
-use SmartAssert\SourcesClient\Exception\ModifyReadOnlyEntityException;
 use SmartAssert\SourcesClient\Model\Suite;
 
 interface SuiteClientInterface
@@ -26,19 +25,6 @@ interface SuiteClientInterface
      * @throws UnauthorizedException
      */
     public function create(string $token, string $sourceId, string $label, array $tests): Suite;
-
-    /**
-     * @param non-empty-string $token
-     * @param non-empty-string $suiteId
-     * @param string[]         $tests
-     *
-     * @throws ClientExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws ModifyReadOnlyEntityException
-     * @throws UnauthorizedException
-     */
-    public function update(string $token, string $suiteId, string $sourceId, string $label, array $tests): Suite;
 
     /**
      * @param non-empty-string $token
