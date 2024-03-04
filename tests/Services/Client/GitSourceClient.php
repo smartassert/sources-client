@@ -14,22 +14,19 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\Model\GitSource;
 use SmartAssert\SourcesClient\Request\GitSourceRequest;
-use SmartAssert\SourcesClient\SourceFactory;
 
 readonly class GitSourceClient
 {
-    public function __construct(
-        private ServiceClient $serviceClient,
-        private SourceFactory $sourceFactory,
-        private string $baseUrl,
-    ) {
+    public function __construct(private ServiceClient $serviceClient, private string $baseUrl)
+    {
     }
 
     /**
      * @param non-empty-string  $token
      * @param ?non-empty-string $credentials
+     *
+     * @return ?non-empty-string
      *
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
@@ -38,13 +35,8 @@ readonly class GitSourceClient
      * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
-    public function create(
-        string $token,
-        string $label,
-        string $hostUrl,
-        string $path,
-        ?string $credentials,
-    ): ?GitSource {
+    public function create(string $token, string $label, string $hostUrl, string $path, ?string $credentials): ?string
+    {
         $request = new GitSourceRequest('POST', $label, $hostUrl, $path, $credentials);
 
         $serviceRequest = (new Request('POST', $this->baseUrl . '/git-source'))
@@ -53,7 +45,11 @@ readonly class GitSourceClient
         ;
 
         $response = $this->serviceClient->sendRequestForJson($serviceRequest);
+        $responseData = $response->getData();
 
-        return $this->sourceFactory->createGitSource($response->getData());
+        $id = $responseData['id'] ?? '';
+        $id = is_string($id) ? $id : '';
+
+        return '' === $id ? null : $id;
     }
 }

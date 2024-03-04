@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Integration\SerializedSuiteClient;
 
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 use Symfony\Component\Uid\Ulid;
@@ -28,8 +27,8 @@ class ReadTest extends AbstractIntegrationTestCase
 
     public function testReadSuccess(): void
     {
-        $source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
-        \assert($source instanceof FileSource);
+        $sourceId = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
+        \assert(null !== $sourceId);
 
         $sourcePaths = [
             'Source/File.yaml',
@@ -41,7 +40,7 @@ class ReadTest extends AbstractIntegrationTestCase
         foreach ($sourcePaths as $sourcePath) {
             self::$fileClient->add(
                 self::$user1ApiToken->token,
-                $source->getId(),
+                $sourceId,
                 $sourcePath,
                 self::$fixtureReader->read($sourcePath)
             );
@@ -49,7 +48,7 @@ class ReadTest extends AbstractIntegrationTestCase
 
         $suiteId = self::$suiteClient->create(
             self::$user1ApiToken->token,
-            $source->getId(),
+            $sourceId,
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
         );

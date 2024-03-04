@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Integration\SerializedSuiteClient;
 
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Tests\DataProvider\GetSuiteDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 use Symfony\Component\Uid\Ulid;
@@ -27,7 +26,7 @@ class GetTest extends AbstractIntegrationTestCase
     /**
      * @dataProvider getSuiteDataProvider
      *
-     * @param callable(): SourceInterface               $sourceCreator
+     * @param callable(): ?non-empty-string             $sourceCreator
      * @param array<non-empty-string, non-empty-string> $parameters
      * @param array<non-empty-string, non-empty-string> $expectedSerializedSuiteParameters
      */
@@ -36,11 +35,12 @@ class GetTest extends AbstractIntegrationTestCase
         array $parameters,
         array $expectedSerializedSuiteParameters,
     ): void {
-        $source = $sourceCreator();
+        $sourceId = $sourceCreator();
+        \assert(null !== $sourceId);
 
         $suiteId = self::$suiteClient->create(
             self::$user1ApiToken->token,
-            $source->getId(),
+            $sourceId,
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
         );
