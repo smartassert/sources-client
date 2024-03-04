@@ -11,7 +11,6 @@ use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\Request\SuiteCreationRequest;
 
 readonly class SuiteClient
 {
@@ -33,10 +32,8 @@ readonly class SuiteClient
      */
     public function create(string $token, string $sourceId, string $label, array $tests): ?string
     {
-        $request = new SuiteCreationRequest($sourceId, $label, $tests);
-
         $serviceRequest = (new Request('POST', $this->baseUrl . '/suite'))
-            ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            ->withPayload(new UrlEncodedPayload(['source_id' => $sourceId, 'label' => $label, 'tests' => $tests]))
             ->withAuthentication(new BearerAuthentication($token))
         ;
 

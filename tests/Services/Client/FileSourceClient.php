@@ -14,7 +14,6 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\Request\FileSourceRequest;
 
 readonly class FileSourceClient
 {
@@ -36,10 +35,8 @@ readonly class FileSourceClient
      */
     public function create(string $token, string $label): ?string
     {
-        $request = new FileSourceRequest('POST', $label);
-
         $serviceRequest = (new Request('POST', $this->baseUrl . '/file-source'))
-            ->withPayload(new UrlEncodedPayload($request->getPayload()))
+            ->withPayload(new UrlEncodedPayload(['type' => 'file', 'label' => $label]))
             ->withAuthentication(new BearerAuthentication($token))
         ;
 
