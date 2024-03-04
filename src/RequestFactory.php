@@ -40,23 +40,6 @@ class RequestFactory extends ServiceClientRequestFactory
         );
     }
 
-    public function createSourcesRequest(string $token): Request
-    {
-        return $this->doCreate($token, 'GET', $this->urlGenerator->generate('sources'));
-    }
-
-    public function createSourceFilenamesRequest(string $token, string $fileSourceId): Request
-    {
-        $url = $this->urlGenerator->generate('file_source_filenames', ['sourceId' => $fileSourceId]);
-
-        return $this->doCreate($token, 'GET', $url);
-    }
-
-    public function createSuitesRequest(string $token): Request
-    {
-        return $this->doCreate($token, 'GET', $this->urlGenerator->generate('suites'));
-    }
-
     public function createReadSerializedSuiteRequest(string $token, string $serializedSuiteId): Request
     {
         return $this->doCreate(
