@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartAssert\SourcesClient;
+namespace SmartAssert\SourcesClient\Tests\Services\Client;
 
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\NetworkExceptionInterface;
@@ -16,6 +16,7 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Request;
+use SmartAssert\SourcesClient\ExceptionFactory;
 
 readonly class FileClient
 {
