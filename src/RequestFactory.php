@@ -52,14 +52,6 @@ class RequestFactory extends ServiceClientRequestFactory
         return $this->doCreate($token, 'GET', $url);
     }
 
-    /**
-     * @param non-empty-string $method
-     */
-    public function createSuiteRequest(string $method, string $token, ?string $suiteId): Request
-    {
-        return $this->doCreate($token, $method, $this->urlGenerator->generate('suite', ['suiteId' => $suiteId]));
-    }
-
     public function createSuitesRequest(string $token): Request
     {
         return $this->doCreate($token, 'GET', $this->urlGenerator->generate('suites'));

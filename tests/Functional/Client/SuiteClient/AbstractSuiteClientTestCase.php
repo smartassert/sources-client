@@ -17,10 +17,10 @@ abstract class AbstractSuiteClientTestCase extends AbstractClientTestCase
         parent::setUp();
 
         $this->suiteClient = new SuiteClient(
-            $this->requestFactory,
             $this->serviceClient,
             new SuiteFactory(),
-            $this->exceptionFactory
+            $this->exceptionFactory,
+            'https://sources.example.com'
         );
     }
 }

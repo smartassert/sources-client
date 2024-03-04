@@ -69,10 +69,10 @@ abstract class AbstractIntegrationTestCase extends TestCase
             self::$exceptionFactory
         );
         self::$suiteClient = new SuiteClient(
-            self::$requestFactory,
             self::$serviceClient,
             new SuiteFactory(),
-            self::$exceptionFactory
+            self::$exceptionFactory,
+            'http://localhost:9081'
         );
         self::$serializedSuiteClient = new SerializedSuiteClient(
             self::$requestFactory,
