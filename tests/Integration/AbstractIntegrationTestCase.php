@@ -17,9 +17,9 @@ use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
 use SmartAssert\SourcesClient\SourceFactory;
-use SmartAssert\SourcesClient\SuiteClient;
 use SmartAssert\SourcesClient\SuiteFactory;
 use SmartAssert\SourcesClient\Tests\Services\Client\FileClient;
+use SmartAssert\SourcesClient\Tests\Services\Client\SuiteClient;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\SourcesClient\Tests\Services\FixtureReader;
 use SmartAssert\UsersClient\Client as UsersClient;
@@ -64,12 +64,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
             self::$exceptionFactory,
             'http://localhost:9081'
         );
-        self::$suiteClient = new SuiteClient(
-            self::$serviceClient,
-            new SuiteFactory(),
-            self::$exceptionFactory,
-            'http://localhost:9081'
-        );
+        self::$suiteClient = new SuiteClient(self::$serviceClient, new SuiteFactory(), 'http://localhost:9081');
         self::$serializedSuiteClient = new SerializedSuiteClient(
             self::$requestFactory,
             self::$serviceClient,

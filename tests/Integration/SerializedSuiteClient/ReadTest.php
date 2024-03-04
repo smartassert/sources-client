@@ -6,6 +6,7 @@ namespace SmartAssert\SourcesClient\Tests\Integration\SerializedSuiteClient;
 
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
+use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 use Symfony\Component\Uid\Ulid;
 
@@ -51,6 +52,7 @@ class ReadTest extends AbstractIntegrationTestCase
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
         );
+        \assert($suite instanceof Suite);
 
         $serializedSuiteId = (string) new Ulid();
         \assert('' !== $serializedSuiteId);
