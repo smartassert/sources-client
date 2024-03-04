@@ -6,7 +6,6 @@ namespace SmartAssert\SourcesClient\Tests\Integration\SerializedSuiteClient;
 
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\SourceInterface;
-use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Tests\DataProvider\GetSuiteDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 use Symfony\Component\Uid\Ulid;
@@ -39,13 +38,13 @@ class GetTest extends AbstractIntegrationTestCase
     ): void {
         $source = $sourceCreator();
 
-        $suite = self::$suiteClient->create(
+        $suiteId = self::$suiteClient->create(
             self::$user1ApiToken->token,
             $source->getId(),
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
         );
-        \assert($suite instanceof Suite);
+        \assert(null !== $suiteId);
 
         $serializedSuiteId = (string) new Ulid();
         \assert('' !== $serializedSuiteId);
@@ -53,7 +52,7 @@ class GetTest extends AbstractIntegrationTestCase
         $createdSerializedSuite = self::$serializedSuiteClient->create(
             self::$user1ApiToken->token,
             $serializedSuiteId,
-            $suite->getId(),
+            $suiteId,
             $parameters
         );
 
@@ -63,7 +62,7 @@ class GetTest extends AbstractIntegrationTestCase
         );
 
         self::assertNotNull($serializedSuite->getId());
-        self::assertSame($suite->getId(), $serializedSuite->getSuiteId());
+        self::assertSame($suiteId, $serializedSuite->getSuiteId());
         self::assertSame($expectedSerializedSuiteParameters, $serializedSuite->getParameters());
         self::assertNull($serializedSuite->getFailureReason());
         self::assertNull($serializedSuite->getFailureMessage());

@@ -7,7 +7,6 @@ namespace SmartAssert\SourcesClient\Tests\Integration\SerializedSuiteClient;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
-use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 use Symfony\Component\Uid\Ulid;
 
@@ -48,13 +47,13 @@ class ReadTest extends AbstractIntegrationTestCase
             );
         }
 
-        $suite = self::$suiteClient->create(
+        $suiteId = self::$suiteClient->create(
             self::$user1ApiToken->token,
             $source->getId(),
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
         );
-        \assert($suite instanceof Suite);
+        \assert(null !== $suiteId);
 
         $serializedSuiteId = (string) new Ulid();
         \assert('' !== $serializedSuiteId);
@@ -62,7 +61,7 @@ class ReadTest extends AbstractIntegrationTestCase
         $serializedSuite = self::$serializedSuiteClient->create(
             self::$user1ApiToken->token,
             $serializedSuiteId,
-            $suite->getId(),
+            $suiteId,
         );
 
         $this->waitUntilSuiteIsSerialized($serializedSuite);

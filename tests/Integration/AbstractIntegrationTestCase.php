@@ -15,7 +15,6 @@ use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
 use SmartAssert\SourcesClient\SourceFactory;
-use SmartAssert\SourcesClient\SuiteFactory;
 use SmartAssert\SourcesClient\Tests\Services\Client\FileClient;
 use SmartAssert\SourcesClient\Tests\Services\Client\FileSourceClient;
 use SmartAssert\SourcesClient\Tests\Services\Client\GitSourceClient;
@@ -56,7 +55,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
         self::$fileClient = new FileClient(self::$serviceClient, $baseUrl);
         self::$fileSourceClient = new FileSourceClient(self::$serviceClient, new SourceFactory(), $baseUrl);
         self::$gitSourceClient = new GitSourceClient(self::$serviceClient, new SourceFactory(), $baseUrl);
-        self::$suiteClient = new SuiteClient(self::$serviceClient, new SuiteFactory(), $baseUrl);
+        self::$suiteClient = new SuiteClient(self::$serviceClient, $baseUrl);
         self::$serializedSuiteClient = new SerializedSuiteClient(
             self::$requestFactory,
             self::$serviceClient,

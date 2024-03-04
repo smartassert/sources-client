@@ -11,15 +11,12 @@ use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\Model\Suite;
 use SmartAssert\SourcesClient\Request\SuiteCreationRequest;
-use SmartAssert\SourcesClient\SuiteFactory;
 
 readonly class SuiteClient
 {
     public function __construct(
         private ServiceClient $serviceClient,
-        private SuiteFactory $suiteFactory,
         private string $baseUrl,
     ) {
     }
@@ -28,11 +25,13 @@ readonly class SuiteClient
      * @param non-empty-string $token
      * @param string[]         $tests
      *
+     * @return non-empty-string
+     *
      * @throws ClientExceptionInterface
      * @throws HttpResponseExceptionInterface
      * @throws UnauthorizedException
      */
-    public function create(string $token, string $sourceId, string $label, array $tests): ?Suite
+    public function create(string $token, string $sourceId, string $label, array $tests): ?string
     {
         $request = new SuiteCreationRequest($sourceId, $label, $tests);
 
@@ -42,7 +41,11 @@ readonly class SuiteClient
         ;
 
         $response = $this->serviceClient->sendRequestForJson($serviceRequest);
+        $responseData = $response->getData();
 
-        return $this->suiteFactory->create($response->getData());
+        $id = $responseData['id'] ?? '';
+        $id = is_string($id) ? $id : '';
+
+        return '' === $id ? null : $id;
     }
 }
