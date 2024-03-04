@@ -46,16 +46,6 @@ readonly class FileClient implements FileClientInterface
         $this->handleRequest($request);
     }
 
-    public function read(string $token, string $fileSourceId, string $filename): string
-    {
-        $request = $this->requestFactory->createFileRequest(
-            new FileRequest('GET', $fileSourceId, $filename),
-            $token
-        );
-
-        return $this->handleRequest($request);
-    }
-
     public function remove(string $token, string $fileSourceId, string $filename): void
     {
         $request = $this->requestFactory->createFileRequest(

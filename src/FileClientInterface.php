@@ -35,18 +35,6 @@ interface FileClientInterface
      * @throws NonSuccessResponseException
      * @throws UnauthorizedException
      */
-    public function read(string $token, string $fileSourceId, string $filename): string;
-
-    /**
-     * @param non-empty-string $token
-     *
-     * @throws ClientExceptionInterface
-     * @throws CurlExceptionInterface
-     * @throws HttpResponseExceptionInterface
-     * @throws InvalidResponseDataException
-     * @throws NonSuccessResponseException
-     * @throws UnauthorizedException
-     */
     public function update(string $token, string $fileSourceId, string $filename, string $content): void;
 
     /**
