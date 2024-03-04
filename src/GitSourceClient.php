@@ -19,7 +19,7 @@ use SmartAssert\SourcesClient\Model\SourceInterface;
 use SmartAssert\SourcesClient\Request\GitSourceRequest;
 use SmartAssert\SourcesClient\Request\RequestInterface;
 
-class GitSourceClient implements GitSourceClientInterface
+class GitSourceClient
 {
     public function __construct(
         private readonly RequestFactory $requestFactory,
@@ -29,6 +29,18 @@ class GitSourceClient implements GitSourceClientInterface
     ) {
     }
 
+    /**
+     * @param non-empty-string  $token
+     * @param ?non-empty-string $credentials
+     *
+     * @throws ClientExceptionInterface
+     * @throws CurlExceptionInterface
+     * @throws HttpResponseExceptionInterface
+     * @throws InvalidModelDataException
+     * @throws InvalidResponseDataException
+     * @throws InvalidResponseTypeException
+     * @throws UnauthorizedException
+     */
     public function create(
         string $token,
         string $label,
