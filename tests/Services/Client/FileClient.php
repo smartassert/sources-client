@@ -10,13 +10,10 @@ use Psr\Http\Client\RequestExceptionInterface;
 use SmartAssert\ServiceClient\Authentication\BearerAuthentication;
 use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
-use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
-use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\ExceptionFactory;
 
 readonly class FileClient
 {
