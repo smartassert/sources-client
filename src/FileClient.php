@@ -17,7 +17,7 @@ use SmartAssert\ServiceClient\Payload\Payload;
 use SmartAssert\ServiceClient\Request;
 use SmartAssert\SourcesClient\Request\FileRequest;
 
-readonly class FileClient implements FileClientInterface
+readonly class FileClient
 {
     public function __construct(
         private RequestFactory $requestFactory,
