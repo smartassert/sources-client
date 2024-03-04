@@ -9,8 +9,6 @@ use SmartAssert\ServiceClient\Request;
 use SmartAssert\ServiceClient\RequestFactory\AuthenticationMiddleware;
 use SmartAssert\ServiceClient\RequestFactory\RequestFactory as ServiceClientRequestFactory;
 use SmartAssert\ServiceClient\RequestFactory\RequestMiddlewareCollection;
-use SmartAssert\SourcesClient\Request\FileRequest;
-use SmartAssert\SourcesClient\Request\RequestInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
@@ -30,55 +28,6 @@ class RequestFactory extends ServiceClientRequestFactory
         );
 
         $this->urlGenerator = $this->createUrlGenerator($baseUrl);
-    }
-
-    public function createFileRequest(FileRequest $request, string $token): Request
-    {
-        return $this->doCreate(
-            $token,
-            $request->getMethod(),
-            $this->urlGenerator->generate(
-                $request->getRoute(),
-                [
-                    'sourceId' => $request->getResourceId(),
-                    'filename' => $request->getFilename()
-                ]
-            )
-        );
-    }
-
-    public function createSourceRequest(RequestInterface $request, string $token): Request
-    {
-        return $this->doCreate(
-            $token,
-            $request->getMethod(),
-            $this->urlGenerator->generate($request->getRoute(), ['sourceId' => $request->getResourceId()])
-        );
-    }
-
-    public function createSourcesRequest(string $token): Request
-    {
-        return $this->doCreate($token, 'GET', $this->urlGenerator->generate('sources'));
-    }
-
-    public function createSourceFilenamesRequest(string $token, string $fileSourceId): Request
-    {
-        $url = $this->urlGenerator->generate('file_source_filenames', ['sourceId' => $fileSourceId]);
-
-        return $this->doCreate($token, 'GET', $url);
-    }
-
-    /**
-     * @param non-empty-string $method
-     */
-    public function createSuiteRequest(string $method, string $token, ?string $suiteId): Request
-    {
-        return $this->doCreate($token, $method, $this->urlGenerator->generate('suite', ['suiteId' => $suiteId]));
-    }
-
-    public function createSuitesRequest(string $token): Request
-    {
-        return $this->doCreate($token, 'GET', $this->urlGenerator->generate('suites'));
     }
 
     public function createReadSerializedSuiteRequest(string $token, string $serializedSuiteId): Request
@@ -128,14 +77,6 @@ class RequestFactory extends ServiceClientRequestFactory
     {
         $routeCollection = new RouteCollection();
 
-        $routeCollection->add('file', new Route('/file-source/{sourceId}/{filename<.*\.yaml>}'));
-        $routeCollection->add('sources', new Route('/sources'));
-        $routeCollection->add('source', new Route('/source/{sourceId?}'));
-        $routeCollection->add('file_source', new Route('/file-source/{sourceId?}'));
-        $routeCollection->add('git_source', new Route('/git-source/{sourceId?}'));
-        $routeCollection->add('file_source_filenames', new Route('/file-source/{sourceId}/list/'));
-        $routeCollection->add('suite', new Route('/suite/{suiteId?}'));
-        $routeCollection->add('suites', new Route('/suites'));
         $routeCollection->add('suite_serialize', new Route('/suite/{suiteId}/{serializedSuiteId}'));
         $routeCollection->add('serialized_suite', new Route('/serialized_suite/{serializedSuiteId}'));
         $routeCollection->add('serialized_suite_read', new Route('/serialized_suite/{serializedSuiteId}/read'));

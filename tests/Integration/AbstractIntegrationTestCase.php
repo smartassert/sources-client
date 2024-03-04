@@ -11,16 +11,13 @@ use SmartAssert\ServiceClient\Client as ServiceClient;
 use SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory;
 use SmartAssert\ServiceClient\ResponseFactory\ResponseFactory;
 use SmartAssert\SourcesClient\ExceptionFactory;
-use SmartAssert\SourcesClient\FileClient;
-use SmartAssert\SourcesClient\FileSourceClient;
-use SmartAssert\SourcesClient\GitSourceClient;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
-use SmartAssert\SourcesClient\SourceClient;
-use SmartAssert\SourcesClient\SourceFactory;
-use SmartAssert\SourcesClient\SuiteClient;
-use SmartAssert\SourcesClient\SuiteFactory;
+use SmartAssert\SourcesClient\Tests\Services\Client\FileClient;
+use SmartAssert\SourcesClient\Tests\Services\Client\FileSourceClient;
+use SmartAssert\SourcesClient\Tests\Services\Client\GitSourceClient;
+use SmartAssert\SourcesClient\Tests\Services\Client\SuiteClient;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\SourcesClient\Tests\Services\FixtureReader;
 use SmartAssert\UsersClient\Client as UsersClient;
@@ -34,9 +31,7 @@ abstract class AbstractIntegrationTestCase extends TestCase
     protected const USER1_PASSWORD = 'password';
     protected const USER2_EMAIL = 'user1@example.com';
     protected const USER2_PASSWORD = 'password';
-
     protected static FileClient $fileClient;
-    protected static SourceClient $sourceClient;
     protected static FileSourceClient $fileSourceClient;
     protected static GitSourceClient $gitSourceClient;
     protected static SuiteClient $suiteClient;
@@ -50,35 +45,16 @@ abstract class AbstractIntegrationTestCase extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$requestFactory = new RequestFactory('http://localhost:9081');
+        $baseUrl = 'http://localhost:9081';
+
+        self::$requestFactory = new RequestFactory($baseUrl);
         self::$serviceClient = self::createServiceClient();
         self::$exceptionFactory = new ExceptionFactory();
 
-        self::$fileClient = new FileClient(self::$requestFactory, self::$serviceClient, self::$exceptionFactory);
-        self::$sourceClient = new SourceClient(
-            self::$requestFactory,
-            self::$serviceClient,
-            new SourceFactory(),
-            self::$exceptionFactory
-        );
-        self::$fileSourceClient = new FileSourceClient(
-            self::$requestFactory,
-            self::$serviceClient,
-            new SourceFactory(),
-            self::$exceptionFactory
-        );
-        self::$gitSourceClient = new GitSourceClient(
-            self::$requestFactory,
-            self::$serviceClient,
-            new SourceFactory(),
-            self::$exceptionFactory
-        );
-        self::$suiteClient = new SuiteClient(
-            self::$requestFactory,
-            self::$serviceClient,
-            new SuiteFactory(),
-            self::$exceptionFactory
-        );
+        self::$fileClient = new FileClient(self::$serviceClient, $baseUrl);
+        self::$fileSourceClient = new FileSourceClient(self::$serviceClient, $baseUrl);
+        self::$gitSourceClient = new GitSourceClient(self::$serviceClient, $baseUrl);
+        self::$suiteClient = new SuiteClient(self::$serviceClient, $baseUrl);
         self::$serializedSuiteClient = new SerializedSuiteClient(
             self::$requestFactory,
             self::$serviceClient,

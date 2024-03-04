@@ -27,7 +27,8 @@ class ReadTest extends AbstractIntegrationTestCase
 
     public function testReadSuccess(): void
     {
-        $source = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
+        $sourceId = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
+        \assert(null !== $sourceId);
 
         $sourcePaths = [
             'Source/File.yaml',
@@ -39,18 +40,19 @@ class ReadTest extends AbstractIntegrationTestCase
         foreach ($sourcePaths as $sourcePath) {
             self::$fileClient->add(
                 self::$user1ApiToken->token,
-                $source->getId(),
+                $sourceId,
                 $sourcePath,
                 self::$fixtureReader->read($sourcePath)
             );
         }
 
-        $suite = self::$suiteClient->create(
+        $suiteId = self::$suiteClient->create(
             self::$user1ApiToken->token,
-            $source->getId(),
+            $sourceId,
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
         );
+        \assert(null !== $suiteId);
 
         $serializedSuiteId = (string) new Ulid();
         \assert('' !== $serializedSuiteId);
@@ -58,7 +60,7 @@ class ReadTest extends AbstractIntegrationTestCase
         $serializedSuite = self::$serializedSuiteClient->create(
             self::$user1ApiToken->token,
             $serializedSuiteId,
-            $suite->getId(),
+            $suiteId,
         );
 
         $this->waitUntilSuiteIsSerialized($serializedSuite);
