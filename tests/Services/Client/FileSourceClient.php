@@ -14,21 +14,18 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
-use SmartAssert\SourcesClient\Model\FileSource;
 use SmartAssert\SourcesClient\Request\FileSourceRequest;
-use SmartAssert\SourcesClient\SourceFactory;
 
 readonly class FileSourceClient
 {
-    public function __construct(
-        private ServiceClient $serviceClient,
-        private SourceFactory $sourceFactory,
-        private string $baseUrl,
-    ) {
+    public function __construct(private ServiceClient $serviceClient, private string $baseUrl)
+    {
     }
 
     /**
      * @param non-empty-string $token
+     *
+     * @return ?non-empty-string
      *
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
@@ -37,7 +34,7 @@ readonly class FileSourceClient
      * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
-    public function create(string $token, string $label): ?FileSource
+    public function create(string $token, string $label): ?string
     {
         $request = new FileSourceRequest('POST', $label);
 
@@ -47,7 +44,11 @@ readonly class FileSourceClient
         ;
 
         $response = $this->serviceClient->sendRequestForJson($serviceRequest);
+        $responseData = $response->getData();
 
-        return $this->sourceFactory->createFileSource($response->getData());
+        $id = $responseData['id'] ?? '';
+        $id = is_string($id) ? $id : '';
+
+        return '' === $id ? null : $id;
     }
 }
