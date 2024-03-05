@@ -20,23 +20,26 @@ use SmartAssert\SourcesClient\Tests\Services\Client\GitSourceClient;
 use SmartAssert\SourcesClient\Tests\Services\Client\SuiteClient;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\SourcesClient\Tests\Services\FixtureReader;
-use SmartAssert\UsersClient\Client as UsersClient;
-use SmartAssert\UsersClient\Model\ApiKey;
-use SmartAssert\UsersClient\Model\Token;
-use SmartAssert\UsersClient\Model\User;
+use SmartAssert\TestAuthenticationProviderBundle\ApiKeyProvider;
+use SmartAssert\TestAuthenticationProviderBundle\ApiTokenProvider;
+use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
 
 abstract class AbstractIntegrationTestCase extends TestCase
 {
     protected const USER1_EMAIL = 'user1@example.com';
     protected const USER1_PASSWORD = 'password';
-    protected const USER2_EMAIL = 'user1@example.com';
+    protected const USER2_EMAIL = 'user2@example.com';
     protected const USER2_PASSWORD = 'password';
     protected static FileClient $fileClient;
     protected static FileSourceClient $fileSourceClient;
     protected static GitSourceClient $gitSourceClient;
     protected static SuiteClient $suiteClient;
     protected static SerializedSuiteClient $serializedSuiteClient;
-    protected static Token $user1ApiToken;
+
+    /**
+     * @var non-empty-string
+     */
+    protected static string $user1ApiToken;
     protected static DataRepository $dataRepository;
     protected static RequestFactory $requestFactory;
     protected static ServiceClient $serviceClient;
@@ -62,34 +65,35 @@ abstract class AbstractIntegrationTestCase extends TestCase
             self::$exceptionFactory
         );
 
-        self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL, self::USER1_PASSWORD);
+        self::$user1ApiToken = self::createUserApiToken(self::USER1_EMAIL);
         self::$dataRepository = new DataRepository(
             'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
         );
         self::$fixtureReader = new FixtureReader(__DIR__ . '/../Fixtures/');
     }
 
-    protected static function createUserApiToken(string $email, string $password): Token
+    /**
+     * @param non-empty-string $email
+     *
+     * @return non-empty-string
+     */
+    protected static function createUserApiToken(string $email): string
     {
-        $usersClient = new UsersClient('http://localhost:9080', self::createServiceClient());
+        $usersBaseUrl = 'http://localhost:9080';
+        $httpClient = new HttpClient();
 
-        $frontendToken = $usersClient->createFrontendToken($email, $password);
-        \assert($frontendToken instanceof Token);
+        $frontendTokenProvider = new FrontendTokenProvider(
+            [
+                self::USER1_EMAIL => self::USER1_PASSWORD,
+                self::USER2_EMAIL => self::USER2_PASSWORD,
+            ],
+            $usersBaseUrl,
+            $httpClient
+        );
+        $apiKeyProvider = new ApiKeyProvider($usersBaseUrl, $httpClient, $frontendTokenProvider);
+        $apiTokenProvider = new ApiTokenProvider($usersBaseUrl, $httpClient, $apiKeyProvider);
 
-        $frontendTokenUser = $usersClient->verifyFrontendToken($frontendToken->token);
-        \assert($frontendTokenUser instanceof User);
-
-        $apiKeys = $usersClient->listUserApiKeys($frontendToken->token);
-        $defaultApiKey = $apiKeys->getDefault();
-        \assert($defaultApiKey instanceof ApiKey);
-
-        $apiToken = $usersClient->createApiToken($defaultApiKey->key);
-        \assert($apiToken instanceof Token);
-
-        $apiTokenUser = $usersClient->verifyApiToken($apiToken->token);
-        \assert($apiTokenUser instanceof User);
-
-        return $apiToken;
+        return $apiTokenProvider->get($email);
     }
 
     private static function createServiceClient(): ServiceClient

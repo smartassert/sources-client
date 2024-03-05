@@ -17,7 +17,7 @@ class CreateTest extends AbstractIntegrationTestCase
     {
         try {
             self::$serializedSuiteClient->create(
-                self::$user1ApiToken->token,
+                self::$user1ApiToken,
                 md5((string) rand()),
                 md5((string) rand())
             );
@@ -43,7 +43,7 @@ class CreateTest extends AbstractIntegrationTestCase
         \assert(null !== $sourceId);
 
         $suiteId = self::$suiteClient->create(
-            self::$user1ApiToken->token,
+            self::$user1ApiToken,
             $sourceId,
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
@@ -54,7 +54,7 @@ class CreateTest extends AbstractIntegrationTestCase
         \assert('' !== $serializedSuiteId);
 
         $serializedSuite = self::$serializedSuiteClient->create(
-            self::$user1ApiToken->token,
+            self::$user1ApiToken,
             $serializedSuiteId,
             $suiteId,
             $parameters

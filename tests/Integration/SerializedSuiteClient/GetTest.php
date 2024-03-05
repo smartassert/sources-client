@@ -16,7 +16,7 @@ class GetTest extends AbstractIntegrationTestCase
     public function testGetSerializedSuiteNotFound(): void
     {
         try {
-            self::$serializedSuiteClient->get(self::$user1ApiToken->token, md5((string) rand()));
+            self::$serializedSuiteClient->get(self::$user1ApiToken, md5((string) rand()));
         } catch (\Throwable $e) {
             self::assertInstanceOf(NonSuccessResponseException::class, $e);
             self::assertSame(404, $e->getCode());
@@ -39,7 +39,7 @@ class GetTest extends AbstractIntegrationTestCase
         \assert(null !== $sourceId);
 
         $suiteId = self::$suiteClient->create(
-            self::$user1ApiToken->token,
+            self::$user1ApiToken,
             $sourceId,
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
@@ -50,14 +50,14 @@ class GetTest extends AbstractIntegrationTestCase
         \assert('' !== $serializedSuiteId);
 
         $createdSerializedSuite = self::$serializedSuiteClient->create(
-            self::$user1ApiToken->token,
+            self::$user1ApiToken,
             $serializedSuiteId,
             $suiteId,
             $parameters
         );
 
         $serializedSuite = self::$serializedSuiteClient->get(
-            self::$user1ApiToken->token,
+            self::$user1ApiToken,
             $createdSerializedSuite->getId()
         );
 
