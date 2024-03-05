@@ -12,12 +12,12 @@ trait GetSuiteDataProviderTrait
     public static function getSuiteDataProvider(): array
     {
         $fileSourceCreator = function () {
-            return self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
+            return self::$fileSourceClient->create(self::$user1ApiToken, md5((string) rand()));
         };
 
         $gitSourceCreator = function () {
             return self::$gitSourceClient->create(
-                self::$user1ApiToken->token,
+                self::$user1ApiToken,
                 md5((string) rand()),
                 'https://example.com/' . md5((string) rand()) . '.git',
                 '/',

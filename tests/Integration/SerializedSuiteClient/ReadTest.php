@@ -15,7 +15,7 @@ class ReadTest extends AbstractIntegrationTestCase
     {
         try {
             self::$serializedSuiteClient->create(
-                self::$user1ApiToken->token,
+                self::$user1ApiToken,
                 md5((string) rand()),
                 md5((string) rand())
             );
@@ -27,7 +27,7 @@ class ReadTest extends AbstractIntegrationTestCase
 
     public function testReadSuccess(): void
     {
-        $sourceId = self::$fileSourceClient->create(self::$user1ApiToken->token, md5((string) rand()));
+        $sourceId = self::$fileSourceClient->create(self::$user1ApiToken, md5((string) rand()));
         \assert(null !== $sourceId);
 
         $sourcePaths = [
@@ -39,7 +39,7 @@ class ReadTest extends AbstractIntegrationTestCase
 
         foreach ($sourcePaths as $sourcePath) {
             self::$fileClient->add(
-                self::$user1ApiToken->token,
+                self::$user1ApiToken,
                 $sourceId,
                 $sourcePath,
                 self::$fixtureReader->read($sourcePath)
@@ -47,7 +47,7 @@ class ReadTest extends AbstractIntegrationTestCase
         }
 
         $suiteId = self::$suiteClient->create(
-            self::$user1ApiToken->token,
+            self::$user1ApiToken,
             $sourceId,
             md5((string) rand()),
             ['Test1.yaml', 'Test2.yaml']
@@ -58,7 +58,7 @@ class ReadTest extends AbstractIntegrationTestCase
         \assert('' !== $serializedSuiteId);
 
         $serializedSuite = self::$serializedSuiteClient->create(
-            self::$user1ApiToken->token,
+            self::$user1ApiToken,
             $serializedSuiteId,
             $suiteId,
         );
@@ -67,7 +67,7 @@ class ReadTest extends AbstractIntegrationTestCase
 
         $expectedSerializedSuiteContent = trim(self::$fixtureReader->read('SerializedSuite/suite.yaml'));
         $serializedSuiteContent = self::$serializedSuiteClient->read(
-            self::$user1ApiToken->token,
+            self::$user1ApiToken,
             $serializedSuite->getId()
         );
 
@@ -82,7 +82,7 @@ class ReadTest extends AbstractIntegrationTestCase
 
         while ('prepared' !== $serializedSuite->getState()) {
             $serializedSuite = self::$serializedSuiteClient->get(
-                self::$user1ApiToken->token,
+                self::$user1ApiToken,
                 $serializedSuite->getId(),
             );
 
