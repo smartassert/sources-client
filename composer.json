@@ -81,7 +81,8 @@
         "webignition/http-history-container": "^2.5",
         "symfony/uid": "^6.2",
         "phpunit/phpunit": "^10.2",
-        "smartassert/test-authenticaton-provider-bundle": "^5.0"
+        "smartassert/test-authenticaton-provider-bundle": "^5.0",
+        "smartassert/test-sources-client": "^0.5.0"
     },
     "minimum-stability":"stable",
     "prefer-stable":true,
