@@ -14,7 +14,6 @@ use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
-use SmartAssert\SourcesClient\Tests\Services\Client\GitSourceClient;
 use SmartAssert\SourcesClient\Tests\Services\Client\SuiteClient;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
 use SmartAssert\SourcesClient\Tests\Services\FixtureReader;
@@ -23,6 +22,7 @@ use SmartAssert\TestAuthenticationProviderBundle\ApiTokenProvider;
 use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
 use SmartAssert\TestSourcesClient\FileClient;
 use SmartAssert\TestSourcesClient\FileSourceClient;
+use SmartAssert\TestSourcesClient\GitSourceClient;
 
 abstract class AbstractIntegrationTestCase extends TestCase
 {
@@ -68,7 +68,13 @@ abstract class AbstractIntegrationTestCase extends TestCase
             $baseUrl
         );
 
-        self::$gitSourceClient = new GitSourceClient(self::$serviceClient, $baseUrl);
+        self::$gitSourceClient = new GitSourceClient(
+            new HttpClient(),
+            new HttpFactory(),
+            new HttpFactory(),
+            $baseUrl
+        );
+
         self::$suiteClient = new SuiteClient(self::$serviceClient, $baseUrl);
         self::$serializedSuiteClient = new SerializedSuiteClient(
             self::$requestFactory,
