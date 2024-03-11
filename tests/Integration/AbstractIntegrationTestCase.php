@@ -14,7 +14,6 @@ use SmartAssert\SourcesClient\ExceptionFactory;
 use SmartAssert\SourcesClient\RequestFactory;
 use SmartAssert\SourcesClient\SerializedSuiteClient;
 use SmartAssert\SourcesClient\SerializedSuiteFactory;
-use SmartAssert\SourcesClient\Tests\Services\Client\FileClient;
 use SmartAssert\SourcesClient\Tests\Services\Client\GitSourceClient;
 use SmartAssert\SourcesClient\Tests\Services\Client\SuiteClient;
 use SmartAssert\SourcesClient\Tests\Services\DataRepository;
@@ -22,6 +21,7 @@ use SmartAssert\SourcesClient\Tests\Services\FixtureReader;
 use SmartAssert\TestAuthenticationProviderBundle\ApiKeyProvider;
 use SmartAssert\TestAuthenticationProviderBundle\ApiTokenProvider;
 use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
+use SmartAssert\TestSourcesClient\FileClient;
 use SmartAssert\TestSourcesClient\FileSourceClient;
 
 abstract class AbstractIntegrationTestCase extends TestCase
@@ -54,7 +54,12 @@ abstract class AbstractIntegrationTestCase extends TestCase
         self::$serviceClient = self::createServiceClient();
         self::$exceptionFactory = new ExceptionFactory();
 
-        self::$fileClient = new FileClient(self::$serviceClient, $baseUrl);
+        self::$fileClient = new FileClient(
+            new HttpClient(),
+            new HttpFactory(),
+            new HttpFactory(),
+            $baseUrl
+        );
 
         self::$fileSourceClient = new FileSourceClient(
             new HttpClient(),
