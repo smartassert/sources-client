@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Model;
 
-use SmartAssert\ServiceClient\SerializableInterface;
-
-readonly class SerializedSuite implements SerializableInterface
+readonly class SerializedSuite implements SerializedSuiteInterface
 {
     /**
      * @param non-empty-string      $id
@@ -24,9 +22,6 @@ readonly class SerializedSuite implements SerializableInterface
     ) {
     }
 
-    /**
-     * @return non-empty-string
-     */
     public function getId(): string
     {
         return $this->id;
@@ -37,17 +32,11 @@ readonly class SerializedSuite implements SerializableInterface
         return $this->suiteId;
     }
 
-    /**
-     * @return array<string, string>
-     */
     public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    /**
-     * @return non-empty-string
-     */
     public function getState(): string
     {
         return $this->state;
@@ -63,16 +52,6 @@ readonly class SerializedSuite implements SerializableInterface
         return $this->failureMessage;
     }
 
-    /**
-     * @return array{
-     *   id: non-empty-string,
-     *   suite_id: non-empty-string,
-     *   parameters: array<string, string>,
-     *   state: non-empty-string,
-     *   failure_reason?: string,
-     *   failure_message?: string,
-     * }
-     */
     public function toArray(): array
     {
         $data = [
