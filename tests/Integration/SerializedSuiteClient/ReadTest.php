@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Integration\SerializedSuiteClient;
 
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\SourcesClient\Model\SerializedSuite;
+use SmartAssert\SourcesClient\Model\SerializedSuiteInterface;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
 use Symfony\Component\Uid\Ulid;
 
@@ -74,7 +74,7 @@ class ReadTest extends AbstractIntegrationTestCase
         self::assertSame($expectedSerializedSuiteContent, $serializedSuiteContent);
     }
 
-    private function waitUntilSuiteIsSerialized(SerializedSuite $serializedSuite): void
+    private function waitUntilSuiteIsSerialized(SerializedSuiteInterface $serializedSuite): void
     {
         $timeout = 30000;
         $duration = 0;
