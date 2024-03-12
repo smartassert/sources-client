@@ -15,7 +15,6 @@ use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
-use SmartAssert\SourcesClient\Model\SerializedSuiteInterface;
 
 class SerializedSuiteClient implements SerializedSuiteClientInterface
 {
@@ -32,14 +31,14 @@ class SerializedSuiteClient implements SerializedSuiteClientInterface
         string $serializedSuiteId,
         string $suiteId,
         array $parameters = []
-    ): SerializedSuiteInterface {
+    ): SerializedSuite {
         return $this->handleSerializedSuiteRetrievalRequest(
             $this->requestFactory->createSuiteSerializationRequest($token, $serializedSuiteId, $suiteId)
                 ->withPayload(new UrlEncodedPayload($parameters))
         );
     }
 
-    public function get(string $token, string $serializedSuiteId): SerializedSuiteInterface
+    public function get(string $token, string $serializedSuiteId): SerializedSuite
     {
         return $this->handleSerializedSuiteRetrievalRequest(
             $this->requestFactory->createSerializedSuiteRequest($token, $serializedSuiteId)
@@ -67,7 +66,7 @@ class SerializedSuiteClient implements SerializedSuiteClientInterface
      * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
-    private function handleSerializedSuiteRetrievalRequest(Request $request): SerializedSuiteInterface
+    private function handleSerializedSuiteRetrievalRequest(Request $request): SerializedSuite
     {
         try {
             $response = $this->serviceClient->sendRequestForJson($request);
