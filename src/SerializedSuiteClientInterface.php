@@ -11,7 +11,7 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\UnauthorizedException;
-use SmartAssert\SourcesClient\Model\SerializedSuiteInterface;
+use SmartAssert\SourcesClient\Model\SerializedSuite;
 
 interface SerializedSuiteClientInterface
 {
@@ -33,7 +33,7 @@ interface SerializedSuiteClientInterface
         string $serializedSuiteId,
         string $suiteId,
         array $parameters = []
-    ): SerializedSuiteInterface;
+    ): SerializedSuite;
 
     /**
      * @throws ClientExceptionInterface
@@ -43,7 +43,7 @@ interface SerializedSuiteClientInterface
      * @throws InvalidResponseTypeException
      * @throws UnauthorizedException
      */
-    public function get(string $token, string $serializedSuiteId): SerializedSuiteInterface;
+    public function get(string $token, string $serializedSuiteId): SerializedSuite;
 
     /**
      * @throws ClientExceptionInterface
