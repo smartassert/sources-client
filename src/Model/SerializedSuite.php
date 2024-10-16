@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Model;
 
-use SmartAssert\ServiceClient\SerializableInterface;
-
-readonly class SerializedSuite implements SerializableInterface
+readonly class SerializedSuite
 {
     /**
      * @param non-empty-string      $id
@@ -61,35 +59,5 @@ readonly class SerializedSuite implements SerializableInterface
     public function getFailureMessage(): ?string
     {
         return $this->failureMessage;
-    }
-
-    /**
-     * @return array{
-     *   id: non-empty-string,
-     *   suite_id: non-empty-string,
-     *   parameters: array<string, string>,
-     *   state: non-empty-string,
-     *   failure_reason?: string,
-     *   failure_message?: string,
-     * }
-     */
-    public function toArray(): array
-    {
-        $data = [
-            'id' => $this->id,
-            'suite_id' => $this->suiteId,
-            'parameters' => $this->parameters,
-            'state' => $this->state,
-        ];
-
-        if (is_string($this->failureReason)) {
-            $data['failure_reason'] = $this->failureReason;
-        }
-
-        if (is_string($this->failureMessage)) {
-            $data['failure_message'] = $this->failureMessage;
-        }
-
-        return $data;
     }
 }
