@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient;
 
-use SmartAssert\ArrayInspector\ArrayInspector;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
@@ -33,16 +32,17 @@ class ExceptionFactory
      */
     private function createFromJsonResponse(JsonResponse $response): HttpResponseExceptionInterface
     {
-        $data = new ArrayInspector($response->getData());
-
-        if (!$data->has('error', 'array')) {
+        $errorData = $response->getData()['error'] ?? null;
+        if (!is_array($errorData)) {
             return InvalidModelDataException::fromJsonResponse(ResponseException::class, $response);
         }
 
-        $errorDataInspector = new ArrayInspector($data->getArray('error'));
+        $type = $errorData['type'] ?? null;
+        $type = is_string($type) ? $type : null;
+        $type = '' === $type ? null : $type;
 
-        $type = $errorDataInspector->getNonEmptyString('type');
-        $payload = $errorDataInspector->getArray('payload');
+        $payload = $errorData['payload'] ?? [];
+        $payload = is_array($payload) ? $payload : [];
 
         if ('invalid_request' === $type) {
             return new InvalidRequestException($response->getHttpResponse(), $type, $payload);

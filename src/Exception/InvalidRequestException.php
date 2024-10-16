@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Exception;
 
-use SmartAssert\ArrayInspector\ArrayInspector;
 use SmartAssert\ServiceClient\Exception\HttpResponseExceptionInterface;
 use SmartAssert\SourcesClient\Model\InvalidRequestField;
 
@@ -12,11 +11,16 @@ class InvalidRequestException extends ResponseException implements HttpResponseE
 {
     public function getInvalidRequestField(): ?InvalidRequestField
     {
-        $inspector = new ArrayInspector($this->getPayload());
+        $name = $this->getPayload()['name'] ?? null;
+        $name = is_string($name) ? $name : null;
+        $name = '' === $name ? null : $name;
 
-        $name = $inspector->getNonEmptyString('name');
-        $value = $inspector->getString('value');
-        $message = $inspector->getNonEmptyString('message');
+        $value = $this->getPayload()['value'] ?? null;
+        $value = is_string($value) ? $value : null;
+
+        $message = $this->getPayload()['message'] ?? null;
+        $message = is_string($message) ? $message : null;
+        $message = '' === $message ? null : $message;
 
         if (null === $name || null === $value || null === $message) {
             return null;
