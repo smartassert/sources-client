@@ -20,7 +20,7 @@
             "@cs-phpcs"
         ],
         "static-analysis": "XDEBUG_MODE=off ./vendor/bin/phpstan",
-        "test": "XDEBUG_MODE=off ./vendor/bin/phpunit --colors=always tests",
+        "test": "XDEBUG_MODE=off ./vendor/bin/phpunit --colors=always --display-deprecations --display-phpunit-deprecations tests",
         "users-db-setup": [
             "docker compose -f ./tests/build/docker-compose.yml exec -T users-service php bin/console doctrine:database:create --if-not-exists",
             "docker compose -f ./tests/build/docker-compose.yml exec -T users-service php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration"
@@ -80,7 +80,7 @@
         "phpstan/phpstan-phpunit": "^1.3",
         "webignition/http-history-container": "^2.5",
         "symfony/uid": "^6.2",
-        "phpunit/phpunit": "^10.2",
+        "phpunit/phpunit": "^11",
         "smartassert/test-authenticaton-provider-bundle": "^5.0",
         "smartassert/test-sources-client": "^0.5.0"
     },
