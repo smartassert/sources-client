@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient\Tests\Integration\SerializedSuiteClient;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use SmartAssert\SourcesClient\Tests\DataProvider\GetSuiteDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Integration\AbstractIntegrationTestCase;
@@ -24,12 +25,11 @@ class GetTest extends AbstractIntegrationTestCase
     }
 
     /**
-     * @dataProvider getSuiteDataProvider
-     *
      * @param callable(): ?non-empty-string             $sourceCreator
      * @param array<non-empty-string, non-empty-string> $parameters
      * @param array<non-empty-string, non-empty-string> $expectedSerializedSuiteParameters
      */
+    #[DataProvider('getSuiteDataProvider')]
     public function testGetSuccess(
         callable $sourceCreator,
         array $parameters,
