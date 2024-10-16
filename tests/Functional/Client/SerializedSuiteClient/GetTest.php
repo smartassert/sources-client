@@ -67,6 +67,8 @@ class GetTest extends AbstractSuiteClientTestCase
                 'suite_id' => md5((string) rand()),
                 'parameters' => [],
                 'state' => md5((string) rand()),
+                'is_prepared' => false,
+                'has_end_state' => false,
             ])
         );
     }

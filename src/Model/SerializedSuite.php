@@ -17,6 +17,8 @@ readonly class SerializedSuite
         private string $suiteId,
         private array $parameters,
         private string $state,
+        private bool $isPrepared,
+        private bool $hasEndState,
         private ?string $failureReason,
         private ?string $failureMessage,
     ) {
@@ -59,5 +61,15 @@ readonly class SerializedSuite
     public function getFailureMessage(): ?string
     {
         return $this->failureMessage;
+    }
+
+    public function isPrepared(): bool
+    {
+        return $this->isPrepared;
+    }
+
+    public function hasEndState(): bool
+    {
+        return $this->hasEndState;
     }
 }

@@ -19,7 +19,10 @@ class SerializedSuiteFactory
         $id = $dataInspector->getNonEmptyString('id');
         $suiteId = $dataInspector->getNonEmptyString('suite_id');
         $state = $dataInspector->getNonEmptyString('state');
-        if (null === $id || null === $suiteId || null === $state) {
+        $isPrepared = $dataInspector->getBoolean('is_prepared');
+        $hasEndState = $dataInspector->getBoolean('has_end_state');
+
+        if (null === $id || null === $suiteId || null === $state || null === $isPrepared || null === $hasEndState) {
             return null;
         }
 
@@ -34,6 +37,15 @@ class SerializedSuiteFactory
         $failureReason = $dataInspector->getString('failure_reason');
         $failureMessage = $dataInspector->getString('failure_message');
 
-        return new SerializedSuite($id, $suiteId, $parameters, $state, $failureReason, $failureMessage);
+        return new SerializedSuite(
+            $id,
+            $suiteId,
+            $parameters,
+            $state,
+            $isPrepared,
+            $hasEndState,
+            $failureReason,
+            $failureMessage
+        );
     }
 }
