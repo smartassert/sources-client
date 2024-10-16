@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient;
 
-use SmartAssert\ArrayInspector\ArrayInspector;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
 
 class SerializedSuiteFactory
@@ -14,28 +13,28 @@ class SerializedSuiteFactory
      */
     public function create(array $data): ?SerializedSuite
     {
-        $dataInspector = new ArrayInspector($data);
-
-        $id = $dataInspector->getNonEmptyString('id');
-        $suiteId = $dataInspector->getNonEmptyString('suite_id');
-        $state = $dataInspector->getNonEmptyString('state');
-        $isPrepared = $dataInspector->getBoolean('is_prepared');
-        $hasEndState = $dataInspector->getBoolean('has_end_state');
+        $id = $this->getNonEmptyString($data, 'id');
+        $suiteId = $this->getNonEmptyString($data, 'suite_id');
+        $state = $this->getNonEmptyString($data, 'state');
+        $isPrepared = $this->getBoolean($data, 'is_prepared');
+        $hasEndState = $this->getBoolean($data, 'has_end_state');
 
         if (null === $id || null === $suiteId || null === $state || null === $isPrepared || null === $hasEndState) {
             return null;
         }
 
         $parameters = [];
-        $responseParameters = $dataInspector->getArray('parameters');
+        $responseParameters = $data['parameters'] ?? [];
+        $responseParameters = is_array($responseParameters) ? $responseParameters : [];
+
         foreach ($responseParameters as $key => $value) {
             if (is_string($key) && is_string($value)) {
                 $parameters[$key] = $value;
             }
         }
 
-        $failureReason = $dataInspector->getString('failure_reason');
-        $failureMessage = $dataInspector->getString('failure_message');
+        $failureReason = $this->getString($data, 'failure_reason');
+        $failureMessage = $this->getString($data, 'failure_message');
 
         return new SerializedSuite(
             $id,
@@ -47,5 +46,37 @@ class SerializedSuiteFactory
             $failureReason,
             $failureMessage
         );
+    }
+
+    /**
+     * @param array<mixed> $data
+     */
+    private function getString(array $data, string $name): ?string
+    {
+        $value = $data[$name] ?? null;
+
+        return is_string($value) ? $value : null;
+    }
+
+    /**
+     * @param array<mixed> $data
+     *
+     * @return null|non-empty-string
+     */
+    private function getNonEmptyString(array $data, string $name): ?string
+    {
+        $value = $this->getString($data, $name);
+
+        return '' === $value ? null : $value;
+    }
+
+    /**
+     * @param array<mixed> $data
+     */
+    private function getBoolean(array $data, string $name): ?bool
+    {
+        $value = $data[$name] ?? null;
+
+        return is_bool($value) ? $value : null;
     }
 }
