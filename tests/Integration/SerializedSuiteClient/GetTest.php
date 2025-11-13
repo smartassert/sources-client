@@ -47,7 +47,6 @@ class GetTest extends AbstractIntegrationTestCase
         \assert(null !== $suiteId);
 
         $serializedSuiteId = (string) new Ulid();
-        \assert('' !== $serializedSuiteId);
 
         $createdSerializedSuite = self::$serializedSuiteClient->create(
             self::$user1ApiToken,
