@@ -61,7 +61,6 @@ class GetTest extends AbstractIntegrationTestCase
             $createdSerializedSuite->getId()
         );
 
-        self::assertNotNull($serializedSuite->getId());
         self::assertSame($suiteId, $serializedSuite->getSuiteId());
         self::assertSame($expectedSerializedSuiteParameters, $serializedSuite->getParameters());
         self::assertNull($serializedSuite->getFailureReason());

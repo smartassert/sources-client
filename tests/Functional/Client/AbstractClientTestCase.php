@@ -7,7 +7,6 @@ namespace SmartAssert\SourcesClient\Tests\Functional\Client;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\HttpFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +23,7 @@ use SmartAssert\SourcesClient\Tests\Functional\DataProvider\CommonNonSuccessResp
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
 use webignition\HttpHistoryContainer\Container as HttpHistoryContainer;
+use webignition\HttpHistoryContainer\MiddlewareFactory;
 
 abstract class AbstractClientTestCase extends TestCase
 {
@@ -50,7 +50,7 @@ abstract class AbstractClientTestCase extends TestCase
         $handlerStack = HandlerStack::create($this->mockHandler);
 
         $this->httpHistoryContainer = new HttpHistoryContainer();
-        $handlerStack->push(Middleware::history($this->httpHistoryContainer));
+        $handlerStack->push(MiddlewareFactory::create($this->httpHistoryContainer));
         $httpClient = new HttpClient(['handler' => $handlerStack]);
 
         $this->requestFactory = new RequestFactory('https://sources.example.com');
