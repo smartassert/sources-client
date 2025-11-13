@@ -72,7 +72,7 @@
     },
     "require-dev": {
         "ext-pdo": "*",
-        "squizlabs/php_codesniffer": "dev-master#7c452b0ff35ab2cf1d0c60965fea3e79f621b2d2",
+        "squizlabs/php_codesniffer": "^4.0",
         "phpstan/phpstan": "^1.9",
         "guzzlehttp/guzzle": "^7.5",
         "phpstan/extension-installer": "^1.2",
