@@ -55,7 +55,6 @@ class ReadTest extends AbstractIntegrationTestCase
         \assert(null !== $suiteId);
 
         $serializedSuiteId = (string) new Ulid();
-        \assert('' !== $serializedSuiteId);
 
         $serializedSuite = self::$serializedSuiteClient->create(
             self::$user1ApiToken,
