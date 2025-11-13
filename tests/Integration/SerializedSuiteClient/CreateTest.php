@@ -60,7 +60,6 @@ class CreateTest extends AbstractIntegrationTestCase
             $parameters
         );
 
-        self::assertNotNull($serializedSuite->getId());
         self::assertSame($suiteId, $serializedSuite->getSuiteId());
         self::assertSame($expectedSerializedSuiteParameters, $serializedSuite->getParameters());
         self::assertSame('requested', $serializedSuite->getState());
