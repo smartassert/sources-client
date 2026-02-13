@@ -49,36 +49,6 @@ class GetTest extends AbstractSuiteClientTestCase
         );
     }
 
-    protected function createClientActionCallable(): callable
-    {
-        return function () {
-            $this->serializedSuiteClient->get(self::API_KEY, md5((string) rand()));
-        };
-    }
-
-    protected function getExpectedRequestMethod(): string
-    {
-        return 'GET';
-    }
-
-    protected function getClientActionSuccessResponse(): ResponseInterface
-    {
-        return new Response(
-            200,
-            ['content-type' => 'application/json'],
-            (string) json_encode([
-                'id' => md5((string) rand()),
-                'suite_id' => md5((string) rand()),
-                'parameters' => [],
-                'state' => md5((string) rand()),
-                'meta_state' => [
-                    'ended' => false,
-                    'succeeded' => false,
-                ],
-            ])
-        );
-    }
-
     /**
      * @param array<mixed> $responseData
      */
@@ -175,5 +145,35 @@ class GetTest extends AbstractSuiteClientTestCase
                 ),
             ],
         ];
+    }
+
+    protected function createClientActionCallable(): callable
+    {
+        return function () {
+            $this->serializedSuiteClient->get(self::API_KEY, md5((string) rand()));
+        };
+    }
+
+    protected function getExpectedRequestMethod(): string
+    {
+        return 'GET';
+    }
+
+    protected function getClientActionSuccessResponse(): ResponseInterface
+    {
+        return new Response(
+            200,
+            ['content-type' => 'application/json'],
+            (string) json_encode([
+                'id' => md5((string) rand()),
+                'suite_id' => md5((string) rand()),
+                'parameters' => [],
+                'state' => md5((string) rand()),
+                'meta_state' => [
+                    'ended' => false,
+                    'succeeded' => false,
+                ],
+            ])
+        );
     }
 }
