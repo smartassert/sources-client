@@ -17,8 +17,7 @@ readonly class SerializedSuite
         private string $suiteId,
         private array $parameters,
         private string $state,
-        private bool $isPrepared,
-        private bool $hasEndState,
+        private MetaState $metaState,
         private ?string $failureReason,
         private ?string $failureMessage,
     ) {
@@ -65,11 +64,16 @@ readonly class SerializedSuite
 
     public function isPrepared(): bool
     {
-        return $this->isPrepared;
+        return $this->metaState->ended && $this->metaState->succeeded;
     }
 
     public function hasEndState(): bool
     {
-        return $this->hasEndState;
+        return $this->metaState->ended;
+    }
+
+    public function getMetaState(): MetaState
+    {
+        return $this->metaState;
     }
 }

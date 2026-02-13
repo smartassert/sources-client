@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace SmartAssert\SourcesClient\Tests\Functional\Client\SerializedSuiteClient;
 
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\SourcesClient\Exception\ResponseException;
+use SmartAssert\SourcesClient\Model\MetaState;
+use SmartAssert\SourcesClient\Model\SerializedSuite;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\InvalidJsonResponseExceptionDataProviderTrait;
 use SmartAssert\SourcesClient\Tests\Functional\DataProvider\NetworkErrorExceptionDataProviderTrait;
+use Symfony\Component\Uid\Ulid;
 
 class GetTest extends AbstractSuiteClientTestCase
 {
@@ -45,6 +49,104 @@ class GetTest extends AbstractSuiteClientTestCase
         );
     }
 
+    /**
+     * @param array<mixed> $responseData
+     */
+    #[DataProvider('getSuccessDataProvider')]
+    public function testGetSuccess(array $responseData, SerializedSuite $expected): void
+    {
+        $this->mockHandler->append(new Response(
+            200,
+            ['content-type' => 'application/json'],
+            (string) json_encode($responseData)
+        ));
+
+        $serializedSuite = $this->serializedSuiteClient->get('api key', md5((string) rand()));
+
+        self::assertEquals($expected, $serializedSuite);
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public static function getSuccessDataProvider(): array
+    {
+        $serializedSuiteId = (string) new Ulid();
+        $suiteId = (string) new Ulid();
+
+        return [
+            'requested, no parameters' => [
+                'responseData' => [
+                    'id' => $serializedSuiteId,
+                    'suite_id' => $suiteId,
+                    'parameters' => [],
+                    'state' => 'requested',
+                    'meta_state' => [
+                        'ended' => false,
+                        'succeeded' => false,
+                    ],
+                ],
+                'expected' => new SerializedSuite(
+                    $serializedSuiteId,
+                    $suiteId,
+                    [],
+                    'requested',
+                    new MetaState(false, false),
+                    null,
+                    null,
+                ),
+            ],
+            'requested, has parameters' => [
+                'responseData' => [
+                    'id' => $serializedSuiteId,
+                    'suite_id' => $suiteId,
+                    'parameters' => [
+                        'parameter1' => 'value1',
+                        'parameter2' => 'value2',
+                    ],
+                    'state' => 'requested',
+                    'meta_state' => [
+                        'ended' => false,
+                        'succeeded' => false,
+                    ],
+                ],
+                'expected' => new SerializedSuite(
+                    $serializedSuiteId,
+                    $suiteId,
+                    [
+                        'parameter1' => 'value1',
+                        'parameter2' => 'value2',
+                    ],
+                    'requested',
+                    new MetaState(false, false),
+                    null,
+                    null,
+                ),
+            ],
+            'prepared' => [
+                'responseData' => [
+                    'id' => $serializedSuiteId,
+                    'suite_id' => $suiteId,
+                    'parameters' => [],
+                    'state' => 'requested',
+                    'meta_state' => [
+                        'ended' => true,
+                        'succeeded' => true,
+                    ],
+                ],
+                'expected' => new SerializedSuite(
+                    $serializedSuiteId,
+                    $suiteId,
+                    [],
+                    'requested',
+                    new MetaState(true, true),
+                    null,
+                    null,
+                ),
+            ],
+        ];
+    }
+
     protected function createClientActionCallable(): callable
     {
         return function () {
@@ -67,8 +169,10 @@ class GetTest extends AbstractSuiteClientTestCase
                 'suite_id' => md5((string) rand()),
                 'parameters' => [],
                 'state' => md5((string) rand()),
-                'is_prepared' => false,
-                'has_end_state' => false,
+                'meta_state' => [
+                    'ended' => false,
+                    'succeeded' => false,
+                ],
             ])
         );
     }

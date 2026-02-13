@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SmartAssert\SourcesClient;
 
+use SmartAssert\SourcesClient\Model\MetaState;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
 
 class SerializedSuiteFactory
@@ -16,10 +17,8 @@ class SerializedSuiteFactory
         $id = $this->getNonEmptyString($data, 'id');
         $suiteId = $this->getNonEmptyString($data, 'suite_id');
         $state = $this->getNonEmptyString($data, 'state');
-        $isPrepared = $this->getBoolean($data, 'is_prepared');
-        $hasEndState = $this->getBoolean($data, 'has_end_state');
 
-        if (null === $id || null === $suiteId || null === $state || null === $isPrepared || null === $hasEndState) {
+        if (null === $id || null === $suiteId || null === $state) {
             return null;
         }
 
@@ -36,15 +35,26 @@ class SerializedSuiteFactory
         $failureReason = $this->getString($data, 'failure_reason');
         $failureMessage = $this->getString($data, 'failure_message');
 
+        $metaStateData = $data['meta_state'] ?? [];
+        $metaStateData = is_array($metaStateData) ? $metaStateData : [];
+
+        $metaStateEnded = $metaStateData['ended'] ?? false;
+        $metaStateEnded = is_bool($metaStateEnded) ? $metaStateEnded : false;
+
+        $metaStateSucceeded = $metaStateData['succeeded'] ?? false;
+        $metaStateSucceeded = is_bool($metaStateSucceeded) ? $metaStateSucceeded : false;
+
         return new SerializedSuite(
             $id,
             $suiteId,
             $parameters,
             $state,
-            $isPrepared,
-            $hasEndState,
+            new MetaState(
+                $metaStateEnded,
+                $metaStateSucceeded,
+            ),
             $failureReason,
-            $failureMessage
+            $failureMessage,
         );
     }
 
@@ -68,15 +78,5 @@ class SerializedSuiteFactory
         $value = $this->getString($data, $name);
 
         return '' === $value ? null : $value;
-    }
-
-    /**
-     * @param array<mixed> $data
-     */
-    private function getBoolean(array $data, string $name): ?bool
-    {
-        $value = $data[$name] ?? null;
-
-        return is_bool($value) ? $value : null;
     }
 }
