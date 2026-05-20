@@ -44,6 +44,9 @@ class SerializedSuiteFactory
         $metaStateSucceeded = $metaStateData['succeeded'] ?? false;
         $metaStateSucceeded = is_bool($metaStateSucceeded) ? $metaStateSucceeded : false;
 
+        $metaStatePending = $metaStateData['pending'] ?? true;
+        $metaStatePending = is_bool($metaStatePending) ? $metaStatePending : true;
+
         return new SerializedSuite(
             $id,
             $suiteId,
@@ -52,6 +55,7 @@ class SerializedSuiteFactory
             new MetaState(
                 $metaStateEnded,
                 $metaStateSucceeded,
+                $metaStatePending,
             ),
             $failureReason,
             $failureMessage,

@@ -9,6 +9,7 @@ readonly class MetaState
     public function __construct(
         public bool $ended,
         public bool $succeeded,
+        public bool $pending,
     ) {
     }
 }
