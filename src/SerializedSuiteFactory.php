@@ -59,6 +59,26 @@ class SerializedSuiteFactory
             ),
             $failureReason,
             $failureMessage,
+            $this->getStringCollection($data, 'previous_states'),
+            $this->getStringCollection($data, 'next_states'),
+        );
+    }
+
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<non-empty-string>
+     */
+    private function getStringCollection(array $data, string $name): array
+    {
+        $value = $data[$name] ?? [];
+        $value = is_array($value) ? $value : [];
+
+        return array_filter(
+            $value,
+            function (mixed $item) {
+                return is_string($item) && '' !== $item;
+            }
         );
     }
 

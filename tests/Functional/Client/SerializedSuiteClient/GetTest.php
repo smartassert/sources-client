@@ -86,6 +86,13 @@ class GetTest extends AbstractSuiteClientTestCase
                         'ended' => false,
                         'succeeded' => false,
                     ],
+                    'previous_states' => [],
+                    'next_states' => [
+                        'preparing/running',
+                        'preparing/halted',
+                        'prepared',
+                        'failed',
+                    ],
                 ],
                 'expected' => new SerializedSuite(
                     $serializedSuiteId,
@@ -95,6 +102,13 @@ class GetTest extends AbstractSuiteClientTestCase
                     new MetaState(ended: false, succeeded: false, pending: true),
                     null,
                     null,
+                    [],
+                    [
+                        'preparing/running',
+                        'preparing/halted',
+                        'prepared',
+                        'failed',
+                    ],
                 ),
             ],
             'requested, has parameters' => [
@@ -111,6 +125,13 @@ class GetTest extends AbstractSuiteClientTestCase
                         'ended' => false,
                         'succeeded' => false,
                     ],
+                    'previous_states' => [],
+                    'next_states' => [
+                        'preparing/running',
+                        'preparing/halted',
+                        'prepared',
+                        'failed',
+                    ],
                 ],
                 'expected' => new SerializedSuite(
                     $serializedSuiteId,
@@ -123,6 +144,13 @@ class GetTest extends AbstractSuiteClientTestCase
                     new MetaState(ended: false, succeeded: false, pending: true),
                     null,
                     null,
+                    [],
+                    [
+                        'preparing/running',
+                        'preparing/halted',
+                        'prepared',
+                        'failed',
+                    ],
                 ),
             ],
             'prepared' => [
@@ -130,21 +158,33 @@ class GetTest extends AbstractSuiteClientTestCase
                     'id' => $serializedSuiteId,
                     'suite_id' => $suiteId,
                     'parameters' => [],
-                    'state' => 'requested',
+                    'state' => 'prepared',
                     'meta_state' => [
                         'pending' => false,
                         'ended' => true,
                         'succeeded' => true,
                     ],
+                    'previous_states' => [
+                        'requested',
+                        'preparing/running',
+                        'preparing/halted',
+                    ],
+                    'next_states' => [],
                 ],
                 'expected' => new SerializedSuite(
                     $serializedSuiteId,
                     $suiteId,
                     [],
-                    'requested',
+                    'prepared',
                     new MetaState(ended: true, succeeded: true, pending: false),
                     null,
                     null,
+                    [
+                        'requested',
+                        'preparing/running',
+                        'preparing/halted',
+                    ],
+                    [],
                 ),
             ],
         ];

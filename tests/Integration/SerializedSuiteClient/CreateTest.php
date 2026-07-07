@@ -66,5 +66,7 @@ class CreateTest extends AbstractIntegrationTestCase
         self::assertFalse($serializedSuite->hasEndState());
         self::assertNull($serializedSuite->getFailureReason());
         self::assertNull($serializedSuite->getFailureMessage());
+        self::assertSame([], $serializedSuite->getPreviousStates());
+        self::assertSame(['preparing/running', 'preparing/halted'], $serializedSuite->getNextStates());
     }
 }
