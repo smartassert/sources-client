@@ -71,6 +71,12 @@ class CreateTest extends AbstractSuiteClientTestCase
                     'ended' => false,
                     'succeeded' => false,
                 ],
+                'previous_states' => [],
+                'next_states' => [
+                    md5((string) rand()),
+                    md5((string) rand()),
+                    md5((string) rand()),
+                ],
             ])
         );
     }

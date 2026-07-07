@@ -11,6 +11,8 @@ readonly class SerializedSuite
      * @param non-empty-string      $suiteId
      * @param array<string, string> $parameters
      * @param non-empty-string      $state
+     * @param string[]              $previousStates
+     * @param string[]              $nextStates
      */
     public function __construct(
         private string $id,
@@ -20,6 +22,8 @@ readonly class SerializedSuite
         private MetaState $metaState,
         private ?string $failureReason,
         private ?string $failureMessage,
+        private array $previousStates,
+        private array $nextStates,
     ) {
     }
 
@@ -75,5 +79,21 @@ readonly class SerializedSuite
     public function getMetaState(): MetaState
     {
         return $this->metaState;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getPreviousStates(): array
+    {
+        return $this->previousStates;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getNextStates(): array
+    {
+        return $this->nextStates;
     }
 }
