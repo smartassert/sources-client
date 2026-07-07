@@ -56,6 +56,7 @@ class CreateTest extends AbstractIntegrationTestCase
             self::$user1ApiToken,
             $serializedSuiteId,
             $suiteId,
+            null,
             $parameters
         );
 
