@@ -52,6 +52,7 @@ class GetTest extends AbstractIntegrationTestCase
             self::$user1ApiToken,
             $serializedSuiteId,
             $suiteId,
+            null,
             $parameters
         );
 

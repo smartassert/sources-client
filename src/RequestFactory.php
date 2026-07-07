@@ -24,7 +24,7 @@ class RequestFactory extends ServiceClientRequestFactory
         $this->authenticationMiddleware = new AuthenticationMiddleware();
 
         parent::__construct(
-            (new RequestMiddlewareCollection())->set('authentication', $this->authenticationMiddleware)
+            new RequestMiddlewareCollection()->set('authentication', $this->authenticationMiddleware)
         );
 
         $this->urlGenerator = $this->createUrlGenerator($baseUrl);
@@ -39,18 +39,25 @@ class RequestFactory extends ServiceClientRequestFactory
         );
     }
 
-    public function createSuiteSerializationRequest(string $token, string $serializedSuiteId, string $suiteId): Request
-    {
+    public function createSuiteSerializationRequest(
+        string $token,
+        string $serializedSuiteId,
+        string $suiteId,
+        ?string $notifyUrl = null,
+    ): Request {
+        $parameters = [
+            'serializedSuiteId' => $serializedSuiteId,
+            'suiteId' => $suiteId,
+        ];
+
+        if (is_string($notifyUrl)) {
+            $parameters['notify_url'] = $notifyUrl;
+        }
+
         return $this->doCreate(
             $token,
             'POST',
-            $this->urlGenerator->generate(
-                'suite_serialize',
-                [
-                    'serializedSuiteId' => $serializedSuiteId,
-                    'suiteId' => $suiteId
-                ]
-            )
+            $this->urlGenerator->generate('suite_serialize', $parameters),
         );
     }
 

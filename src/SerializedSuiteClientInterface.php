@@ -32,6 +32,7 @@ interface SerializedSuiteClientInterface
         string $token,
         string $serializedSuiteId,
         string $suiteId,
+        ?string $notifyUrl = null,
         array $parameters = []
     ): SerializedSuite;
 

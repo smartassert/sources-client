@@ -16,13 +16,13 @@ use SmartAssert\ServiceClient\Payload\UrlEncodedPayload;
 use SmartAssert\ServiceClient\Request;
 use SmartAssert\SourcesClient\Model\SerializedSuite;
 
-class SerializedSuiteClient implements SerializedSuiteClientInterface
+readonly class SerializedSuiteClient implements SerializedSuiteClientInterface
 {
     public function __construct(
-        private readonly RequestFactory $requestFactory,
-        private readonly ServiceClient $serviceClient,
-        private readonly SerializedSuiteFactory $serializedSuiteFactory,
-        private readonly ExceptionFactory $exceptionFactory,
+        private RequestFactory $requestFactory,
+        private ServiceClient $serviceClient,
+        private SerializedSuiteFactory $serializedSuiteFactory,
+        private ExceptionFactory $exceptionFactory,
     ) {
     }
 
@@ -30,10 +30,11 @@ class SerializedSuiteClient implements SerializedSuiteClientInterface
         string $token,
         string $serializedSuiteId,
         string $suiteId,
+        ?string $notifyUrl = null,
         array $parameters = []
     ): SerializedSuite {
         return $this->handleSerializedSuiteRetrievalRequest(
-            $this->requestFactory->createSuiteSerializationRequest($token, $serializedSuiteId, $suiteId)
+            $this->requestFactory->createSuiteSerializationRequest($token, $serializedSuiteId, $suiteId, $notifyUrl)
                 ->withPayload(new UrlEncodedPayload($parameters))
         );
     }
