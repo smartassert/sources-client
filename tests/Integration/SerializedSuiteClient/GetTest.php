@@ -32,6 +32,7 @@ class GetTest extends AbstractIntegrationTestCase
     #[DataProvider('getSuiteDataProvider')]
     public function testGetSuccess(
         callable $sourceCreator,
+        ?string $notifyUrl,
         array $parameters,
         array $expectedSerializedSuiteParameters,
     ): void {
@@ -52,7 +53,7 @@ class GetTest extends AbstractIntegrationTestCase
             self::$user1ApiToken,
             $serializedSuiteId,
             $suiteId,
-            null,
+            $notifyUrl,
             $parameters
         );
 

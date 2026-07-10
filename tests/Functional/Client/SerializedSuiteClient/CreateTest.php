@@ -37,6 +37,30 @@ class CreateTest extends AbstractSuiteClientTestCase
         }
     }
 
+    public function testNotifyUrlIsProvidedInRequestBody(): void
+    {
+        $this->mockHandler->append(
+            $this->getClientActionSuccessResponse(),
+        );
+
+        $notifyUrl = 'https://' . md5((string) rand()) . '.com/' . md5((string) rand());
+
+        $this->serializedSuiteClient->create(
+            token: self::API_KEY,
+            serializedSuiteId: md5((string) rand()),
+            suiteId: ((string) rand()),
+            notifyUrl: $notifyUrl,
+        );
+
+        $lastRequestBody = $this->getLastRequest()->getBody()->getContents();
+        $decodedRequestBody = urldecode($lastRequestBody);
+
+        self::assertSame(
+            'notify_url=' . $notifyUrl,
+            $decodedRequestBody,
+        );
+    }
+
     public static function clientActionThrowsExceptionDataProvider(): array
     {
         return array_merge(
@@ -48,7 +72,12 @@ class CreateTest extends AbstractSuiteClientTestCase
     protected function createClientActionCallable(): callable
     {
         return function () {
-            $this->serializedSuiteClient->create(self::API_KEY, md5((string) rand()), md5((string) rand()));
+            $this->serializedSuiteClient->create(
+                token: self::API_KEY,
+                serializedSuiteId: md5((string) rand()),
+                suiteId: ((string) rand()),
+                notifyUrl: 'https://example.com/notify',
+            );
         };
     }
 

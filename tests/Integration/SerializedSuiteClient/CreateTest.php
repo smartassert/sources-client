@@ -36,6 +36,7 @@ class CreateTest extends AbstractIntegrationTestCase
     #[DataProvider('getSuiteDataProvider')]
     public function testCreateSuccess(
         callable $sourceCreator,
+        ?string $notifyUrl,
         array $parameters,
         array $expectedSerializedSuiteParameters,
     ): void {
@@ -56,7 +57,7 @@ class CreateTest extends AbstractIntegrationTestCase
             self::$user1ApiToken,
             $serializedSuiteId,
             $suiteId,
-            null,
+            $notifyUrl,
             $parameters
         );
 

@@ -43,16 +43,11 @@ class RequestFactory extends ServiceClientRequestFactory
         string $token,
         string $serializedSuiteId,
         string $suiteId,
-        ?string $notifyUrl = null,
     ): Request {
         $parameters = [
             'serializedSuiteId' => $serializedSuiteId,
             'suiteId' => $suiteId,
         ];
-
-        if (is_string($notifyUrl)) {
-            $parameters['notify_url'] = $notifyUrl;
-        }
 
         return $this->doCreate(
             $token,
