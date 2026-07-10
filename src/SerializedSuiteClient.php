@@ -33,8 +33,12 @@ readonly class SerializedSuiteClient implements SerializedSuiteClientInterface
         ?string $notifyUrl = null,
         array $parameters = []
     ): SerializedSuite {
+        if (is_string($notifyUrl)) {
+            $parameters['notify_url'] = $notifyUrl;
+        }
+
         return $this->handleSerializedSuiteRetrievalRequest(
-            $this->requestFactory->createSuiteSerializationRequest($token, $serializedSuiteId, $suiteId, $notifyUrl)
+            $this->requestFactory->createSuiteSerializationRequest($token, $serializedSuiteId, $suiteId)
                 ->withPayload(new UrlEncodedPayload($parameters))
         );
     }

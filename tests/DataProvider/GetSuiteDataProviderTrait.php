@@ -26,13 +26,21 @@ trait GetSuiteDataProviderTrait
         };
 
         return [
+            'file source, no parameters, no notify url' => [
+                'sourceCreator' => $fileSourceCreator,
+                'notifyUrl' => null,
+                'parameters' => [],
+                'expectedSerializedSuiteParameters' => [],
+            ],
             'file source, no parameters' => [
                 'sourceCreator' => $fileSourceCreator,
+                'notifyUrl' => 'https://example.com/notify',
                 'parameters' => [],
                 'expectedSerializedSuiteParameters' => [],
             ],
             'file source, has parameters' => [
                 'sourceCreator' => $fileSourceCreator,
+                'notifyUrl' => 'https://example.com/notify',
                 'parameters' => [
                     'foo1' => 'bar1',
                     'foo2' => 'bar2',
@@ -42,11 +50,13 @@ trait GetSuiteDataProviderTrait
             ],
             'git source, no parameters' => [
                 'sourceCreator' => $gitSourceCreator,
+                'notifyUrl' => 'https://example.com/notify',
                 'parameters' => [],
                 'expectedSerializedSuiteParameters' => [],
             ],
             'git source, has parameters' => [
                 'sourceCreator' => $gitSourceCreator,
+                'notifyUrl' => 'https://example.com/notify',
                 'parameters' => [
                     'foo1' => 'bar1',
                     'foo2' => 'bar2',
